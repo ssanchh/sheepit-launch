@@ -38,12 +38,10 @@ export default function LoginPage() {
 
   const handleGoogleSignIn = async () => {
     setLoading(true)
-    const { error } = await signInWithGoogleNewTab()
+    const { error } = await signInWithGoogle()
     
     if (error) {
       toast.error(error.message)
-    } else {
-      toast.success('Google sign-in opened in new tab. Please complete the process there.')
     }
     
     setLoading(false)
