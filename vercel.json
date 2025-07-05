@@ -23,10 +23,6 @@
         {
           "key": "X-XSS-Protection",
           "value": "1; mode=block"
-        },
-        {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self' 'unsafe-eval' 'unsafe-inline' data: https: blob:; script-src 'self' 'unsafe-eval' 'unsafe-inline' https: data:; connect-src 'self' https: wss: *.supabase.co; img-src 'self' data: https: blob:; style-src 'self' 'unsafe-inline' https: data:; font-src 'self' https: data:; worker-src 'self' blob:; object-src 'none';"
         }
       ]
     }

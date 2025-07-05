@@ -11,9 +11,23 @@ export function useAuth() {
   useEffect(() => {
     // Get initial session
     const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      setUser(session?.user ?? null)
-      setLoading(false)
+      console.log('🔍 [DEBUG] Getting initial session...')
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession()
+        console.log('📧 [DEBUG] Session result:', { session, error, user: session?.user })
+        
+        if (session?.user) {
+          console.log('✅ [DEBUG] User found:', session.user.email)
+        } else {
+          console.log('❌ [DEBUG] No user found in session')
+        }
+        
+        setUser(session?.user ?? null)
+        setLoading(false)
+      } catch (err) {
+        console.error('🚨 [DEBUG] Error getting session:', err)
+        setLoading(false)
+      }
     }
 
     getSession()
@@ -21,6 +35,10 @@ export function useAuth() {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log('🔄 [DEBUG] Auth state changed:', { event, session, user: session?.user })
+        if (session?.user) {
+          console.log('✅ [DEBUG] User from auth change:', session.user.email)
+        }
         setUser(session?.user ?? null)
         setLoading(false)
       }
