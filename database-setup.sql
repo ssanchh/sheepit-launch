@@ -7,8 +7,22 @@
 CREATE TABLE users (
   id UUID PRIMARY KEY REFERENCES auth.users(id),
   email VARCHAR NOT NULL,
-  full_name VARCHAR,
+  
+  -- Profile Information
+  first_name VARCHAR(50),
+  last_name VARCHAR(50),
+  handle VARCHAR(50) UNIQUE,
   avatar_url VARCHAR,
+  
+  -- Social Media
+  twitter_handle VARCHAR(50),
+  website_url VARCHAR,
+  
+  -- Status
+  profile_completed BOOLEAN DEFAULT false,
+  is_admin BOOLEAN DEFAULT false,
+  
+  -- Timestamps
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
 );
@@ -33,8 +47,15 @@ CREATE TABLE products (
   video_url VARCHAR,
   created_by UUID NOT NULL REFERENCES users(id),
   week_id UUID NOT NULL REFERENCES weeks(id),
-  approved BOOLEAN DEFAULT false,
+  
+  -- Approval System
+  status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
   featured BOOLEAN DEFAULT false,
+  admin_notes TEXT,
+  approved_at TIMESTAMP,
+  approved_by UUID REFERENCES users(id),
+  
+  -- Timestamps
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
 );
@@ -95,18 +116,31 @@ CREATE POLICY "Users can update own profile" ON users
 CREATE POLICY "Users can insert own profile" ON users
   FOR INSERT WITH CHECK (auth.uid() = id);
 
+CREATE POLICY "Anyone can view public profiles" ON users
+  FOR SELECT USING (profile_completed = true);
+
 -- Products table policies
 CREATE POLICY "Anyone can view approved products" ON products
-  FOR SELECT USING (approved = true);
+  FOR SELECT USING (status = 'approved');
 
 CREATE POLICY "Users can view own products" ON products
   FOR SELECT USING (auth.uid() = created_by);
+
+CREATE POLICY "Admins can view all products" ON products
+  FOR SELECT USING (
+    auth.uid() IN (SELECT id FROM users WHERE is_admin = true)
+  );
 
 CREATE POLICY "Users can insert own products" ON products
   FOR INSERT WITH CHECK (auth.uid() = created_by);
 
 CREATE POLICY "Users can update own products" ON products
-  FOR UPDATE USING (auth.uid() = created_by);
+  FOR UPDATE USING (auth.uid() = created_by AND status = 'pending');
+
+CREATE POLICY "Admins can update all products" ON products
+  FOR UPDATE USING (
+    auth.uid() IN (SELECT id FROM users WHERE is_admin = true)
+  );
 
 -- Votes table policies
 CREATE POLICY "Users can view own votes" ON votes
@@ -134,12 +168,15 @@ CREATE POLICY "Anyone can view weeks" ON weeks
 -- Create Indexes for Performance
 -- =============================================
 
-CREATE INDEX idx_products_week_approved ON products(week_id, approved);
+CREATE INDEX idx_products_week_status ON products(week_id, status);
 CREATE INDEX idx_products_created_by ON products(created_by);
+CREATE INDEX idx_products_status ON products(status);
 CREATE INDEX idx_votes_product_week ON votes(product_id, week_id);
 CREATE INDEX idx_votes_user_week ON votes(user_id, week_id);
 CREATE INDEX idx_winners_week ON winners(week_id);
 CREATE INDEX idx_weeks_active ON weeks(active);
+CREATE INDEX idx_users_handle ON users(handle);
+CREATE INDEX idx_users_profile_completed ON users(profile_completed);
 
 -- =============================================
 -- Create Functions for Common Queries
@@ -175,6 +212,20 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Function to check if user has completed profile
+CREATE OR REPLACE FUNCTION user_profile_completed(user_uuid UUID)
+RETURNS BOOLEAN AS $$
+DECLARE
+  completed BOOLEAN;
+BEGIN
+  SELECT profile_completed INTO completed
+  FROM users
+  WHERE id = user_uuid;
+  
+  RETURN COALESCE(completed, false);
+END;
+$$ LANGUAGE plpgsql;
+
 -- =============================================
 -- Create Initial Week (Current Week)
 -- =============================================
@@ -198,17 +249,13 @@ VALUES (
 -- 5. Allow image file types: image/jpeg, image/png, image/gif, image/webp
 
 -- =============================================
--- Sample Data (Optional - for testing)
+-- Migration Notes
 -- =============================================
 
--- Insert a sample user (you can remove this)
--- Note: This will only work after a user has signed up through your app
--- INSERT INTO users (id, email, full_name) VALUES 
--- ('00000000-0000-0000-0000-000000000000', 'test@example.com', 'Test User');
-
--- Insert sample products (you can remove this)
--- INSERT INTO products (name, tagline, description, website_url, created_by, week_id, approved) VALUES
--- ('Sample Product', 'A great indie product', 'This is a longer description of our awesome product that solves real problems.', 'https://example.com', '00000000-0000-0000-0000-000000000000', (SELECT id FROM weeks WHERE active = true LIMIT 1), true);
+-- If you already have users in your database, run these updates:
+-- UPDATE users SET profile_completed = false WHERE profile_completed IS NULL;
+-- UPDATE products SET status = 'pending' WHERE approved = false;
+-- UPDATE products SET status = 'approved' WHERE approved = true;
 
 -- =============================================
 -- Verification Queries
