@@ -11,12 +11,12 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [emailSent, setEmailSent] = useState(false)
-  const { signInWithEmail, signInWithGoogle, signInWithGoogleNewTab, user } = useAuth()
+  const { signInWithEmail, signInWithGoogle, user } = useAuth()
   const router = useRouter()
 
   // Redirect if already logged in
   if (user) {
-    router.push('/dashboard')
+    router.push('/')
     return null
   }
 
