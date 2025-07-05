@@ -1,51 +1,62 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { createClient } from '@/utils/supabase/client'
 import { User } from '@supabase/supabase-js'
-import { supabase } from '@/lib/supabase'
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const supabase = createClient()
 
   useEffect(() => {
-    // Get initial session
     const getSession = async () => {
-      console.log('🔍 [DEBUG] Getting initial session...')
+      console.log('[DEBUG] Getting initial session...')
+      
+      // Check if cookies exist
+      const allCookies = document.cookie
+      console.log('[DEBUG] All cookies:', allCookies)
+      
+      // Look for Supabase auth cookies specifically
+      const authCookies = allCookies.split('; ').filter(cookie => 
+        cookie.includes('sb-') || cookie.includes('auth')
+      )
+      console.log('[DEBUG] Auth-related cookies:', authCookies)
+      
       try {
         const { data: { session }, error } = await supabase.auth.getSession()
-        console.log('📧 [DEBUG] Session result:', { session, error, user: session?.user })
+        console.log('[DEBUG] Session result:', { session, error })
         
-        if (session?.user) {
-          console.log('✅ [DEBUG] User found:', session.user.email)
+        if (error) {
+          console.error('[DEBUG] Session error:', error)
+          setUser(null)
+        } else if (session?.user) {
+          console.log('[DEBUG] User found in session:', session.user.email)
+          setUser(session.user)
         } else {
-          console.log('❌ [DEBUG] No user found in session')
+          console.log('[DEBUG] No user found in session')
+          setUser(null)
         }
-        
-        setUser(session?.user ?? null)
-        setLoading(false)
       } catch (err) {
-        console.error('🚨 [DEBUG] Error getting session:', err)
+        console.error('[DEBUG] Session fetch error:', err)
+        setUser(null)
+      } finally {
         setLoading(false)
       }
     }
 
     getSession()
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('🔄 [DEBUG] Auth state changed:', { event, session, user: session?.user })
-        if (session?.user) {
-          console.log('✅ [DEBUG] User from auth change:', session.user.email)
-        }
+        console.log('[DEBUG] Auth state changed:', { event, session })
         setUser(session?.user ?? null)
         setLoading(false)
       }
     )
 
     return () => subscription.unsubscribe()
-  }, [])
+  }, [supabase])
 
   const signInWithEmail = async (email: string) => {
     const { error } = await supabase.auth.signInWithOtp({
