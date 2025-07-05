@@ -7,16 +7,19 @@ export async function GET(request: NextRequest) {
   const code = requestUrl.searchParams.get('code')
   const next = requestUrl.searchParams.get('next') ?? '/weekly'
 
-  if (code) {
-    const supabase = createServerActionClient({ cookies })
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
-
-    if (!error) {
-      return NextResponse.redirect(`${requestUrl.origin}${next}`)
-    } else {
-      return NextResponse.redirect(`${requestUrl.origin}/login?error=auth_failed`)
-    }
+  if (!code) {
+    return NextResponse.redirect(`${requestUrl.origin}/login?error=no_code`)
   }
 
-  return NextResponse.redirect(`${requestUrl.origin}/login?error=no_code`)
+  const cookieStore = cookies()
+  const supabase = createServerActionClient({ cookies: () => cookieStore })
+
+  const { error } = await supabase.auth.exchangeCodeForSession(code)
+
+  if (error) {
+    console.error('Supabase auth error:', error)
+    return NextResponse.redirect(`${requestUrl.origin}/login?error=auth_failed`)
+  }
+
+  return NextResponse.redirect(`${requestUrl.origin}${next}`)
 } 
