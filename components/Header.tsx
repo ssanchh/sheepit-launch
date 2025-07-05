@@ -25,7 +25,7 @@ export default function Header() {
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/weekly" className="text-gray-700 hover:text-gray-900 font-medium">
+            <Link href="/" className="text-gray-700 hover:text-gray-900 font-medium">
               Launching Now
             </Link>
             <span className="text-gray-400 font-medium cursor-not-allowed">
