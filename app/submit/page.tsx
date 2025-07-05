@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '../../hooks/useAuth'
 import { useForm } from 'react-hook-form'
@@ -25,31 +25,8 @@ export default function SubmitPage() {
   const [uploading, setUploading] = useState(false)
   const [logoFile, setLogoFile] = useState<File | null>(null)
   const [logoPreview, setLogoPreview] = useState<string | null>(null)
-  const [profileCompleted, setProfileCompleted] = useState<boolean | null>(null)
   const { user, loading } = useAuth()
   const router = useRouter()
-
-  useEffect(() => {
-    if (user) {
-      checkProfileCompletion()
-    }
-  }, [user])
-
-  const checkProfileCompletion = async () => {
-    const { data, error } = await supabase
-      .from('users')
-      .select('profile_completed')
-      .eq('id', user?.id)
-      .single()
-
-    if (data) {
-      setProfileCompleted(data.profile_completed)
-      if (!data.profile_completed) {
-        toast.error('Please complete your profile before submitting a product')
-        router.push('/profile')
-      }
-    }
-  }
 
   const {
     register,
@@ -66,14 +43,7 @@ export default function SubmitPage() {
     return null
   }
 
-  // Don't render if profile completion is still being checked
-  if (profileCompleted === null) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-      </div>
-    )
-  }
+
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
