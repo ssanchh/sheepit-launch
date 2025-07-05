@@ -11,10 +11,7 @@ export function useAuth() {
   useEffect(() => {
     // Get initial session
     const getSession = async () => {
-      console.log('🔍 Getting initial session...')
-      const { data: { session }, error } = await supabase.auth.getSession()
-      console.log('📧 Session result:', { session, error })
-      console.log('👤 User from session:', session?.user)
+      const { data: { session } } = await supabase.auth.getSession()
       setUser(session?.user ?? null)
       setLoading(false)
     }
@@ -24,8 +21,6 @@ export function useAuth() {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('🔄 Auth state changed:', { event, session })
-        console.log('👤 User from auth change:', session?.user)
         setUser(session?.user ?? null)
         setLoading(false)
       }
