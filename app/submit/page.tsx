@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '../../hooks/useAuth'
 import { useForm } from 'react-hook-form'
@@ -25,8 +25,59 @@ export default function SubmitPage() {
   const [uploading, setUploading] = useState(false)
   const [logoFile, setLogoFile] = useState<File | null>(null)
   const [logoPreview, setLogoPreview] = useState<string | null>(null)
+  const [profileCompleted, setProfileCompleted] = useState<boolean | null>(null)
+  const [debugInfo, setDebugInfo] = useState<string[]>([])
   const { user, loading } = useAuth()
   const router = useRouter()
+
+  // Debug logging function
+  const addDebugLog = (message: string) => {
+    console.log('[SUBMIT DEBUG]', message)
+    setDebugInfo(prev => [...prev, `${new Date().toLocaleTimeString()}: ${message}`])
+  }
+
+  useEffect(() => {
+    addDebugLog('useEffect triggered')
+    addDebugLog(`loading: ${loading}, user: ${user ? 'exists' : 'null'}`)
+    
+    if (!loading && user) {
+      addDebugLog('Starting profile check')
+      checkProfileCompletion()
+    } else if (!loading && !user) {
+      addDebugLog('No user found, redirecting to login')
+    }
+  }, [user, loading])
+
+  const checkProfileCompletion = async () => {
+    addDebugLog('checkProfileCompletion called')
+    try {
+      addDebugLog('Making supabase query...')
+      const { data, error } = await supabase
+        .from('users')
+        .select('profile_completed')
+        .eq('id', user?.id)
+        .single()
+
+      addDebugLog(`Query result - data: ${JSON.stringify(data)}, error: ${JSON.stringify(error)}`)
+
+      if (error && error.code === 'PGRST116') {
+        addDebugLog('No profile record exists')
+        setProfileCompleted(false)
+        return
+      }
+
+      if (data) {
+        addDebugLog(`Profile completed: ${data.profile_completed}`)
+        setProfileCompleted(data.profile_completed || false)
+      } else {
+        addDebugLog('No data returned')
+        setProfileCompleted(false)
+      }
+    } catch (error) {
+      addDebugLog(`Error in checkProfileCompletion: ${error}`)
+      setProfileCompleted(true) // Allow proceed on error
+    }
+  }
 
   const {
     register,
@@ -37,10 +88,59 @@ export default function SubmitPage() {
     resolver: zodResolver(productSchema),
   })
 
+  // Add timeout fallback
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (profileCompleted === null && user && !loading) {
+        addDebugLog('TIMEOUT: Forcing profile completion to true')
+        setProfileCompleted(true)
+      }
+    }, 5000) // 5 second timeout
+
+    return () => clearTimeout(timeout)
+  }, [profileCompleted, user, loading])
+
   // Redirect to login if not authenticated
   if (!loading && !user) {
+    addDebugLog('Redirecting to login - no user')
     router.push('/login')
     return null
+  }
+
+  // Show loading with debug info if profile completion is still being checked
+  if (profileCompleted === null && user && !loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <div className="text-center mb-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">Loading Submit Page...</h1>
+              <p className="text-gray-600 mb-4">Checking profile completion...</p>
+              
+              <div className="text-left bg-gray-100 p-4 rounded-md">
+                <h3 className="font-semibold mb-2">Debug Info:</h3>
+                <div className="text-sm text-gray-700 space-y-1 max-h-40 overflow-y-auto">
+                  {debugInfo.map((log, index) => (
+                    <div key={index}>{log}</div>
+                  ))}
+                </div>
+              </div>
+              
+              <button 
+                onClick={() => {
+                  addDebugLog('User clicked skip - forcing completion')
+                  setProfileCompleted(true)
+                }}
+                className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+              >
+                Skip Check & Continue
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
 
@@ -151,7 +251,13 @@ export default function SubmitPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 mb-4">Loading authentication...</p>
+          <div className="text-sm text-gray-500">
+            This might indicate an issue with the useAuth hook
+          </div>
+        </div>
       </div>
     )
   }
