@@ -71,9 +71,9 @@ export default function HomePage() {
               .select('*')
               .eq('product_id', product.id)
               .eq('user_id', user.id)
-              .single()
+              .limit(1)
             
-            userVote = voteData
+            userVote = voteData && voteData.length > 0 ? voteData[0] : null
           }
 
           // Check if product is featured
