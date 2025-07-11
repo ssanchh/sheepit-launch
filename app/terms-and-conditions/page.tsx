@@ -1,227 +1,418 @@
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
+import { Shield, Users, Gavel, CreditCard, Lock, AlertCircle, Mail, CheckCircle, Zap, Crown } from 'lucide-react'
 
 export default function TermsAndConditions() {
   return (
     <div className="min-h-screen bg-[#FDFCFA] flex flex-col">
       <Header />
       
-      <main className="max-w-4xl mx-auto px-6 py-12">
-        <h1 className="text-4xl font-bold text-[#2D2D2D] mb-8">Terms of Service</h1>
-        
-        <div className="prose prose-gray max-w-none space-y-6 text-[#666666]">
-          <p className="text-sm text-[#999999] mb-8">
-            Last Updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+      <main className="max-w-4xl mx-auto px-6 py-12 flex-1">
+        {/* Header Section */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#2D2D2D] rounded-full mb-4">
+            <Shield className="w-8 h-8 text-white" />
+          </div>
+          <h1 className="text-3xl font-medium text-[#2D2D2D] mb-3">Terms of Service</h1>
+          <p className="text-sm text-[#999999]">
+            Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
           </p>
+        </div>
 
-          <section>
-            <h2 className="text-2xl font-semibold text-[#2D2D2D] mb-4">1. Agreement to Terms</h2>
-            <p>
-              By accessing or using Sheep It ("we", "us", "our", "Service"), you agree to be bound by these Terms of Service ("Terms"). 
-              If you disagree with any part of these terms, you do not have permission to access the Service.
-            </p>
-            <p>
-              These Terms apply to all visitors, users, and others who access or use the Service, including but not limited to product makers, 
-              voters, and newsletter subscribers.
-            </p>
-          </section>
+        {/* Quick Navigation */}
+        <div className="bg-white rounded-xl border border-[#E5E5E5] p-6 mb-12">
+          <h2 className="text-sm font-medium text-[#2D2D2D] mb-4 uppercase tracking-wide">Quick Navigation</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {[
+              { icon: Users, label: 'User Agreement', href: '#agreement' },
+              { icon: Gavel, label: 'Product Submissions', href: '#submissions' },
+              { icon: CreditCard, label: 'Payments', href: '#payments' },
+              { icon: Lock, label: 'Privacy', href: '#privacy' },
+              { icon: AlertCircle, label: 'Liability', href: '#liability' },
+              { icon: Mail, label: 'Contact', href: '#contact' }
+            ].map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="flex items-center gap-2 p-3 rounded-lg hover:bg-[#F5F5F5] transition-colors"
+              >
+                <item.icon className="w-4 h-4 text-[#666666]" />
+                <span className="text-sm text-[#666666]">{item.label}</span>
+              </a>
+            ))}
+          </div>
+        </div>
 
-          <section>
-            <h2 className="text-2xl font-semibold text-[#2D2D2D] mb-4">2. Use of Service</h2>
-            <h3 className="text-xl font-semibold text-[#2D2D2D] mb-2">2.1 Eligibility</h3>
-            <p>
-              You must be at least 18 years old to use this Service. By using this Service, you represent and warrant that you are at least 
-              18 years of age and have the legal capacity to enter into these Terms.
-            </p>
-
-            <h3 className="text-xl font-semibold text-[#2D2D2D] mb-2">2.2 Account Registration</h3>
-            <p>
-              To submit products or access certain features, you must register for an account. You agree to:
-            </p>
-            <ul className="list-disc ml-6 space-y-2">
-              <li>Provide accurate, current, and complete information</li>
-              <li>Maintain and promptly update your account information</li>
-              <li>Maintain the security of your account credentials</li>
-              <li>Accept responsibility for all activities under your account</li>
-              <li>Notify us immediately of any unauthorized access</li>
-            </ul>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-semibold text-[#2D2D2D] mb-4">3. Product Submissions</h2>
-            <h3 className="text-xl font-semibold text-[#2D2D2D] mb-2">3.1 Submission Guidelines</h3>
-            <p>When submitting products to Sheep It, you agree that:</p>
-            <ul className="list-disc ml-6 space-y-2">
-              <li>You have the legal right to promote the product</li>
-              <li>All information provided is accurate and not misleading</li>
-              <li>Your product complies with all applicable laws and regulations</li>
-              <li>Your submission does not infringe on any third-party rights</li>
-            </ul>
-
-            <h3 className="text-xl font-semibold text-[#2D2D2D] mb-2">3.2 Approval Process</h3>
-            <p>
-              All product submissions are subject to review and approval by our team. We reserve the right to reject or remove any submission 
-              that violates these Terms or our community guidelines, at our sole discretion.
-            </p>
-
-            <h3 className="text-xl font-semibold text-[#2D2D2D] mb-2">3.3 Prohibited Products</h3>
-            <p>The following types of products are prohibited:</p>
-            <ul className="list-disc ml-6 space-y-2">
-              <li>Illegal products or services</li>
-              <li>Products that promote hate, violence, or discrimination</li>
-              <li>Adult content or services</li>
-              <li>Scams, pyramid schemes, or fraudulent offerings</li>
-              <li>Products that violate intellectual property rights</li>
-              <li>Malware, spyware, or harmful software</li>
-            </ul>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-semibold text-[#2D2D2D] mb-4">4. Voting and Community Participation</h2>
-            <h3 className="text-xl font-semibold text-[#2D2D2D] mb-2">4.1 Voting Rules</h3>
-            <p>Users participating in voting agree to:</p>
-            <ul className="list-disc ml-6 space-y-2">
-              <li>Vote based on genuine interest and product merit</li>
-              <li>Not engage in vote manipulation or fraudulent voting</li>
-              <li>Respect the one-vote-per-product-per-week limitation</li>
-            </ul>
-
-            <h3 className="text-xl font-semibold text-[#2D2D2D] mb-2">4.2 Fair Play</h3>
-            <p>
-              Any attempt to manipulate votes, rankings, or the platform through automated means, multiple accounts, or other fraudulent 
-              methods will result in immediate account termination and disqualification.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-semibold text-[#2D2D2D] mb-4">5. Premium Services and Payments</h2>
-            <h3 className="text-xl font-semibold text-[#2D2D2D] mb-2">5.1 Premium Features</h3>
-            <p>
-              Sheep It offers premium features including queue skipping and featured product placement. By purchasing these services, 
-              you acknowledge that:
-            </p>
-            <ul className="list-disc ml-6 space-y-2">
-              <li>Payment is required upfront and is processed through our third-party payment processor</li>
-              <li>Premium features are subject to availability and our approval process</li>
-              <li>Premium placement does not guarantee specific results or outcomes</li>
-            </ul>
-
-            <h3 className="text-xl font-semibold text-[#2D2D2D] mb-2">5.2 Refund Policy</h3>
-            <p>
-              Please refer to our separate <Link href="/refund" className="text-orange-600 hover:text-orange-700">Refund Policy</Link> for 
-              detailed information about refunds and cancellations.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-semibold text-[#2D2D2D] mb-4">6. Content Rights and Licenses</h2>
-            <h3 className="text-xl font-semibold text-[#2D2D2D] mb-2">6.1 Your Content</h3>
-            <p>
-              You retain all rights to content you submit to Sheep It. By submitting content, you grant us a worldwide, non-exclusive, 
-              royalty-free license to:
-            </p>
-            <ul className="list-disc ml-6 space-y-2">
-              <li>Display your product information on our platform</li>
-              <li>Include your product in our newsletter (if selected as a winner)</li>
-              <li>Promote your product through our marketing channels</li>
-              <li>Store and backup your content for operational purposes</li>
-            </ul>
-
-            <h3 className="text-xl font-semibold text-[#2D2D2D] mb-2">6.2 Our Content</h3>
-            <p>
-              The Service and its original content (excluding user-submitted content) are and will remain the exclusive property of 
-              Sheep It and its licensors. The Service is protected by copyright, trademark, and other laws.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-semibold text-[#2D2D2D] mb-4">7. Privacy</h2>
-            <p>
-              Your use of our Service is also governed by our <Link href="/privacy" className="text-orange-600 hover:text-orange-700">Privacy Policy</Link>. 
-              Please review our Privacy Policy, which also governs the Site and informs users of our data collection practices.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-semibold text-[#2D2D2D] mb-4">8. Disclaimers and Limitations of Liability</h2>
-            <h3 className="text-xl font-semibold text-[#2D2D2D] mb-2">8.1 Service Provided "As Is"</h3>
-            <p>
-              The Service is provided on an "as is" and "as available" basis without warranties of any kind, either express or implied. 
-              We do not warrant that the Service will be uninterrupted, secure, or error-free.
-            </p>
-
-            <h3 className="text-xl font-semibold text-[#2D2D2D] mb-2">8.2 Limitation of Liability</h3>
-            <p>
-              To the maximum extent permitted by law, Sheep It shall not be liable for any indirect, incidental, special, consequential, 
-              or punitive damages, including loss of profits, data, use, goodwill, or other intangible losses resulting from your use 
-              of the Service.
-            </p>
-
-            <h3 className="text-xl font-semibold text-[#2D2D2D] mb-2">8.3 Third-Party Products</h3>
-            <p>
-              We are not responsible for the quality, safety, legality, or any other aspect of products listed on our platform. 
-              Any transactions or interactions with third-party products are solely between you and the product maker.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-semibold text-[#2D2D2D] mb-4">9. Indemnification</h2>
-            <p>
-              You agree to defend, indemnify, and hold harmless Sheep It, its affiliates, and their respective officers, directors, 
-              employees, and agents from any claims, liabilities, damages, losses, and expenses arising from:
-            </p>
-            <ul className="list-disc ml-6 space-y-2">
-              <li>Your use of the Service</li>
-              <li>Your violation of these Terms</li>
-              <li>Your violation of any third-party rights</li>
-              <li>Any content you submit to the Service</li>
-            </ul>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-semibold text-[#2D2D2D] mb-4">10. Termination</h2>
-            <p>
-              We may terminate or suspend your account and access to the Service immediately, without prior notice or liability, 
-              for any reason, including breach of these Terms. Upon termination, your right to use the Service will cease immediately.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-semibold text-[#2D2D2D] mb-4">11. Governing Law and Disputes</h2>
-            <p>
-              These Terms shall be governed by and construed in accordance with the laws of the United States, without regard to 
-              its conflict of law provisions. Any disputes arising from these Terms or your use of the Service shall be resolved 
-              through binding arbitration in accordance with the rules of the American Arbitration Association.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-semibold text-[#2D2D2D] mb-4">12. Changes to Terms</h2>
-            <p>
-              We reserve the right to modify these Terms at any time. We will notify users of any material changes by posting the 
-              new Terms on this page and updating the "Last Updated" date. Your continued use of the Service after changes constitutes 
-              acceptance of the modified Terms.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-semibold text-[#2D2D2D] mb-4">13. Contact Information</h2>
-            <p>
-              If you have any questions about these Terms of Service, please contact us at:
-            </p>
-            <div className="bg-[#F5F5F5] p-4 rounded-lg mt-4">
-              <p className="font-medium text-[#2D2D2D]">Sheep It</p>
-              <p>Email: legal@sheep-it.com</p>
-              <p>Website: https://sheep-it.com</p>
+        {/* Content Sections */}
+        <div className="space-y-12">
+          {/* Agreement Section */}
+          <section id="agreement" className="scroll-mt-24">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
+                <Users className="w-5 h-5 text-[#666666]" />
+              </div>
+              <h2 className="text-2xl font-medium text-[#2D2D2D]">1. Agreement to Terms</h2>
+            </div>
+            
+            <div className="bg-white rounded-xl border border-[#E5E5E5] p-6 space-y-4">
+              <p className="text-[#666666] leading-relaxed">
+                By accessing or using Sheep It ("we", "us", "our", "Service"), you agree to be bound by these Terms of Service. 
+                If you disagree with any part of these terms, you do not have permission to access the Service.
+              </p>
+              
+              <div className="bg-[#FFF9F5] rounded-lg p-4 border border-[#FFE5D3]">
+                <p className="text-sm text-[#666666]">
+                  <strong className="text-[#2D2D2D]">Important:</strong> These Terms apply to all visitors, users, product makers, 
+                  voters, and newsletter subscribers.
+                </p>
+              </div>
             </div>
           </section>
 
-          <section className="mt-12 pt-8 border-t border-[#E5E5E5]">
-            <h2 className="text-2xl font-semibold text-[#2D2D2D] mb-4">Acceptance</h2>
-            <p className="font-medium">
-              By using Sheep It, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.
-            </p>
+          {/* Use of Service */}
+          <section className="scroll-mt-24">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
+                <CheckCircle className="w-5 h-5 text-[#666666]" />
+              </div>
+              <h2 className="text-2xl font-medium text-[#2D2D2D]">2. Use of Service</h2>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="bg-white rounded-xl border border-[#E5E5E5] p-6">
+                <h3 className="font-medium text-[#2D2D2D] mb-3">Eligibility</h3>
+                <p className="text-sm text-[#666666] mb-3">
+                  You must be at least 18 years old to use this Service.
+                </p>
+                <div className="text-sm text-[#999999]">
+                  By using Sheep It, you confirm you meet this requirement.
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl border border-[#E5E5E5] p-6">
+                <h3 className="font-medium text-[#2D2D2D] mb-3">Account Security</h3>
+                <ul className="space-y-2 text-sm text-[#666666]">
+                  <li className="flex items-start gap-2">
+                    <span className="text-orange-600 mt-0.5">•</span>
+                    <span>Keep your credentials secure</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-orange-600 mt-0.5">•</span>
+                    <span>Notify us of unauthorized access</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-orange-600 mt-0.5">•</span>
+                    <span>You're responsible for account activity</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          {/* Product Submissions */}
+          <section id="submissions" className="scroll-mt-24">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
+                <Gavel className="w-5 h-5 text-[#666666]" />
+              </div>
+              <h2 className="text-2xl font-medium text-[#2D2D2D]">3. Product Submissions</h2>
+            </div>
+
+            <div className="space-y-6">
+              {/* Submission Guidelines */}
+              <div className="bg-white rounded-xl border border-[#E5E5E5] p-6">
+                <h3 className="font-medium text-[#2D2D2D] mb-4">Submission Guidelines</h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                      <p className="text-sm text-[#666666]">Legal right to promote the product</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                      <p className="text-sm text-[#666666]">Accurate, non-misleading information</p>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                      <p className="text-sm text-[#666666]">Compliance with laws & regulations</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                      <p className="text-sm text-[#666666]">No third-party rights infringement</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Prohibited Products */}
+              <div className="bg-red-50 rounded-xl border border-red-200 p-6">
+                <h3 className="font-medium text-[#2D2D2D] mb-4">Prohibited Products</h3>
+                <div className="grid md:grid-cols-2 gap-3 text-sm">
+                  <div className="flex items-center gap-2 text-red-700">
+                    <span className="text-red-500">✕</span> Illegal products or services
+                  </div>
+                  <div className="flex items-center gap-2 text-red-700">
+                    <span className="text-red-500">✕</span> Hate speech or violence
+                  </div>
+                  <div className="flex items-center gap-2 text-red-700">
+                    <span className="text-red-500">✕</span> Adult content
+                  </div>
+                  <div className="flex items-center gap-2 text-red-700">
+                    <span className="text-red-500">✕</span> Scams or pyramid schemes
+                  </div>
+                  <div className="flex items-center gap-2 text-red-700">
+                    <span className="text-red-500">✕</span> IP violations
+                  </div>
+                  <div className="flex items-center gap-2 text-red-700">
+                    <span className="text-red-500">✕</span> Malware or harmful software
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Voting Rules */}
+          <section className="scroll-mt-24">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
+                <Users className="w-5 h-5 text-[#666666]" />
+              </div>
+              <h2 className="text-2xl font-medium text-[#2D2D2D]">4. Voting & Community</h2>
+            </div>
+
+            <div className="bg-white rounded-xl border border-[#E5E5E5] overflow-hidden">
+              <div className="p-6">
+                <h3 className="font-medium text-[#2D2D2D] mb-4">Fair Play Rules</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <span className="text-green-600 text-sm">✓</span>
+                    </div>
+                    <p className="text-sm text-[#666666]">Vote based on genuine interest and product merit</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <span className="text-green-600 text-sm">✓</span>
+                    </div>
+                    <p className="text-sm text-[#666666]">One vote per product per week</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <span className="text-red-600 text-sm">✕</span>
+                    </div>
+                    <p className="text-sm text-[#666666]">No vote manipulation or automation</p>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-[#FFF9F5] border-t border-[#FFE5D3] p-4">
+                <p className="text-xs text-[#666666]">
+                  <strong>Penalty:</strong> Vote manipulation results in immediate account termination
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* Premium Services */}
+          <section id="payments" className="scroll-mt-24">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
+                <CreditCard className="w-5 h-5 text-[#666666]" />
+              </div>
+              <h2 className="text-2xl font-medium text-[#2D2D2D]">5. Premium Services & Payments</h2>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="bg-white rounded-xl border border-[#E5E5E5] p-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <Zap className="w-5 h-5 text-orange-600" />
+                  <h3 className="font-medium text-[#2D2D2D]">Queue Skip - $35</h3>
+                </div>
+                <p className="text-sm text-[#666666] mb-3">
+                  Jump ahead in the launch queue for faster visibility.
+                </p>
+                <Link href="/refund" className="text-sm text-orange-600 hover:text-orange-700">
+                  View refund policy →
+                </Link>
+              </div>
+
+              <div className="bg-white rounded-xl border border-[#E5E5E5] p-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <Crown className="w-5 h-5 text-orange-600" />
+                  <h3 className="font-medium text-[#2D2D2D]">Featured Spot - $49</h3>
+                </div>
+                <p className="text-sm text-[#666666] mb-3">
+                  Premium placement at the top of homepage for 7 days.
+                </p>
+                <Link href="/refund" className="text-sm text-orange-600 hover:text-orange-700">
+                  View refund policy →
+                </Link>
+              </div>
+            </div>
+
+            <div className="mt-6 p-4 bg-[#F5F5F5] rounded-lg">
+              <p className="text-sm text-[#666666]">
+                <strong>Note:</strong> Premium features don't guarantee specific results. All purchases subject to approval.
+              </p>
+            </div>
+          </section>
+
+          {/* Content Rights */}
+          <section className="scroll-mt-24">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
+                <Lock className="w-5 h-5 text-[#666666]" />
+              </div>
+              <h2 className="text-2xl font-medium text-[#2D2D2D]">6. Content Rights & Licenses</h2>
+            </div>
+
+            <div className="bg-white rounded-xl border border-[#E5E5E5] p-6 space-y-6">
+              <div>
+                <h3 className="font-medium text-[#2D2D2D] mb-3">Your Content</h3>
+                <p className="text-sm text-[#666666] mb-3">
+                  You retain all rights to your content. By submitting, you grant us license to:
+                </p>
+                <div className="space-y-2 text-sm text-[#666666]">
+                  <div className="flex items-start gap-2">
+                    <span className="text-[#999999] mt-0.5">•</span>
+                    Display your product on our platform
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-[#999999] mt-0.5">•</span>
+                    Include winners in our 50k+ subscriber newsletter
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-[#999999] mt-0.5">•</span>
+                    Promote your product through our channels
+                  </div>
+                </div>
+              </div>
+              
+              <div className="pt-6 border-t border-[#E5E5E5]">
+                <h3 className="font-medium text-[#2D2D2D] mb-3">Our Content</h3>
+                <p className="text-sm text-[#666666]">
+                  The Sheep It platform and its original content are protected by copyright and trademark laws.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* Privacy */}
+          <section id="privacy" className="scroll-mt-24">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
+                <Shield className="w-5 h-5 text-[#666666]" />
+              </div>
+              <h2 className="text-2xl font-medium text-[#2D2D2D]">7. Privacy</h2>
+            </div>
+
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-6">
+              <p className="text-[#666666] mb-4">
+                Your privacy is important to us. Our Privacy Policy explains how we collect, use, and protect your information.
+              </p>
+              <Link 
+                href="/privacy" 
+                className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
+              >
+                Read our Privacy Policy
+                <span>→</span>
+              </Link>
+            </div>
+          </section>
+
+          {/* Liability */}
+          <section id="liability" className="scroll-mt-24">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
+                <AlertCircle className="w-5 h-5 text-[#666666]" />
+              </div>
+              <h2 className="text-2xl font-medium text-[#2D2D2D]">8. Disclaimers & Limitations</h2>
+            </div>
+
+            <div className="space-y-6">
+              <div className="bg-white rounded-xl border border-[#E5E5E5] p-6">
+                <h3 className="font-medium text-[#2D2D2D] mb-3">Service Provided "As Is"</h3>
+                <p className="text-sm text-[#666666]">
+                  The Service is provided without warranties of any kind. We don't guarantee uninterrupted or error-free service.
+                </p>
+              </div>
+
+              <div className="bg-amber-50 rounded-xl border border-amber-200 p-6">
+                <h3 className="font-medium text-[#2D2D2D] mb-3">Third-Party Products</h3>
+                <p className="text-sm text-[#666666]">
+                  We're not responsible for the quality, safety, or legality of products listed. Transactions are between you and the maker.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* Updates to Terms */}
+          <section className="scroll-mt-24">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
+                <AlertCircle className="w-5 h-5 text-[#666666]" />
+              </div>
+              <h2 className="text-2xl font-medium text-[#2D2D2D]">9. Changes to Terms</h2>
+            </div>
+
+            <div className="bg-white rounded-xl border border-[#E5E5E5] p-6">
+              <p className="text-[#666666] mb-4">
+                We may update these Terms at any time. We'll notify users of material changes by:
+              </p>
+              <div className="space-y-2 text-sm text-[#666666]">
+                <div className="flex items-center gap-2">
+                  <span className="text-orange-600">→</span>
+                  Posting the new Terms on this page
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-orange-600">→</span>
+                  Updating the "Last Updated" date
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-orange-600">→</span>
+                  Sending email notifications for major changes
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Contact */}
+          <section id="contact" className="scroll-mt-24">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
+                <Mail className="w-5 h-5 text-[#666666]" />
+              </div>
+              <h2 className="text-2xl font-medium text-[#2D2D2D]">10. Contact Information</h2>
+            </div>
+
+            <div className="bg-[#2D2D2D] text-white rounded-xl p-8">
+              <h3 className="text-lg font-medium mb-4">Questions about these Terms?</h3>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <Mail className="w-5 h-5 text-gray-400" />
+                  <a href="mailto:santiago@sheepit.io" className="hover:text-orange-400 transition-colors">
+                    santiago@sheepit.io
+                  </a>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">🐑</span>
+                  <span className="text-gray-400">Sheep It - Weekly launches for indie makers</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Final Acceptance */}
+          <section className="mt-16 text-center">
+            <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-200 p-8">
+              <CheckCircle className="w-12 h-12 text-orange-600 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-[#2D2D2D] mb-2">By using Sheep It</h3>
+              <p className="text-[#666666]">
+                You acknowledge that you have read, understood, and agree to be bound by these Terms of Service.
+              </p>
+            </div>
           </section>
         </div>
       </main>
