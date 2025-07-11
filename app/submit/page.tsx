@@ -8,6 +8,7 @@ import { toast } from 'sonner'
 import { Upload, AlertCircle, Sparkles, Globe, Users, Image as ImageIcon, Twitter, X, Zap, Crown } from 'lucide-react'
 import Image from 'next/image'
 import Header from '../../components/Header'
+import { useLoginModal } from '@/contexts/LoginModalContext'
 
 interface ProductDraft {
   name: string
@@ -60,9 +61,11 @@ function SubmitContent() {
   const mediaRef = useRef<HTMLDivElement>(null)
   const linksRef = useRef<HTMLDivElement>(null)
 
+  const { openLoginModal } = useLoginModal()
+
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push('/login')
+      openLoginModal('/submit')
       return
     }
     

@@ -7,6 +7,7 @@ import { createClient } from '@/utils/supabase/client'
 import { toast } from 'sonner'
 import { User, Save, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
+import { useLoginModal } from '@/contexts/LoginModalContext'
 
 interface Profile {
   first_name: string
@@ -20,6 +21,7 @@ interface Profile {
 export default function ProfilePage() {
   const { user, loading } = useAuth()
   const router = useRouter()
+  const { openLoginModal } = useLoginModal()
   const [profile, setProfile] = useState<Profile>({
     first_name: '',
     last_name: '',
@@ -145,7 +147,7 @@ export default function ProfilePage() {
   }
 
   if (!user) {
-    router.push('/login')
+    openLoginModal('/profile')
     return null
   }
 

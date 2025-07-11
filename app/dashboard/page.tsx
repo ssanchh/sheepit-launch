@@ -11,6 +11,7 @@ import { Plus, Package, User, TrendingUp, Lock, Award, Download, CreditCard, Zap
 import Link from 'next/link'
 import PurchaseModal from '../../components/PurchaseModal'
 import EmailPreferences from '../../components/EmailPreferences'
+import { useLoginModal } from '@/contexts/LoginModalContext'
 
 function DashboardContent() {
   const [activeTab, setActiveTab] = useState('profile')
@@ -19,12 +20,13 @@ function DashboardContent() {
   const { user, loading } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { openLoginModal } = useLoginModal()
 
   useEffect(() => {
     console.log('Dashboard useEffect - user:', user)
     if (!loading && !user) {
-      console.log('No user found, redirecting to login')
-      router.push('/login')
+      console.log('No user found, opening login modal')
+      openLoginModal('/dashboard')
       return
     }
     

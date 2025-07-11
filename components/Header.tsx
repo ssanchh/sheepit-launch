@@ -7,6 +7,7 @@ import { LogOut, User, Settings, Package, TrendingUp, Award, Plus, Lock } from '
 import { createClient } from '@/utils/supabase/client'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
+import { useLoginModal } from '@/contexts/LoginModalContext'
 
 interface UserProfile {
   first_name: string
@@ -21,6 +22,7 @@ export default function Header() {
   const { user, signOut } = useAuth()
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [showDropdown, setShowDropdown] = useState(false)
+  const { openLoginModal } = useLoginModal()
   const pathname = usePathname()
 
   useEffect(() => {
@@ -68,6 +70,7 @@ export default function Header() {
   }
 
   return (
+    <>
     <header className="bg-white border-b border-[#E5E5E5]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
@@ -249,24 +252,25 @@ export default function Header() {
               </>
             ) : (
               <>
-                <Link
-                  href="/login"
+                <button
+                  onClick={() => openLoginModal(pathname)}
                   className="text-[#666666] hover:text-[#2D2D2D] font-medium transition-colors"
                 >
                   Sign In
-                </Link>
-                <Link
-                  href="/login"
-                  className="bg-orange-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-orange-700 transition-colors flex items-center"
+                </button>
+                <button
+                  onClick={() => openLoginModal('/submit')}
+                  className="bg-[#FDFCFA] text-[#2D2D2D] border-[3px] border-orange-400/50 px-5 py-2 rounded-lg text-sm font-medium hover:border-orange-500 transition-all flex items-center"
                 >
-                  <Plus className="w-4 h-4 mr-1.5" />
+                  <Plus className="w-5 h-5 mr-1.5 stroke-2" />
                   Submit
-                </Link>
+                </button>
               </>
             )}
           </div>
         </div>
       </div>
     </header>
+    </>
   )
 } 

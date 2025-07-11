@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '../../hooks/useAuth'
 import { Mail, LogIn, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
+import { useLoginModal } from '@/contexts/LoginModalContext'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -13,6 +14,13 @@ export default function LoginPage() {
   const [emailSent, setEmailSent] = useState(false)
   const { signInWithEmail, signInWithGoogle, user } = useAuth()
   const router = useRouter()
+  const { openLoginModal } = useLoginModal()
+
+  // Redirect to home and open modal instead
+  useEffect(() => {
+    router.push('/')
+    openLoginModal('/')
+  }, [])
 
   // Redirect if already logged in
   if (user) {

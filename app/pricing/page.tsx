@@ -8,16 +8,18 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import ProductSelectionModal from '@/components/ProductSelectionModal'
 import { toast } from 'sonner'
+import { useLoginModal } from '@/contexts/LoginModalContext'
 
 export default function PricingPage() {
   const { user } = useAuth()
   const router = useRouter()
   const [showProductModal, setShowProductModal] = useState(false)
   const [purchaseType, setPurchaseType] = useState<'skip_queue' | 'featured_product'>('skip_queue')
+  const { openLoginModal } = useLoginModal()
 
   const handlePremiumPurchase = () => {
     if (!user) {
-      router.push('/login?redirect=/pricing')
+      openLoginModal('/pricing')
       return
     }
 
@@ -27,7 +29,7 @@ export default function PricingPage() {
 
   const handleFeaturedPurchase = () => {
     if (!user) {
-      router.push('/login?redirect=/pricing')
+      openLoginModal('/pricing')
       return
     }
 

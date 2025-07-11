@@ -182,7 +182,7 @@ export default function HomePage() {
                   className="inline-flex items-center gap-2 bg-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-700 transition-all transform hover:scale-105"
                 >
                   <span>✨</span>
-                  <span>Get Featured - $49</span>
+                  <span>Get Featured - $45</span>
                 </a>
               </div>
             </div>

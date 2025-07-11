@@ -8,6 +8,7 @@ import { toast } from 'sonner'
 import Header from '@/components/Header'
 import { Upload, Globe, FileText, Video, Save, Send, ArrowLeft, ArrowRight, Check, AlertCircle, Sparkles } from 'lucide-react'
 import Image from 'next/image'
+import { useLoginModal } from '@/contexts/LoginModalContext'
 
 interface ProductDraft {
   name: string
@@ -22,6 +23,7 @@ interface ProductDraft {
 export default function LaunchDashboard() {
   const { user } = useAuth()
   const router = useRouter()
+  const { openLoginModal } = useLoginModal()
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -119,7 +121,7 @@ export default function LaunchDashboard() {
   const handleSubmit = async () => {
     if (!user) {
       toast.error('Please sign in to submit a product')
-      router.push('/login')
+      openLoginModal('/launch')
       return
     }
     
@@ -200,7 +202,7 @@ export default function LaunchDashboard() {
                 </p>
               </div>
               <button
-                onClick={() => router.push('/login')}
+                onClick={() => openLoginModal('/launch')}
                 className="text-sm font-medium text-yellow-800 hover:text-yellow-900 underline"
               >
                 Sign In

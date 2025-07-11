@@ -10,11 +10,13 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Heart, ExternalLink, MessageCircle, Send, Tag, ArrowLeft, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
+import { useLoginModal } from '@/contexts/LoginModalContext'
 
 export default function ProductDetailPage() {
   const params = useParams()
   const productId = params.id as string
   const { user } = useAuth()
+  const { openLoginModal } = useLoginModal()
   
   const [product, setProduct] = useState<ProductWithVotes | null>(null)
   const [comments, setComments] = useState<CommentWithUser[]>([])
@@ -107,6 +109,7 @@ export default function ProductDetailPage() {
   const handleVote = async () => {
     if (!user) {
       toast.error('Please sign in to vote')
+      openLoginModal(`/product/${productId}`)
       return
     }
 
@@ -159,6 +162,7 @@ export default function ProductDetailPage() {
     
     if (!user) {
       toast.error('Please sign in to comment')
+      openLoginModal(`/product/${productId}`)
       return
     }
 
@@ -442,7 +446,7 @@ export default function ProductDetailPage() {
           ) : (
             <div className="text-center py-4 bg-[#F5F5F5] rounded-lg">
               <p className="text-[#666666]">
-                Please <Link href="/login" className="text-orange-600 hover:text-orange-700">sign in</Link> to comment
+                Please <button onClick={() => openLoginModal(`/product/${productId}`)} className="text-orange-600 hover:text-orange-700">sign in</button> to comment
               </p>
             </div>
           )}
