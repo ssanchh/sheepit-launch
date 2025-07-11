@@ -13,7 +13,10 @@ export const metadata: Metadata = {
   creator: 'Sheep It',
   publisher: 'Sheep It',
   icons: {
-    icon: '/favicon.ico',
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon.png', type: 'image/png' },
+    ],
     shortcut: '/favicon.ico',
     apple: '/assets/images/logo.png',
   },
