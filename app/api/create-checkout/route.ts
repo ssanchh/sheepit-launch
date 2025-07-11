@@ -18,6 +18,10 @@ export async function POST(request: NextRequest) {
     
     requireAuth(user)
     
+    if (!user) {
+      throw new ApiError('User not authenticated', 401, 'UNAUTHORIZED')
+    }
+    
     // Verify the product belongs to the user
     const { data: product, error: productError } = await supabase
       .from('products')
