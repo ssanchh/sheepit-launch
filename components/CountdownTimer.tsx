@@ -13,6 +13,7 @@ export default function CountdownTimer() {
   } | null>(null)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [hasTransitioned, setHasTransitioned] = useState(false)
+  const [isBeforeFirstLaunch, setIsBeforeFirstLaunch] = useState(true)
 
   const triggerWeekTransition = async () => {
     if (isTransitioning || hasTransitioned) return
@@ -51,6 +52,11 @@ export default function CountdownTimer() {
   }
 
   useEffect(() => {
+    // Check if we're before the first launch
+    const firstLaunch = new Date('2025-08-04T00:00:00')
+    const now = new Date()
+    setIsBeforeFirstLaunch(now < firstLaunch)
+    
     // Set initial time only on client
     try {
       setTimeLeft(getTimeUntilSunday())
@@ -98,6 +104,16 @@ export default function CountdownTimer() {
     )
   }
 
+  // Show special message before first launch
+  if (isBeforeFirstLaunch) {
+    return (
+      <div className="text-left">
+        <div className="text-xs text-orange-600 mb-1">First Launch</div>
+        <div className="text-sm font-semibold text-orange-600">Aug 4, 2025</div>
+      </div>
+    )
+  }
+  
   if (!timeLeft || typeof timeLeft !== 'object' || typeof timeLeft.days !== 'number') {
     return (
       <div className="text-left">

@@ -6,6 +6,7 @@ import CountdownTimer from '@/components/CountdownTimer'
 import ProductCard from '@/components/ProductCard'
 import SearchBar from '@/components/SearchBar'
 import NewsletterSignup from '@/components/NewsletterSignup'
+import FirstLaunchCountdown from '@/components/FirstLaunchCountdown'
 import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { ProductWithVotes } from '@/types/database'
@@ -143,6 +144,9 @@ export default function HomePage() {
           </p>
         </div>
 
+        {/* First Launch Announcement */}
+        <FirstLaunchCountdown />
+
         {/* Featured Product Section */}
         {featuredProduct ? (
           <div className="mb-10">
@@ -211,24 +215,26 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Stats Bar */}
-        <div className="bg-white rounded-xl border border-[#E5E5E5] p-4 mb-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-8">
-              <div>
-                <div className="text-2xl font-bold text-[#2D2D2D]">{products.length}</div>
-                <div className="text-sm text-[#666666]">Launching this week</div>
+        {/* Stats Bar - Only show after first launch */}
+        {products.length > 0 && (
+          <div className="bg-white rounded-xl border border-[#E5E5E5] p-4 mb-8">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-8">
+                <div>
+                  <div className="text-2xl font-bold text-[#2D2D2D]">{products.length}</div>
+                  <div className="text-sm text-[#666666]">Launching this week</div>
+                </div>
+                <div className="border-l border-[#E5E5E5] pl-8">
+                  <div className="text-2xl font-bold text-indigo-600">{products.reduce((sum, p) => sum + p.vote_count, 0)}</div>
+                  <div className="text-sm text-[#666666]">Total votes</div>
+                </div>
               </div>
-              <div className="border-l border-[#E5E5E5] pl-8">
-                <div className="text-2xl font-bold text-indigo-600">{products.reduce((sum, p) => sum + p.vote_count, 0)}</div>
-                <div className="text-sm text-[#666666]">Total votes</div>
+              <div className="text-right">
+                <CountdownTimer />
               </div>
-            </div>
-            <div className="text-right">
-              <CountdownTimer />
             </div>
           </div>
-        </div>
+        )}
 
 
         {/* Search Bar */}
@@ -241,14 +247,16 @@ export default function HomePage() {
         </div>
 
         {/* This Week's Launches */}
-        <div className="mb-4">
-          <h2 className="text-xl font-semibold text-[#2D2D2D]">
-            {searchQuery ? `Search results for "${searchQuery}"` : "This week's launches"}
-          </h2>
-          <p className="text-sm text-[#666666] mt-1">
-            {searchQuery ? `Found ${filteredProducts.length} products` : "Vote for your favorites • Top 3 win prizes"}
-          </p>
-        </div>
+        {products.length > 0 && (
+          <div className="mb-4">
+            <h2 className="text-xl font-semibold text-[#2D2D2D]">
+              {searchQuery ? `Search results for "${searchQuery}"` : "This week's launches"}
+            </h2>
+            <p className="text-sm text-[#666666] mt-1">
+              {searchQuery ? `Found ${filteredProducts.length} products` : "Vote for your favorites • Top 3 win prizes"}
+            </p>
+          </div>
+        )}
 
         {/* Products List */}
         <section>
@@ -276,14 +284,14 @@ export default function HomePage() {
             </div>
           ) : (
             <div className="bg-white rounded-xl border border-[#E5E5E5] p-16 text-center">
-              <div className="text-6xl mb-4">{searchQuery ? '🔍' : '📦'}</div>
+              <div className="text-6xl mb-4">{searchQuery ? '🔍' : '🚀'}</div>
               <h3 className="text-xl font-semibold text-[#2D2D2D] mb-2">
-                {searchQuery ? 'No products found' : 'No live products this week'}
+                {searchQuery ? 'No products found' : 'The queue is building!'}
               </h3>
               <p className="text-[#666666] mb-6">
                 {searchQuery 
                   ? `No products match "${searchQuery}". Try a different search term.`
-                  : 'The new week hasn\'t started yet or products are still in queue. Check back soon!'
+                  : 'Products are gathering in the queue for our inaugural launch on August 4th. Be part of the first batch!'
                 }
               </p>
               <div className="flex gap-3 justify-center">
