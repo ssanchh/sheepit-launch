@@ -193,28 +193,6 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Get Featured Banner */}
-        <div className="mb-8">
-          <div className="bg-[#2D2D2D] rounded-xl p-4 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="text-3xl">🚀</div>
-              <div>
-                <h4 className="text-white font-semibold">Get Featured</h4>
-                <p className="text-gray-300 text-sm">Premium visibility for your product. Limited spots available.</p>
-              </div>
-            </div>
-            <a 
-              href="/pricing"
-              className="bg-white text-[#2D2D2D] px-5 py-2.5 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center gap-2"
-            >
-              Learn More
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </a>
-          </div>
-        </div>
-
         {/* Stats Bar - Only show after first launch */}
         {products.length > 0 && (
           <div className="bg-white rounded-xl border border-[#E5E5E5] p-4 mb-8">
