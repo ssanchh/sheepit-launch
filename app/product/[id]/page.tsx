@@ -336,36 +336,17 @@ export default function ProductDetailPage() {
           </div>
         )}
 
-        {/* Featured Image */}
-        {product.featured_image_url && (
+        {/* Video */}
+        {product.video_url && (
           <div className="bg-white rounded-xl border border-[#E5E5E5] p-8 mb-8">
-            <Image
-              src={product.featured_image_url}
-              alt={`${product.name} screenshot`}
-              width={1200}
-              height={675}
-              className="w-full rounded-lg"
-            />
-          </div>
-        )}
-
-        {/* Screenshots Gallery */}
-        {product.screenshot_urls && product.screenshot_urls.length > 0 && (
-          <div className="bg-white rounded-xl border border-[#E5E5E5] p-8 mb-8">
-            <h2 className="text-lg font-semibold text-[#2D2D2D] mb-4">Screenshots</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {product.screenshot_urls.map((url, index) => (
-                <div key={index} className="relative group cursor-pointer">
-                  <Image
-                    src={url}
-                    alt={`${product.name} screenshot ${index + 1}`}
-                    width={400}
-                    height={225}
-                    className="w-full rounded-lg border border-[#E5E5E5] hover:border-[#D5D5D5] transition-all"
-                  />
-                  <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-all rounded-lg"></div>
-                </div>
-              ))}
+            <h2 className="text-lg font-semibold text-[#2D2D2D] mb-4">Demo Video</h2>
+            <div className="relative" style={{ paddingBottom: '56.25%' }}>
+              <iframe
+                src={product.video_url}
+                title={`${product.name} demo video`}
+                className="absolute inset-0 w-full h-full rounded-lg"
+                allowFullScreen
+              />
             </div>
           </div>
         )}
