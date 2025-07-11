@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
       .select(`
         name,
         created_by,
-        users!created_by (
+        users:users!created_by (
           email,
           first_name
         )
@@ -57,23 +57,27 @@ export async function POST(request: NextRequest) {
       .single()
 
     // Send email notification if it's not the owner commenting on their own product
-    if (product && product.created_by !== user.id && product.users?.email) {
-      const commenterName = commenter?.handle 
-        ? `@${commenter.handle}`
-        : commenter?.first_name 
-        ? `${commenter.first_name}${commenter.last_name ? ' ' + commenter.last_name : ''}`
-        : 'Someone'
+    if (product && product.created_by !== user.id) {
+      const productOwner = Array.isArray(product.users) ? product.users[0] : product.users
+      
+      if (productOwner?.email) {
+        const commenterName = commenter?.handle 
+          ? `@${commenter.handle}`
+          : commenter?.first_name 
+          ? `${commenter.first_name}${commenter.last_name ? ' ' + commenter.last_name : ''}`
+          : 'Someone'
 
-      // Send notification in the background (don't wait for it)
-      sendNewCommentEmail(
-        product.created_by,
-        product.name,
-        productId,
-        commenterName,
-        content
-      ).catch(error => {
-        console.error('Failed to send comment notification:', error)
-      })
+        // Send notification in the background (don't wait for it)
+        sendNewCommentEmail(
+          product.created_by,
+          product.name,
+          productId,
+          commenterName,
+          content
+        ).catch(error => {
+          console.error('Failed to send comment notification:', error)
+        })
+      }
     }
 
     return NextResponse.json({ success: true, comment })
