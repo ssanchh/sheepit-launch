@@ -296,18 +296,6 @@ export default function ProductDetailPage() {
               
               <div className="flex items-center gap-4 text-sm">
                 <span className="text-[#999999]">by {creatorName}</span>
-                {product.categories && product.categories.length > 0 && (
-                  <div className="flex items-center gap-1.5">
-                    <Tag className="w-3.5 h-3.5 text-[#999999]" />
-                    <div className="flex gap-1">
-                      {product.categories.map((category) => (
-                        <span key={category} className="px-2 py-0.5 bg-[#F5F5F5] rounded text-xs text-[#666666]">
-                          {category}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
 
               {/* Action Buttons */}
