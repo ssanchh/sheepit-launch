@@ -248,9 +248,6 @@ export default function PastLaunchesPage() {
                                   <p className="text-sm text-[#666666] mb-1">{product.tagline}</p>
                                   <div className="flex items-center gap-3 text-xs text-[#999999]">
                                     <span>by {creatorName(product.users)}</span>
-                                    {product.categories && product.categories.length > 0 && (
-                                      <span>• {product.categories[0]}</span>
-                                    )}
                                   </div>
                                 </div>
 
