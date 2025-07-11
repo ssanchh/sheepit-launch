@@ -1,7 +1,6 @@
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
-import { Shield, Eye, Database, Lock, Users, Globe, Mail, FileText, Cookie } from 'lucide-react'
 
 export default function PrivacyPolicy() {
   return (
@@ -9,424 +8,257 @@ export default function PrivacyPolicy() {
       <Header />
       
       <main className="max-w-4xl mx-auto px-6 py-12 flex-1">
-        {/* Header Section */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#2D2D2D] rounded-full mb-4">
-            <Eye className="w-8 h-8 text-white" />
-          </div>
+        <div className="mb-12">
           <h1 className="text-3xl font-medium text-[#2D2D2D] mb-3">Privacy Policy</h1>
           <p className="text-sm text-[#999999]">
             Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
           </p>
         </div>
 
-        {/* Privacy Highlights */}
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-6 mb-12">
-          <h2 className="text-lg font-medium text-[#2D2D2D] mb-4">Privacy at a Glance</h2>
-          <div className="grid md:grid-cols-3 gap-4">
-            <div className="flex items-start gap-3">
-              <Database className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-              <div>
-                <h3 className="font-medium text-sm text-[#2D2D2D] mb-1">Minimal Data</h3>
-                <p className="text-xs text-[#666666]">We only collect what's necessary</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Lock className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-              <div>
-                <h3 className="font-medium text-sm text-[#2D2D2D] mb-1">Secure Storage</h3>
-                <p className="text-xs text-[#666666]">Your data is encrypted and protected</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Users className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-              <div>
-                <h3 className="font-medium text-sm text-[#2D2D2D] mb-1">Your Control</h3>
-                <p className="text-xs text-[#666666]">Access, update, or delete anytime</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div className="prose prose-gray max-w-none">
+          <section className="mb-12">
+            <h2 className="text-2xl font-medium text-[#2D2D2D] mb-4">1. Introduction</h2>
+            <p className="text-[#666666] leading-relaxed mb-4">
+              Sheep It ("we", "us", "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, 
+              use, disclose, and safeguard your information when you use our website and services at sheepit.io (the "Service").
+            </p>
+            <p className="text-[#666666] leading-relaxed">
+              By using our Service, you consent to the data practices described in this policy. If you do not agree with the 
+              terms of this Privacy Policy, please do not access the Service.
+            </p>
+          </section>
 
-        {/* Content Sections */}
-        <div className="space-y-12">
-          {/* Introduction */}
-          <section>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
-                <Shield className="w-5 h-5 text-[#666666]" />
-              </div>
-              <h2 className="text-2xl font-medium text-[#2D2D2D]">1. Our Commitment</h2>
-            </div>
+          <section className="mb-12">
+            <h2 className="text-2xl font-medium text-[#2D2D2D] mb-4">2. Information We Collect</h2>
             
+            <h3 className="text-xl font-medium text-[#2D2D2D] mb-3">2.1 Information You Provide</h3>
+            <p className="text-[#666666] leading-relaxed mb-3">We collect information you provide directly to us, including:</p>
+            <ul className="list-disc ml-6 space-y-2 text-[#666666] mb-6">
+              <li><strong>Account Information:</strong> Email address, name, username, and profile information</li>
+              <li><strong>Product Information:</strong> Product names, descriptions, URLs, logos, and other product details</li>
+              <li><strong>Payment Information:</strong> Processed through our third-party payment providers (we do not store credit card details)</li>
+              <li><strong>Communications:</strong> Information in emails or messages you send us</li>
+              <li><strong>User Content:</strong> Comments, votes, and other interactions with the Service</li>
+            </ul>
+
+            <h3 className="text-xl font-medium text-[#2D2D2D] mb-3">2.2 Information Collected Automatically</h3>
+            <p className="text-[#666666] leading-relaxed mb-3">When you use our Service, we automatically collect certain information, including:</p>
+            <ul className="list-disc ml-6 space-y-2 text-[#666666] mb-6">
+              <li><strong>Usage Data:</strong> Pages viewed, links clicked, features used, and time spent on pages</li>
+              <li><strong>Device Information:</strong> IP address, browser type, operating system, and device identifiers</li>
+              <li><strong>Cookies and Similar Technologies:</strong> We use cookies to enhance user experience and analyze usage</li>
+              <li><strong>Log Data:</strong> Server logs that record access times, referring URLs, and error reports</li>
+            </ul>
+
+            <h3 className="text-xl font-medium text-[#2D2D2D] mb-3">2.3 Information from Third Parties</h3>
+            <p className="text-[#666666] leading-relaxed mb-3">We may receive information about you from:</p>
+            <ul className="list-disc ml-6 space-y-2 text-[#666666]">
+              <li><strong>OAuth Providers:</strong> When you sign in using Google or other authentication services</li>
+              <li><strong>Analytics Services:</strong> Aggregated demographic and interest data</li>
+              <li><strong>Public Sources:</strong> Publicly available information about products and makers</li>
+            </ul>
+          </section>
+
+          <section className="mb-12">
+            <h2 className="text-2xl font-medium text-[#2D2D2D] mb-4">3. How We Use Your Information</h2>
+            <p className="text-[#666666] leading-relaxed mb-3">We use the information we collect to:</p>
+            <ul className="list-disc ml-6 space-y-2 text-[#666666]">
+              <li>Provide, maintain, and improve our Service</li>
+              <li>Process product submissions and manage the weekly launch cycles</li>
+              <li>Send you newsletters (with your consent) featuring weekly winners</li>
+              <li>Process payments and prevent fraudulent transactions</li>
+              <li>Respond to your comments, questions, and customer service requests</li>
+              <li>Send you technical notices, updates, and security alerts</li>
+              <li>Monitor and analyze trends, usage, and activities</li>
+              <li>Personalize and improve your experience</li>
+              <li>Comply with legal obligations and enforce our Terms of Service</li>
+            </ul>
+          </section>
+
+          <section className="mb-12">
+            <h2 className="text-2xl font-medium text-[#2D2D2D] mb-4">4. How We Share Your Information</h2>
+
+            <h3 className="text-xl font-medium text-[#2D2D2D] mb-3">4.1 Public Information</h3>
+            <p className="text-[#666666] leading-relaxed mb-6">
+              Product information you submit (name, description, logo, website) is publicly visible on our platform. 
+              Your profile information may also be publicly visible based on your settings.
+            </p>
+
+            <h3 className="text-xl font-medium text-[#2D2D2D] mb-3">4.2 Newsletter Partners</h3>
+            <p className="text-[#666666] leading-relaxed mb-6">
+              If your product wins, we share product information with our newsletter partners (50,000+ subscribers) 
+              for promotional purposes.
+            </p>
+
+            <h3 className="text-xl font-medium text-[#2D2D2D] mb-3">4.3 Service Providers</h3>
+            <p className="text-[#666666] leading-relaxed mb-3">We share information with third-party vendors who perform services for us:</p>
+            <ul className="list-disc ml-6 space-y-2 text-[#666666] mb-6">
+              <li>Supabase (database and authentication)</li>
+              <li>Payment processors (Stripe/LemonSqueezy)</li>
+              <li>Email service providers (Resend)</li>
+              <li>Analytics providers</li>
+              <li>Cloud storage services</li>
+            </ul>
+
+            <h3 className="text-xl font-medium text-[#2D2D2D] mb-3">4.4 Legal Requirements</h3>
+            <p className="text-[#666666] leading-relaxed mb-3">We may disclose information if required to do so by law or if we believe such action is necessary to:</p>
+            <ul className="list-disc ml-6 space-y-2 text-[#666666] mb-6">
+              <li>Comply with legal obligations or respond to lawful requests</li>
+              <li>Protect and defend our rights or property</li>
+              <li>Prevent fraud or protect against security risks</li>
+              <li>Protect the safety of users or the public</li>
+            </ul>
+
+            <h3 className="text-xl font-medium text-[#2D2D2D] mb-3">4.5 Business Transfers</h3>
+            <p className="text-[#666666] leading-relaxed">
+              In the event of a merger, acquisition, or sale of assets, your information may be transferred as part 
+              of that transaction. We will notify you via email and/or prominent notice on our Service of any change 
+              in ownership or uses of your personal information.
+            </p>
+          </section>
+
+          <section className="mb-12">
+            <h2 className="text-2xl font-medium text-[#2D2D2D] mb-4">5. Data Retention</h2>
+            <p className="text-[#666666] leading-relaxed mb-3">We retain your information for as long as necessary to:</p>
+            <ul className="list-disc ml-6 space-y-2 text-[#666666] mb-4">
+              <li>Provide our services to you</li>
+              <li>Comply with legal obligations</li>
+              <li>Resolve disputes and enforce agreements</li>
+              <li>Maintain business records for analysis and/or audit purposes</li>
+            </ul>
+            <p className="text-[#666666] leading-relaxed">
+              When we no longer need your information, we will securely delete or anonymize it in accordance with 
+              our data retention policies.
+            </p>
+          </section>
+
+          <section className="mb-12">
+            <h2 className="text-2xl font-medium text-[#2D2D2D] mb-4">6. Data Security</h2>
+            <p className="text-[#666666] leading-relaxed mb-3">
+              We implement appropriate technical and organizational measures to protect your personal information against 
+              unauthorized access, alteration, disclosure, or destruction. These measures include:
+            </p>
+            <ul className="list-disc ml-6 space-y-2 text-[#666666] mb-4">
+              <li>Encryption of data in transit and at rest</li>
+              <li>Regular security assessments and updates</li>
+              <li>Access controls and authentication requirements</li>
+              <li>Employee training on data protection</li>
+              <li>Incident response procedures</li>
+            </ul>
+            <p className="text-[#666666] leading-relaxed">
+              However, no method of transmission over the Internet or electronic storage is 100% secure. While we strive 
+              to protect your information, we cannot guarantee absolute security.
+            </p>
+          </section>
+
+          <section className="mb-12">
+            <h2 className="text-2xl font-medium text-[#2D2D2D] mb-4">7. Your Rights and Choices</h2>
+            
+            <h3 className="text-xl font-medium text-[#2D2D2D] mb-3">7.1 Access and Update</h3>
+            <p className="text-[#666666] leading-relaxed mb-6">
+              You can access and update your account information through your dashboard. You may also request a copy 
+              of your personal data by contacting us.
+            </p>
+
+            <h3 className="text-xl font-medium text-[#2D2D2D] mb-3">7.2 Email Communications</h3>
+            <p className="text-[#666666] leading-relaxed mb-6">
+              You can opt out of promotional emails by clicking the unsubscribe link in any email or updating your 
+              email preferences in your account settings. Note that you may still receive transactional emails.
+            </p>
+
+            <h3 className="text-xl font-medium text-[#2D2D2D] mb-3">7.3 Cookies</h3>
+            <p className="text-[#666666] leading-relaxed mb-6">
+              Most browsers allow you to refuse or delete cookies. Please note that disabling cookies may limit your 
+              ability to use certain features of our Service.
+            </p>
+
+            <h3 className="text-xl font-medium text-[#2D2D2D] mb-3">7.4 Data Deletion</h3>
+            <p className="text-[#666666] leading-relaxed mb-6">
+              You can request deletion of your account and personal data by contacting us. We will delete your information 
+              except where we need to retain it for legal or legitimate business purposes.
+            </p>
+
+            <h3 className="text-xl font-medium text-[#2D2D2D] mb-3">7.5 Data Portability</h3>
+            <p className="text-[#666666] leading-relaxed">
+              You have the right to request your data in a structured, commonly used, and machine-readable format.
+            </p>
+          </section>
+
+          <section className="mb-12">
+            <h2 className="text-2xl font-medium text-[#2D2D2D] mb-4">8. International Data Transfers</h2>
+            <p className="text-[#666666] leading-relaxed">
+              Your information may be transferred to and processed in countries other than your country of residence. 
+              These countries may have data protection laws different from those in your country. We take appropriate 
+              safeguards to ensure your information remains protected in accordance with this Privacy Policy.
+            </p>
+          </section>
+
+          <section className="mb-12">
+            <h2 className="text-2xl font-medium text-[#2D2D2D] mb-4">9. Children's Privacy</h2>
+            <p className="text-[#666666] leading-relaxed">
+              Our Service is not intended for children under 18 years of age. We do not knowingly collect personal 
+              information from children under 18. If we learn we have collected information from a child under 18, 
+              we will delete that information promptly.
+            </p>
+          </section>
+
+          <section className="mb-12">
+            <h2 className="text-2xl font-medium text-[#2D2D2D] mb-4">10. California Privacy Rights</h2>
+            <p className="text-[#666666] leading-relaxed mb-3">
+              If you are a California resident, you have additional rights under the California Consumer Privacy Act (CCPA):
+            </p>
+            <ul className="list-disc ml-6 space-y-2 text-[#666666] mb-4">
+              <li>Right to know what personal information we collect, use, and share</li>
+              <li>Right to delete personal information (with some exceptions)</li>
+              <li>Right to opt-out of the sale of personal information (we do not sell personal information)</li>
+              <li>Right to non-discrimination for exercising your privacy rights</li>
+            </ul>
+            <p className="text-[#666666] leading-relaxed">To exercise these rights, please contact us using the information below.</p>
+          </section>
+
+          <section className="mb-12">
+            <h2 className="text-2xl font-medium text-[#2D2D2D] mb-4">11. European Privacy Rights</h2>
+            <p className="text-[#666666] leading-relaxed mb-3">
+              If you are located in the European Economic Area (EEA) or United Kingdom, you have additional rights under 
+              the General Data Protection Regulation (GDPR):
+            </p>
+            <ul className="list-disc ml-6 space-y-2 text-[#666666] mb-4">
+              <li>Right to access your personal data</li>
+              <li>Right to rectification of inaccurate data</li>
+              <li>Right to erasure ("right to be forgotten")</li>
+              <li>Right to restrict processing</li>
+              <li>Right to data portability</li>
+              <li>Right to object to processing</li>
+              <li>Right to withdraw consent</li>
+            </ul>
+            <p className="text-[#666666] leading-relaxed">
+              Our legal basis for processing your information is typically your consent, contract performance, or 
+              legitimate interests.
+            </p>
+          </section>
+
+          <section className="mb-12">
+            <h2 className="text-2xl font-medium text-[#2D2D2D] mb-4">12. Changes to This Privacy Policy</h2>
+            <p className="text-[#666666] leading-relaxed">
+              We may update this Privacy Policy from time to time. We will notify you of material changes by posting 
+              the new Privacy Policy on this page and updating the "Last Updated" date. We encourage you to review 
+              this Privacy Policy periodically.
+            </p>
+          </section>
+
+          <section className="mb-12">
+            <h2 className="text-2xl font-medium text-[#2D2D2D] mb-4">13. Contact Us</h2>
+            <p className="text-[#666666] leading-relaxed mb-4">
+              If you have questions about this Privacy Policy or our privacy practices, please contact us:
+            </p>
             <div className="bg-white rounded-xl border border-[#E5E5E5] p-6">
-              <p className="text-[#666666] mb-4">
-                At Sheep It, we take your privacy seriously. This policy explains how we handle your personal information 
-                when you use our platform at sheepit.io.
+              <p className="font-medium text-[#2D2D2D]">Sheep It Privacy Team</p>
+              <p className="text-[#666666]">Email: santiago@sheepit.io</p>
+              <p className="text-[#666666]">Website: https://sheepit.io</p>
+              <p className="text-[#666666] mt-4">
+                For data protection inquiries or to exercise your rights, please email us with "Privacy Request" in the 
+                subject line. We will respond to your request within 30 days.
               </p>
-              <div className="bg-[#F5F5F5] rounded-lg p-4">
-                <p className="text-sm text-[#666666]">
-                  <strong className="text-[#2D2D2D]">In short:</strong> We collect only what we need, protect it carefully, 
-                  and give you control over your data.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {/* What We Collect */}
-          <section>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
-                <Database className="w-5 h-5 text-[#666666]" />
-              </div>
-              <h2 className="text-2xl font-medium text-[#2D2D2D]">2. Information We Collect</h2>
-            </div>
-
-            <div className="space-y-6">
-              {/* Information You Provide */}
-              <div className="bg-white rounded-xl border border-[#E5E5E5] p-6">
-                <h3 className="font-medium text-[#2D2D2D] mb-4">Information You Provide</h3>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-2">
-                      <span className="text-orange-600 mt-1">•</span>
-                      <div>
-                        <p className="text-sm font-medium text-[#2D2D2D]">Account Info</p>
-                        <p className="text-xs text-[#999999]">Email, name, profile details</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <span className="text-orange-600 mt-1">•</span>
-                      <div>
-                        <p className="text-sm font-medium text-[#2D2D2D]">Product Data</p>
-                        <p className="text-xs text-[#999999]">Names, descriptions, logos</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-2">
-                      <span className="text-orange-600 mt-1">•</span>
-                      <div>
-                        <p className="text-sm font-medium text-[#2D2D2D]">Payments</p>
-                        <p className="text-xs text-[#999999]">Via secure third-party processors</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <span className="text-orange-600 mt-1">•</span>
-                      <div>
-                        <p className="text-sm font-medium text-[#2D2D2D]">Communications</p>
-                        <p className="text-xs text-[#999999]">Support emails, feedback</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Automatic Collection */}
-              <div className="bg-[#FFF9F5] rounded-xl border border-[#FFE5D3] p-6">
-                <h3 className="font-medium text-[#2D2D2D] mb-4">Collected Automatically</h3>
-                <div className="space-y-2 text-sm text-[#666666]">
-                  <div className="flex items-center gap-2">
-                    <Globe className="w-4 h-4 text-[#999999]" />
-                    <span>Basic usage data (pages viewed, features used)</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Cookie className="w-4 h-4 text-[#999999]" />
-                    <span>Cookies for authentication and preferences</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-[#999999]" />
-                    <span>Technical logs for security and performance</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* How We Use It */}
-          <section>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
-                <Users className="w-5 h-5 text-[#666666]" />
-              </div>
-              <h2 className="text-2xl font-medium text-[#2D2D2D]">3. How We Use Your Information</h2>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-white rounded-xl border border-[#E5E5E5] p-6">
-                <h3 className="font-medium text-[#2D2D2D] mb-3">Core Services</h3>
-                <ul className="space-y-2 text-sm text-[#666666]">
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-600 mt-0.5">✓</span>
-                    <span>Process product submissions</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-600 mt-0.5">✓</span>
-                    <span>Manage weekly launch cycles</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-600 mt-0.5">✓</span>
-                    <span>Send winner newsletters</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-600 mt-0.5">✓</span>
-                    <span>Process payments securely</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="bg-white rounded-xl border border-[#E5E5E5] p-6">
-                <h3 className="font-medium text-[#2D2D2D] mb-3">Improvements</h3>
-                <ul className="space-y-2 text-sm text-[#666666]">
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-600 mt-0.5">✓</span>
-                    <span>Enhance user experience</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-600 mt-0.5">✓</span>
-                    <span>Analyze usage patterns</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-600 mt-0.5">✓</span>
-                    <span>Prevent fraud & abuse</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-600 mt-0.5">✓</span>
-                    <span>Customer support</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </section>
-
-          {/* Sharing Information */}
-          <section>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
-                <Users className="w-5 h-5 text-[#666666]" />
-              </div>
-              <h2 className="text-2xl font-medium text-[#2D2D2D]">4. How We Share Information</h2>
-            </div>
-
-            <div className="space-y-6">
-              {/* Public Information */}
-              <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200 p-6">
-                <h3 className="font-medium text-[#2D2D2D] mb-3">Publicly Visible</h3>
-                <p className="text-sm text-[#666666] mb-3">
-                  Product submissions are public by design. This includes:
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {['Product name', 'Description', 'Logo', 'Website', 'Maker name'].map((item) => (
-                    <span key={item} className="px-3 py-1 bg-white text-xs text-[#666666] rounded-full border border-green-200">
-                      {item}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Service Providers */}
-              <div className="bg-white rounded-xl border border-[#E5E5E5] p-6">
-                <h3 className="font-medium text-[#2D2D2D] mb-4">Trusted Service Providers</h3>
-                <div className="grid md:grid-cols-2 gap-4 text-sm">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-[#666666]">
-                      <span className="font-medium">Supabase:</span> Database & Auth
-                    </div>
-                    <div className="flex items-center gap-2 text-[#666666]">
-                      <span className="font-medium">Stripe:</span> Payments
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-[#666666]">
-                      <span className="font-medium">Resend:</span> Emails
-                    </div>
-                    <div className="flex items-center gap-2 text-[#666666]">
-                      <span className="font-medium">Vercel:</span> Hosting
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Important Note */}
-              <div className="bg-red-50 rounded-xl border border-red-200 p-4">
-                <p className="text-sm text-red-700">
-                  <strong>We never sell your personal data.</strong> Period.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {/* Your Rights */}
-          <section>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
-                <Shield className="w-5 h-5 text-[#666666]" />
-              </div>
-              <h2 className="text-2xl font-medium text-[#2D2D2D]">5. Your Rights & Choices</h2>
-            </div>
-
-            <div className="bg-white rounded-xl border border-[#E5E5E5] overflow-hidden">
-              <div className="p-6">
-                <h3 className="font-medium text-[#2D2D2D] mb-4">You Have Control</h3>
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-blue-600 text-sm">→</span>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-[#2D2D2D]">Access Your Data</p>
-                      <p className="text-xs text-[#999999]">Request a copy anytime</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-blue-600 text-sm">→</span>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-[#2D2D2D]">Update Information</p>
-                      <p className="text-xs text-[#999999]">Edit via your dashboard</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-blue-600 text-sm">→</span>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-[#2D2D2D]">Delete Account</p>
-                      <p className="text-xs text-[#999999]">Remove all your data</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-blue-600 text-sm">→</span>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-[#2D2D2D]">Opt Out</p>
-                      <p className="text-xs text-[#999999]">Unsubscribe from emails</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-[#F5F5F5] border-t border-[#E5E5E5] p-4">
-                <p className="text-xs text-[#666666]">
-                  <strong>GDPR & CCPA:</strong> We comply with privacy regulations. Email us for specific requests.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {/* Data Security */}
-          <section>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
-                <Lock className="w-5 h-5 text-[#666666]" />
-              </div>
-              <h2 className="text-2xl font-medium text-[#2D2D2D]">6. Data Security</h2>
-            </div>
-
-            <div className="bg-white rounded-xl border border-[#E5E5E5] p-6">
-              <p className="text-[#666666] mb-4">
-                We implement industry-standard security measures:
-              </p>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="flex items-center gap-3 text-sm text-[#666666]">
-                  <Lock className="w-4 h-4 text-green-600" />
-                  <span>Encryption at rest and in transit</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm text-[#666666]">
-                  <Shield className="w-4 h-4 text-green-600" />
-                  <span>Regular security audits</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm text-[#666666]">
-                  <Users className="w-4 h-4 text-green-600" />
-                  <span>Access controls & authentication</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm text-[#666666]">
-                  <Database className="w-4 h-4 text-green-600" />
-                  <span>Secure data backups</span>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Children's Privacy */}
-          <section>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
-                <Users className="w-5 h-5 text-[#666666]" />
-              </div>
-              <h2 className="text-2xl font-medium text-[#2D2D2D]">7. Age Requirement</h2>
-            </div>
-
-            <div className="bg-amber-50 rounded-xl border border-amber-200 p-6">
-              <p className="text-[#666666]">
-                Sheep It is for users <strong className="text-[#2D2D2D]">18 years and older</strong>. 
-                We don't knowingly collect data from children.
-              </p>
-            </div>
-          </section>
-
-          {/* Updates */}
-          <section>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
-                <FileText className="w-5 h-5 text-[#666666]" />
-              </div>
-              <h2 className="text-2xl font-medium text-[#2D2D2D]">8. Policy Updates</h2>
-            </div>
-
-            <div className="bg-white rounded-xl border border-[#E5E5E5] p-6">
-              <p className="text-[#666666] mb-3">
-                We may update this policy occasionally. When we do:
-              </p>
-              <ul className="space-y-2 text-sm text-[#666666]">
-                <li className="flex items-center gap-2">
-                  <span className="text-orange-600">→</span>
-                  We'll update the date at the top
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-orange-600">→</span>
-                  For major changes, we'll email you
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-orange-600">→</span>
-                  Continued use means acceptance
-                </li>
-              </ul>
-            </div>
-          </section>
-
-          {/* Contact */}
-          <section>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
-                <Mail className="w-5 h-5 text-[#666666]" />
-              </div>
-              <h2 className="text-2xl font-medium text-[#2D2D2D]">9. Contact Us</h2>
-            </div>
-
-            <div className="bg-[#2D2D2D] text-white rounded-xl p-8">
-              <h3 className="text-lg font-medium mb-4">Privacy Questions?</h3>
-              <p className="text-gray-300 mb-4">
-                We're here to help with any privacy concerns or requests.
-              </p>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <Mail className="w-5 h-5 text-gray-400" />
-                  <a href="mailto:santiago@sheepit.io" className="hover:text-orange-400 transition-colors">
-                    santiago@sheepit.io
-                  </a>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">🐑</span>
-                  <span className="text-gray-400">Sheep It Privacy Team</span>
-                </div>
-              </div>
-              <div className="mt-6 pt-6 border-t border-gray-700">
-                <p className="text-sm text-gray-400">
-                  For privacy-specific requests, please include "Privacy Request" in your email subject.
-                </p>
-              </div>
             </div>
           </section>
         </div>

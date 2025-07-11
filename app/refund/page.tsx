@@ -1,7 +1,6 @@
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
-import { AlertCircle, CheckCircle, XCircle, Clock, Mail, Zap, Crown, CreditCard, FileText } from 'lucide-react'
 
 export default function RefundPolicy() {
   return (
@@ -9,308 +8,161 @@ export default function RefundPolicy() {
       <Header />
       
       <main className="max-w-4xl mx-auto px-6 py-12 flex-1">
-        {/* Header Section */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#2D2D2D] rounded-full mb-4">
-            <CreditCard className="w-8 h-8 text-white" />
-          </div>
+        <div className="mb-12">
           <h1 className="text-3xl font-medium text-[#2D2D2D] mb-3">Refund Policy</h1>
           <p className="text-sm text-[#999999]">
             Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
           </p>
         </div>
 
-        {/* Quick Summary */}
-        <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-200 p-6 mb-12">
-          <h2 className="text-lg font-medium text-[#2D2D2D] mb-4">30-Second Summary</h2>
-          <div className="grid md:grid-cols-3 gap-4 text-sm">
-            <div className="flex items-start gap-3">
-              <Clock className="w-5 h-5 text-orange-600 mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="font-medium text-[#2D2D2D]">14-Day Window</p>
-                <p className="text-xs text-[#666666]">Request within 14 days</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <CheckCircle className="w-5 h-5 text-orange-600 mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="font-medium text-[#2D2D2D]">Fair Policy</p>
-                <p className="text-xs text-[#666666]">Full refunds if we fail</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Mail className="w-5 h-5 text-orange-600 mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="font-medium text-[#2D2D2D]">Quick Response</p>
-                <p className="text-xs text-[#666666]">3-5 business days</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div className="prose prose-gray max-w-none">
+          <section className="mb-12">
+            <h2 className="text-2xl font-medium text-[#2D2D2D] mb-4">Our Commitment</h2>
+            <p className="text-[#666666] leading-relaxed">
+              At Sheep It, we strive to provide valuable services to help indie makers launch their products. 
+              We understand that sometimes things don't work out as expected, and we've created this refund 
+              policy to be fair to both our customers and our business.
+            </p>
+          </section>
 
-        {/* Content Sections */}
-        <div className="space-y-12">
-          {/* Our Promise */}
-          <section>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
-                <AlertCircle className="w-5 h-5 text-[#666666]" />
-              </div>
-              <h2 className="text-2xl font-medium text-[#2D2D2D]">Our Promise</h2>
-            </div>
+          <section className="mb-12">
+            <h2 className="text-2xl font-medium text-[#2D2D2D] mb-4">1. Overview</h2>
+            <p className="text-[#666666] leading-relaxed mb-3">
+              This Refund Policy applies to all premium services purchased on Sheep It, including but not limited to:
+            </p>
+            <ul className="list-disc ml-6 space-y-2 text-[#666666]">
+              <li>Queue Skip (Premium Launch) services - $35</li>
+              <li>Featured Product placements - $49</li>
+              <li>Any other paid promotional services</li>
+            </ul>
+          </section>
+
+          <section className="mb-12">
+            <h2 className="text-2xl font-medium text-[#2D2D2D] mb-4">2. Refund Eligibility</h2>
             
+            <h3 className="text-xl font-medium text-[#2D2D2D] mb-3">2.1 Eligible for Refund</h3>
+            <p className="text-[#666666] leading-relaxed mb-3">You may be eligible for a refund in these circumstances:</p>
+            <ul className="list-disc ml-6 space-y-2 text-[#666666] mb-6">
+              <li><strong>Service Not Delivered:</strong> If we fail to deliver the purchased service within the promised timeframe</li>
+              <li><strong>Technical Errors:</strong> If a technical error on our platform prevented service delivery</li>
+              <li><strong>Duplicate Charges:</strong> If you were accidentally charged multiple times for the same service</li>
+              <li><strong>Pre-Service Cancellation:</strong> If you cancel before we begin processing your premium service</li>
+              <li><strong>Rejection After Purchase:</strong> If your product is rejected during our review process after purchasing a premium service</li>
+            </ul>
+
+            <h3 className="text-xl font-medium text-[#2D2D2D] mb-3">2.2 Not Eligible for Refund</h3>
+            <p className="text-[#666666] leading-relaxed mb-3">Refunds are generally not available in these situations:</p>
+            <ul className="list-disc ml-6 space-y-2 text-[#666666]">
+              <li><strong>Service Delivered:</strong> Once your product has been featured or moved up in the queue as promised</li>
+              <li><strong>Performance Expectations:</strong> If the service didn't meet your personal expectations for votes, traffic, or conversions</li>
+              <li><strong>Change of Mind:</strong> If you simply changed your mind after the service was initiated</li>
+              <li><strong>Violation of Terms:</strong> If your account or product violated our Terms of Service</li>
+              <li><strong>External Factors:</strong> Issues outside our control (e.g., your website being down during feature period)</li>
+            </ul>
+          </section>
+
+          <section className="mb-12">
+            <h2 className="text-2xl font-medium text-[#2D2D2D] mb-4">3. Refund Process</h2>
+            
+            <h3 className="text-xl font-medium text-[#2D2D2D] mb-3">3.1 How to Request a Refund</h3>
+            <ol className="list-decimal ml-6 space-y-2 text-[#666666] mb-6">
+              <li><strong>Submit Request:</strong> Email us at santiago@sheepit.io within 14 days of purchase</li>
+              <li><strong>Include Details:</strong> Provide your order number, email address used for purchase, and reason for refund</li>
+              <li><strong>Wait for Review:</strong> We'll review your request within 3-5 business days</li>
+              <li><strong>Receive Decision:</strong> We'll email you our decision and next steps</li>
+              <li><strong>Refund Processing:</strong> If approved, refunds are processed within 5-10 business days</li>
+            </ol>
+
+            <h3 className="text-xl font-medium text-[#2D2D2D] mb-3">3.2 Important Notes</h3>
+            <ul className="list-disc ml-6 space-y-2 text-[#666666]">
+              <li>Refunds are issued to the original payment method</li>
+              <li>Processing times may vary depending on your bank or payment provider</li>
+              <li>Partial refunds may be offered in certain circumstances</li>
+            </ul>
+          </section>
+
+          <section className="mb-12">
+            <h2 className="text-2xl font-medium text-[#2D2D2D] mb-4">4. Special Circumstances</h2>
+            
+            <h3 className="text-xl font-medium text-[#2D2D2D] mb-3">4.1 Queue Skip Service</h3>
+            <p className="text-[#666666] leading-relaxed mb-3">For Queue Skip purchases:</p>
+            <ul className="list-disc ml-6 space-y-2 text-[#666666] mb-6">
+              <li>Refunds are available if requested before we move your product in the queue</li>
+              <li>Once your product has been moved up, the service is considered delivered</li>
+              <li>If your product launches in the accelerated timeframe, no refund is available</li>
+            </ul>
+
+            <h3 className="text-xl font-medium text-[#2D2D2D] mb-3">4.2 Featured Product Service</h3>
+            <p className="text-[#666666] leading-relaxed mb-3">For Featured Product purchases:</p>
+            <ul className="list-disc ml-6 space-y-2 text-[#666666] mb-6">
+              <li>Refunds are available if requested before the featuring period begins</li>
+              <li>Once your product appears as featured on our homepage, the service is considered delivered</li>
+              <li>The full 7-day feature period must be honored once started</li>
+            </ul>
+
+            <h3 className="text-xl font-medium text-[#2D2D2D] mb-3">4.3 Product Rejection</h3>
+            <p className="text-[#666666] leading-relaxed">
+              If your product is rejected after purchasing a premium service, you will receive a full refund automatically. 
+              We'll also provide feedback on why the product was rejected to help you improve future submissions.
+            </p>
+          </section>
+
+          <section className="mb-12">
+            <h2 className="text-2xl font-medium text-[#2D2D2D] mb-4">5. Dispute Resolution</h2>
+            <p className="text-[#666666] leading-relaxed mb-3">
+              If you disagree with our refund decision:
+            </p>
+            <ol className="list-decimal ml-6 space-y-2 text-[#666666] mb-4">
+              <li>First, reply to our decision email with additional information or clarification</li>
+              <li>If still unsatisfied, you may request escalation to our management team</li>
+              <li>As a last resort, you may dispute the charge with your payment provider</li>
+            </ol>
+            <p className="text-[#666666] leading-relaxed">
+              We aim to resolve all disputes amicably and maintain positive relationships with our community members.
+            </p>
+          </section>
+
+          <section className="mb-12">
+            <h2 className="text-2xl font-medium text-[#2D2D2D] mb-4">6. Chargebacks</h2>
+            <p className="text-[#666666] leading-relaxed mb-3">
+              While we prefer to handle refund requests directly, we understand you have the right to dispute charges 
+              with your bank or credit card company. However, please note:
+            </p>
+            <ul className="list-disc ml-6 space-y-2 text-[#666666]">
+              <li>Initiating a chargeback may result in temporary account suspension</li>
+              <li>We will provide transaction evidence to your payment provider</li>
+              <li>Fraudulent chargebacks may result in permanent account termination</li>
+            </ul>
+          </section>
+
+          <section className="mb-12">
+            <h2 className="text-2xl font-medium text-[#2D2D2D] mb-4">7. Modifications to This Policy</h2>
+            <p className="text-[#666666] leading-relaxed">
+              We reserve the right to update this Refund Policy at any time. Changes will be effective immediately 
+              upon posting to this page. For significant changes, we may notify users via email or platform announcement.
+            </p>
+          </section>
+
+          <section className="mb-12">
+            <h2 className="text-2xl font-medium text-[#2D2D2D] mb-4">8. Contact Information</h2>
+            <p className="text-[#666666] leading-relaxed mb-4">
+              For refund requests or questions about this policy, please contact us:
+            </p>
             <div className="bg-white rounded-xl border border-[#E5E5E5] p-6">
-              <p className="text-[#666666] leading-relaxed">
-                We believe in fair business. If we don't deliver what we promised, you get your money back. 
-                It's that simple. This policy covers all premium services on Sheep It.
+              <p className="text-[#666666]"><strong>Email:</strong> santiago@sheepit.io</p>
+              <p className="text-[#666666]"><strong>Response Time:</strong> 3-5 business days</p>
+              <p className="text-[#666666]"><strong>Support Hours:</strong> Monday-Friday, 9 AM - 5 PM EST</p>
+              <p className="text-[#666666] mt-4">
+                Please include "Refund Request" in your email subject line for faster processing.
               </p>
             </div>
           </section>
 
-          {/* What's Covered */}
-          <section>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
-                <CreditCard className="w-5 h-5 text-[#666666]" />
-              </div>
-              <h2 className="text-2xl font-medium text-[#2D2D2D]">Services Covered</h2>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-white rounded-xl border border-[#E5E5E5] p-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <Zap className="w-5 h-5 text-orange-600" />
-                  <h3 className="font-medium text-[#2D2D2D]">Queue Skip - $35</h3>
-                </div>
-                <p className="text-sm text-[#666666] mb-3">
-                  Jump ahead in the launch queue
-                </p>
-                <div className="text-xs text-[#999999]">
-                  Refundable until we move your position
-                </div>
-              </div>
-
-              <div className="bg-white rounded-xl border border-[#E5E5E5] p-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <Crown className="w-5 h-5 text-orange-600" />
-                  <h3 className="font-medium text-[#2D2D2D]">Featured Spot - $49</h3>
-                </div>
-                <p className="text-sm text-[#666666] mb-3">
-                  7 days of premium visibility
-                </p>
-                <div className="text-xs text-[#999999]">
-                  Refundable before feature period starts
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Eligibility */}
-          <section>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
-                <CheckCircle className="w-5 h-5 text-[#666666]" />
-              </div>
-              <h2 className="text-2xl font-medium text-[#2D2D2D]">Refund Eligibility</h2>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Eligible */}
-              <div className="bg-green-50 rounded-xl border border-green-200 p-6">
-                <h3 className="font-medium text-[#2D2D2D] mb-4 flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-green-600" />
-                  You CAN Get a Refund
-                </h3>
-                <ul className="space-y-3 text-sm text-[#666666]">
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-600 mt-0.5">✓</span>
-                    <span>We failed to deliver the service</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-600 mt-0.5">✓</span>
-                    <span>Technical error prevented delivery</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-600 mt-0.5">✓</span>
-                    <span>You were charged twice</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-600 mt-0.5">✓</span>
-                    <span>You cancel before service starts</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-600 mt-0.5">✓</span>
-                    <span>Product rejected after purchase</span>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Not Eligible */}
-              <div className="bg-red-50 rounded-xl border border-red-200 p-6">
-                <h3 className="font-medium text-[#2D2D2D] mb-4 flex items-center gap-2">
-                  <XCircle className="w-5 h-5 text-red-600" />
-                  No Refund Available
-                </h3>
-                <ul className="space-y-3 text-sm text-[#666666]">
-                  <li className="flex items-start gap-2">
-                    <span className="text-red-600 mt-0.5">✕</span>
-                    <span>Service already delivered</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-red-600 mt-0.5">✕</span>
-                    <span>Didn't get expected results</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-red-600 mt-0.5">✕</span>
-                    <span>Changed your mind after</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-red-600 mt-0.5">✕</span>
-                    <span>Violated our terms</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-red-600 mt-0.5">✕</span>
-                    <span>Your site was down</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </section>
-
-          {/* How to Request */}
-          <section>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
-                <Mail className="w-5 h-5 text-[#666666]" />
-              </div>
-              <h2 className="text-2xl font-medium text-[#2D2D2D]">How to Request a Refund</h2>
-            </div>
-
-            <div className="bg-white rounded-xl border border-[#E5E5E5] p-6">
-              <div className="space-y-6">
-                {/* Steps */}
-                <div className="space-y-4">
-                  {[
-                    { step: '1', title: 'Email Us', desc: 'Send request to santiago@sheepit.io within 14 days', icon: Mail },
-                    { step: '2', title: 'Include Details', desc: 'Order number, email used, and reason', icon: FileText },
-                    { step: '3', title: 'We Review', desc: 'Response within 3-5 business days', icon: Clock },
-                    { step: '4', title: 'Get Refund', desc: 'Processed within 5-10 days if approved', icon: CheckCircle }
-                  ].map((item) => (
-                    <div key={item.step} className="flex items-start gap-4">
-                      <div className="w-10 h-10 bg-[#F5F5F5] rounded-full flex items-center justify-center flex-shrink-0">
-                        <span className="font-medium text-[#2D2D2D]">{item.step}</span>
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="font-medium text-[#2D2D2D] mb-1">{item.title}</h4>
-                        <p className="text-sm text-[#666666]">{item.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Email Template */}
-                <div className="bg-[#F5F5F5] rounded-lg p-4">
-                  <p className="text-xs font-medium text-[#2D2D2D] mb-2">Email Template:</p>
-                  <div className="bg-white rounded border border-[#E5E5E5] p-3 text-xs text-[#666666] font-mono">
-                    Subject: Refund Request - [Your Order #]<br/>
-                    <br/>
-                    Hi Santiago,<br/>
-                    <br/>
-                    Order: [Your order number]<br/>
-                    Email: [Your account email]<br/>
-                    Service: [Queue Skip / Featured]<br/>
-                    Reason: [Brief explanation]<br/>
-                    <br/>
-                    Thanks!
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Special Cases */}
-          <section>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
-                <AlertCircle className="w-5 h-5 text-[#666666]" />
-              </div>
-              <h2 className="text-2xl font-medium text-[#2D2D2D]">Special Situations</h2>
-            </div>
-
-            <div className="space-y-4">
-              <div className="bg-white rounded-xl border border-[#E5E5E5] p-6">
-                <h3 className="font-medium text-[#2D2D2D] mb-3">Product Rejected?</h3>
-                <p className="text-sm text-[#666666]">
-                  Automatic full refund + feedback to help you improve for next time.
-                </p>
-              </div>
-
-              <div className="bg-white rounded-xl border border-[#E5E5E5] p-6">
-                <h3 className="font-medium text-[#2D2D2D] mb-3">Unhappy with Results?</h3>
-                <p className="text-sm text-[#666666]">
-                  While we can't guarantee specific outcomes, reach out - we might be able to help in other ways.
-                </p>
-              </div>
-
-              <div className="bg-white rounded-xl border border-[#E5E5E5] p-6">
-                <h3 className="font-medium text-[#2D2D2D] mb-3">Dispute Resolution</h3>
-                <p className="text-sm text-[#666666]">
-                  If you disagree with our decision, reply to our email for escalation to management.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {/* Contact */}
-          <section>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-[#F5F5F5] rounded-lg flex items-center justify-center">
-                <Mail className="w-5 h-5 text-[#666666]" />
-              </div>
-              <h2 className="text-2xl font-medium text-[#2D2D2D]">Get in Touch</h2>
-            </div>
-
-            <div className="bg-[#2D2D2D] text-white rounded-xl p-8">
-              <h3 className="text-lg font-medium mb-4">Need a Refund?</h3>
-              <p className="text-gray-300 mb-6">
-                We're here to help. Most requests are resolved within 24 hours.
-              </p>
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <Mail className="w-5 h-5 text-gray-400" />
-                  <div>
-                    <a href="mailto:santiago@sheepit.io?subject=Refund Request" className="hover:text-orange-400 transition-colors">
-                      santiago@sheepit.io
-                    </a>
-                    <p className="text-xs text-gray-500 mt-1">Include "Refund Request" in subject</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Clock className="w-5 h-5 text-gray-400" />
-                  <div>
-                    <p className="text-gray-300">Response Time</p>
-                    <p className="text-xs text-gray-500">3-5 business days</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Footer Note */}
-          <section className="text-center">
-            <div className="bg-[#F5F5F5] rounded-xl p-6">
-              <p className="text-sm text-[#666666]">
-                This policy is part of our{' '}
-                <Link href="/terms-and-conditions" className="text-orange-600 hover:text-orange-700">
-                  Terms of Service
-                </Link>
-                {' '}and works alongside our{' '}
-                <Link href="/privacy" className="text-orange-600 hover:text-orange-700">
-                  Privacy Policy
-                </Link>
-                .
-              </p>
-            </div>
+          <section className="mt-16 pt-8 border-t border-[#E5E5E5]">
+            <p className="text-center text-[#666666]">
+              This Refund Policy is part of our <Link href="/terms-and-conditions" className="text-orange-600 hover:text-orange-700">Terms of Service</Link> and 
+              should be read in conjunction with our <Link href="/privacy" className="text-orange-600 hover:text-orange-700">Privacy Policy</Link>.
+            </p>
           </section>
         </div>
       </main>
