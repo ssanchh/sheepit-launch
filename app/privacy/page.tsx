@@ -19,13 +19,19 @@ export default function PrivacyPolicy() {
           <section className="mb-12">
             <h2 className="text-2xl font-medium text-[#2D2D2D] mb-4">1. Introduction</h2>
             <p className="text-[#666666] leading-relaxed mb-4">
-              Sheep It ("we", "us", "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, 
-              use, disclose, and safeguard your information when you use our website and services at sheepit.io (the "Service").
+              Sheep It ("we", "us", "our"), operated by Santiago Sánchez (Sole Proprietor), is committed to protecting your privacy. 
+              This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website 
+              and services at sheepit.io (the "Service").
             </p>
-            <p className="text-[#666666] leading-relaxed">
+            <p className="text-[#666666] leading-relaxed mb-4">
               By using our Service, you consent to the data practices described in this policy. If you do not agree with the 
               terms of this Privacy Policy, please do not access the Service.
             </p>
+            <div className="bg-gray-50 rounded-lg p-4">
+              <p className="text-sm text-[#666666]"><strong>Data Controller:</strong> Santiago Sánchez (Sole Proprietor)</p>
+              <p className="text-sm text-[#666666]"><strong>Business Address:</strong> Pedro Berro 1238, Montevideo, 11300, Uruguay</p>
+              <p className="text-sm text-[#666666]"><strong>Contact Email:</strong> santiago@sheepit.io</p>
+            </div>
           </section>
 
           <section className="mb-12">
@@ -253,8 +259,10 @@ export default function PrivacyPolicy() {
             </p>
             <div className="bg-white rounded-xl border border-[#E5E5E5] p-6">
               <p className="font-medium text-[#2D2D2D]">Sheep It Privacy Team</p>
-              <p className="text-[#666666]">Email: santiago@sheepit.io</p>
-              <p className="text-[#666666]">Website: https://sheepit.io</p>
+              <p className="text-[#666666]"><strong>Data Controller:</strong> Santiago Sánchez (Sole Proprietor)</p>
+              <p className="text-[#666666]"><strong>Address:</strong> Pedro Berro 1238, Montevideo, 11300, Uruguay</p>
+              <p className="text-[#666666]"><strong>Email:</strong> santiago@sheepit.io</p>
+              <p className="text-[#666666]"><strong>Website:</strong> https://sheepit.io</p>
               <p className="text-[#666666] mt-4">
                 For data protection inquiries or to exercise your rights, please email us with "Privacy Request" in the 
                 subject line. We will respond to your request within 30 days.

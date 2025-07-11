@@ -53,6 +53,11 @@ export default function Footer() {
                   Past Winners
                 </Link>
               </li>
+              <li>
+                <Link href="/about" className="text-gray-300 hover:text-white transition-colors">
+                  About Us
+                </Link>
+              </li>
             </ul>
           </div>
           
@@ -79,11 +84,21 @@ export default function Footer() {
           </div>
         </div>
         
+        {/* Company Info */}
+        <div className="mt-8 pt-8 border-t border-gray-700">
+          <div className="text-center md:text-left mb-6">
+            <h4 className="font-semibold mb-3 text-white">Company Information</h4>
+            <p className="text-sm text-gray-300">Operated by: Santiago Sánchez (Sole Proprietor)</p>
+            <p className="text-sm text-gray-300">Pedro Berro 1238, Montevideo, 11300, Uruguay</p>
+            <p className="text-sm text-gray-300">Email: santiago@sheepit.io</p>
+          </div>
+        </div>
+        
         {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-gray-700">
+        <div className="mt-8 pt-8 border-t border-gray-700">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-gray-400">
-              © {currentYear} Sheep It (sheepit.io). All rights reserved.
+              © {currentYear} Santiago Sánchez. All rights reserved.
             </p>
             <p className="text-sm text-gray-400">
               Made with ❤️ for indie makers

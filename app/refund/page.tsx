@@ -31,8 +31,8 @@ export default function RefundPolicy() {
               This Refund Policy applies to all premium services purchased on Sheep It, including but not limited to:
             </p>
             <ul className="list-disc ml-6 space-y-2 text-[#666666]">
-              <li>Queue Skip (Premium Launch) services - $35</li>
-              <li>Featured Product placements - $49</li>
+              <li>Premium Launch (Queue Skip) services - $35 per launch</li>
+              <li>Featured Product placements - $45 per week</li>
               <li>Any other paid promotional services</li>
             </ul>
           </section>
