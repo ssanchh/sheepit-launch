@@ -99,8 +99,8 @@ export default function ProductCard({ product, rank, onVoteUpdate, totalProducts
 
   return (
     <div 
-      className={`relative bg-white rounded-xl border transition-all cursor-pointer group hover:bg-gray-50 ${
-        isFeatured ? 'border-orange-300 border-2 shadow-md' : 'border-[#E5E5E5] hover:border-[#D5D5D5]'
+      className={`relative bg-white rounded-xl border-4 transition-all cursor-pointer group ${
+        isFeatured ? 'border-orange-300 shadow-md' : 'border-[#E5E5E5] hover:border-orange-400'
       }`}
       onClick={handleProductClick}
     >

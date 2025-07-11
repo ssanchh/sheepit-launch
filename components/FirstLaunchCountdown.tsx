@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Calendar, Rocket } from 'lucide-react'
+import { Calendar } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function FirstLaunchCountdown() {
   const [timeLeft, setTimeLeft] = useState<{
@@ -52,7 +53,13 @@ export default function FirstLaunchCountdown() {
         <div className="text-center">
           {/* Icon and Title */}
           <div className="flex items-center justify-center gap-3 mb-4">
-            <Rocket className="w-6 h-6 text-[#666666] group-hover:text-orange-600 transition-colors" />
+            <Image 
+              src="/assets/images/logo.svg" 
+              alt="Sheep It" 
+              width={40} 
+              height={40}
+              className="opacity-60 group-hover:opacity-100 transition-opacity"
+            />
             <h2 className="text-2xl font-bold text-[#2D2D2D]">
               Launching August 4th
             </h2>
@@ -101,7 +108,7 @@ export default function FirstLaunchCountdown() {
 
           {/* Info */}
           <p className="text-xs text-[#999999] mt-4">
-            Limited to 10 products • Weekly launches every Monday after
+            Limited spots • Weekly launches every Monday after
           </p>
         </div>
       </div>

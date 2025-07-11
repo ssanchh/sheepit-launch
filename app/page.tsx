@@ -16,7 +16,6 @@ export default function HomePage() {
   const [products, setProducts] = useState<ProductWithVotes[]>([])
   const [filteredProducts, setFilteredProducts] = useState<ProductWithVotes[]>([])
   const [loading, setLoading] = useState(true)
-  const [featuredProduct, setFeaturedProduct] = useState<ProductWithVotes | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
@@ -93,17 +92,9 @@ export default function HomePage() {
       // Sort by vote count (highest first)
       productsWithVotes.sort((a, b) => b.vote_count - a.vote_count)
       
-      // Set featured product if exists (paid featured takes priority)
-      const featured = productsWithVotes.find(p => p.is_featured_paid || p.featured)
-      if (featured) {
-        setFeaturedProduct(featured)
-        const remainingProducts = productsWithVotes.filter(p => p.id !== featured.id)
-        setProducts(remainingProducts)
-        setFilteredProducts(remainingProducts)
-      } else {
-        setProducts(productsWithVotes)
-        setFilteredProducts(productsWithVotes)
-      }
+      // Set all products (no featured separation)
+      setProducts(productsWithVotes)
+      setFilteredProducts(productsWithVotes)
     }
     setLoading(false)
   }
@@ -146,52 +137,6 @@ export default function HomePage() {
 
         {/* First Launch Announcement */}
         <FirstLaunchCountdown />
-
-        {/* Featured Product Section */}
-        {featuredProduct ? (
-          <div className="mb-10">
-            <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-6 border-2 border-orange-200 shadow-lg">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <span className="px-3 py-1 bg-orange-600 text-white text-sm font-medium rounded-full">Featured</span>
-                  <h3 className="text-lg font-semibold text-[#2D2D2D]">Today's Featured Launch</h3>
-                </div>
-                <CountdownTimer />
-              </div>
-              
-              <ProductCard 
-                product={featuredProduct}
-                rank={0}
-                onVoteUpdate={handleVoteUpdate}
-                totalProducts={1}
-                leadingVotes={featuredProduct.vote_count}
-                isTop3={false}
-                isFeatured={true}
-              />
-            </div>
-          </div>
-        ) : (
-          <div className="mb-10">
-            <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-8 border-2 border-dashed border-orange-300">
-              <div className="text-center">
-                <div className="text-4xl mb-3">🚀</div>
-                <h3 className="text-xl font-semibold text-[#2D2D2D] mb-2">
-                  This featured spot could be yours
-                </h3>
-                <p className="text-[#666666] mb-4">
-                  Get premium visibility with guaranteed top placement
-                </p>
-                <a 
-                  href="/pricing"
-                  className="inline-flex items-center gap-2 bg-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-700 transition-all transform hover:scale-105"
-                >
-                  <span>✨</span>
-                  <span>Get Featured - $45</span>
-                </a>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Stats Bar - Only show after first launch */}
         {products.length > 0 && (
