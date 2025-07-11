@@ -3,7 +3,6 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '../../hooks/useAuth'
-import { supabase } from '../../lib/supabase'
 import { createClient } from '@/utils/supabase/client'
 import { toast } from 'sonner'
 import Header from '../../components/Header'
@@ -51,8 +50,7 @@ function DashboardContent() {
   const checkProfileCompletion = async () => {
     if (!user) return
     
-    const supabase = createClient()
-    const { data, error } = await supabase
+    const { data, error } = await createClient()
       .from('users')
       .select('profile_completed')
       .eq('id', user.id)
@@ -180,7 +178,7 @@ function ProductsSection({ user }: { user: any }) {
     if (!user) return
     
     try {
-      const { data: products, error } = await supabase
+      const { data: products, error } = await createClient()
         .from('products')
         .select('*')
         .eq('created_by', user.id)
@@ -257,7 +255,7 @@ function PaymentsSection({ user }: { user: any }) {
     
     const supabase = createClient()
     try {
-      const { data, error } = await supabase
+      const { data, error } = await createClient()
         .from('payments')
         .select(`
           *,
@@ -416,7 +414,7 @@ function ProfileSection({ user, onProfileComplete }: { user: any, onProfileCompl
   }, [user])
 
   const loadProfile = async () => {
-    const { data, error } = await supabase
+    const { data, error } = await createClient()
       .from('users')
       .select('*')
       .eq('id', user?.id)
@@ -442,7 +440,7 @@ function ProfileSection({ user, onProfileComplete }: { user: any, onProfileCompl
       return
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await createClient()
       .from('users')
       .select('id')
       .eq('handle', handle.toLowerCase())
@@ -464,7 +462,7 @@ function ProfileSection({ user, onProfileComplete }: { user: any, onProfileCompl
     setSaving(true)
 
     try {
-      const { data: existingProfile } = await supabase
+      const { data: existingProfile } = await createClient()
         .from('users')
         .select('id')
         .eq('id', user?.id)
@@ -482,12 +480,12 @@ function ProfileSection({ user, onProfileComplete }: { user: any, onProfileCompl
 
       let result
       if (existingProfile) {
-        result = await supabase
+        result = await createClient()
           .from('users')
           .update(profileData)
           .eq('id', user?.id)
       } else {
-        result = await supabase
+        result = await createClient()
           .from('users')
           .insert(profileData)
       }

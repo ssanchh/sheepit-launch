@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
-import { supabase } from '../lib/supabase'
+import { createClient } from '@/utils/supabase/client'
 import { ProductWithVotes } from '../types/database'
 import { Heart, ExternalLink, MessageCircle, Crown } from 'lucide-react'
 import { toast } from 'sonner'
@@ -38,7 +38,7 @@ export default function ProductCard({ product, rank, onVoteUpdate, totalProducts
       // Check if user has already voted
       if (product.user_vote) {
         // Unvote - remove the vote
-        const { error } = await supabase
+        const { error } = await createClient()
           .from('votes')
           .delete()
           .eq('id', product.user_vote.id)
@@ -51,7 +51,7 @@ export default function ProductCard({ product, rank, onVoteUpdate, totalProducts
         }
       } else {
         // Vote - add new vote
-        const { error } = await supabase
+        const { error } = await createClient()
           .from('votes')
           .insert([
             {

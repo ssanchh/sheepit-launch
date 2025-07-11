@@ -9,6 +9,8 @@ import { Upload, AlertCircle, Sparkles, Globe, Users, Image as ImageIcon, Twitte
 import Image from 'next/image'
 import Header from '../../components/Header'
 import { useLoginModal } from '@/contexts/LoginModalContext'
+import RichTextEditor from '../../components/RichTextEditor'
+import ImageUpload from '../../components/ImageUpload'
 
 interface ProductDraft {
   name: string
@@ -145,65 +147,6 @@ function SubmitContent() {
     }
   }
 
-  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error('Logo must be less than 5MB')
-        return
-      }
-      
-      setProduct({ 
-        ...product, 
-        logo_file: file,
-        logo_preview: URL.createObjectURL(file)
-      })
-    }
-  }
-
-  const handleFeaturedImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      if (file.size > 10 * 1024 * 1024) {
-        toast.error('Image must be less than 10MB')
-        return
-      }
-      
-      setProduct({ 
-        ...product, 
-        featured_image_file: file,
-        featured_image_preview: URL.createObjectURL(file)
-      })
-    }
-  }
-
-  const handleScreenshotUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || [])
-    const currentScreenshots = product.screenshot_files || []
-    
-    if (currentScreenshots.length + files.length > 3) {
-      toast.error('You can upload a maximum of 3 screenshots')
-      return
-    }
-    
-    const newFiles: File[] = []
-    const newPreviews: string[] = []
-    
-    for (const file of files) {
-      if (file.size > 10 * 1024 * 1024) {
-        toast.error(`${file.name} is too large. Maximum size is 10MB`)
-        continue
-      }
-      newFiles.push(file)
-      newPreviews.push(URL.createObjectURL(file))
-    }
-    
-    setProduct({
-      ...product,
-      screenshot_files: [...currentScreenshots, ...newFiles],
-      screenshot_previews: [...(product.screenshot_previews || []), ...newPreviews]
-    })
-  }
 
   const removeScreenshot = (index: number) => {
     const newFiles = [...(product.screenshot_files || [])]
@@ -222,7 +165,7 @@ function SubmitContent() {
   const handleAddCategory = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault()
-      const category = categoryInput.trim()
+      const category = categoryInput.trim().replace(/,$/, '') // Remove trailing comma
       if (category && !product.categories.includes(category) && product.categories.length < 5) {
         setProduct(prev => ({
           ...prev,
@@ -230,6 +173,28 @@ function SubmitContent() {
         }))
         setCategoryInput('')
         setErrors({ ...errors, categories: undefined })
+      }
+    }
+  }
+
+  const handleCategoryInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setCategoryInput(value)
+    
+    // Check if user typed a comma
+    if (value.includes(',')) {
+      const parts = value.split(',')
+      const category = parts[0].trim()
+      
+      if (category && !product.categories.includes(category) && product.categories.length < 5) {
+        setProduct(prev => ({
+          ...prev,
+          categories: [...prev.categories, category]
+        }))
+        setCategoryInput(parts.slice(1).join(',').trim())
+        setErrors({ ...errors, categories: undefined })
+      } else {
+        setCategoryInput(value.replace(',', ''))
       }
     }
   }
@@ -305,6 +270,14 @@ function SubmitContent() {
         }
       }
       
+      // Get current week
+      const { data: currentWeek } = await supabase
+        .rpc('get_current_week')
+      
+      if (!currentWeek) {
+        throw new Error('No active week found. Please try again later.')
+      }
+      
       const { error } = await supabase
         .from('products')
         .insert([{
@@ -321,6 +294,7 @@ function SubmitContent() {
           primary_goal: product.primary_goal,
           categories: product.categories,
           created_by: user?.id,
+          week_id: currentWeek,
           status: 'pending'
         }])
       
@@ -398,7 +372,7 @@ function SubmitContent() {
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
-                    Product Name
+                    Product Name <span className="text-orange-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -419,7 +393,7 @@ function SubmitContent() {
 
                 <div>
                   <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
-                    Tagline
+                    Tagline <span className="text-orange-500">*</span>
                     <span className="text-[#999999] ml-2">({product.tagline.length}/60)</span>
                   </label>
                   <input
@@ -454,17 +428,14 @@ function SubmitContent() {
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
-                    Description
+                    Description <span className="text-orange-500">*</span>
                     <span className="text-[#999999] ml-2">({product.description.length} characters)</span>
                   </label>
-                  <textarea
+                  <RichTextEditor
                     value={product.description}
-                    onChange={(e) => setProduct({ ...product, description: e.target.value })}
-                    rows={6}
-                    className={`w-full px-4 py-3 rounded-lg border ${
-                      errors.description ? 'border-red-300' : 'border-[#E5E5E5]'
-                    } focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none`}
+                    onChange={(value) => setProduct({ ...product, description: value })}
                     placeholder="Explain what your product does, who it's for, and what makes it unique..."
+                    error={!!errors.description}
                   />
                   {errors.description && (
                     <p className="mt-1 text-sm text-red-600 flex items-center">
@@ -476,7 +447,7 @@ function SubmitContent() {
 
                 <div>
                   <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
-                    Team Type
+                    Team Type <span className="text-orange-500">*</span>
                   </label>
                   <div className="grid grid-cols-2 gap-3">
                     <button
@@ -512,17 +483,17 @@ function SubmitContent() {
 
                 <div>
                   <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
-                    Categories
-                    <span className="text-[#999999] ml-2">(Up to 5 tags)</span>
+                    Categories <span className="text-orange-500">*</span>
+                    <span className="text-[#999999] ml-2">(Up to 5, separate with comma or Enter)</span>
                   </label>
                   <div className="space-y-3">
                     <input
                       type="text"
                       value={categoryInput}
-                      onChange={(e) => setCategoryInput(e.target.value)}
+                      onChange={handleCategoryInputChange}
                       onKeyDown={handleAddCategory}
                       className="w-full px-4 py-3 rounded-lg border border-[#E5E5E5] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                      placeholder="Type a category and press Enter (e.g., SaaS, Productivity, AI)"
+                      placeholder="Type categories (e.g., SaaS, Productivity, AI)"
                       disabled={product.categories.length >= 5}
                     />
                     {product.categories.length > 0 && (
@@ -554,7 +525,7 @@ function SubmitContent() {
 
                 <div>
                   <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
-                    What's your primary goal? (optional)
+                    What's your primary goal with Sheep It?
                   </label>
                   <select
                     value={product.primary_goal}
@@ -585,7 +556,7 @@ function SubmitContent() {
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
-                    Logo (optional)
+                    Logo
                   </label>
                   <div className="flex items-center space-x-4">
                     {product.logo_preview ? (
@@ -599,21 +570,26 @@ function SubmitContent() {
                         />
                         <button
                           onClick={() => setProduct({ ...product, logo_file: undefined, logo_preview: undefined })}
-                          className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600"
+                          className="absolute -top-2 -right-2 w-6 h-6 bg-white border border-gray-300 text-gray-600 rounded-full flex items-center justify-center hover:bg-gray-50 shadow-sm"
+                          title="Remove logo"
                         >
-                          ×
+                          <X className="w-3 h-3" />
                         </button>
                       </div>
                     ) : (
-                      <label className="w-20 h-20 border-2 border-dashed border-[#E5E5E5] rounded-lg flex items-center justify-center cursor-pointer hover:border-[#D5D5D5] transition-colors">
+                      <ImageUpload
+                        onFileSelect={(file) => {
+                          setProduct({ 
+                            ...product, 
+                            logo_file: file,
+                            logo_preview: URL.createObjectURL(file)
+                          })
+                        }}
+                        maxSize={5}
+                        className="w-20 h-20 border-2 border-dashed rounded-lg flex items-center justify-center"
+                      >
                         <Upload className="w-6 h-6 text-[#999999]" />
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleLogoUpload}
-                          className="hidden"
-                        />
-                      </label>
+                      </ImageUpload>
                     )}
                     <div className="text-sm text-[#666666]">
                       <p>PNG, JPG up to 5MB</p>
@@ -624,8 +600,8 @@ function SubmitContent() {
 
                 <div>
                   <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
-                    Featured Image or Screenshot
-                    <span className="text-[#999999] ml-2">(Recommended)</span>
+                    Featured Image
+                    <span className="text-[#999999] ml-2">(Displayed on the homepage product card)</span>
                   </label>
                   {product.featured_image_preview ? (
                     <div className="relative">
@@ -638,30 +614,35 @@ function SubmitContent() {
                       />
                       <button
                         onClick={() => setProduct({ ...product, featured_image_file: undefined, featured_image_preview: undefined })}
-                        className="absolute top-3 right-3 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center text-sm hover:bg-red-600"
+                        className="absolute top-3 right-3 w-8 h-8 bg-white border border-gray-300 text-gray-600 rounded-full flex items-center justify-center hover:bg-gray-50 shadow-sm"
+                        title="Remove image"
                       >
-                        ×
+                        <X className="w-4 h-4" />
                       </button>
                     </div>
                   ) : (
-                    <label className="block w-full border-2 border-dashed border-[#E5E5E5] rounded-lg p-8 text-center cursor-pointer hover:border-[#D5D5D5] transition-colors">
+                    <ImageUpload
+                      onFileSelect={(file) => {
+                        setProduct({ 
+                          ...product, 
+                          featured_image_file: file,
+                          featured_image_preview: URL.createObjectURL(file)
+                        })
+                      }}
+                      maxSize={10}
+                      className="block w-full border-2 border-dashed rounded-lg p-8 text-center"
+                    >
                       <Upload className="w-8 h-8 text-[#999999] mx-auto mb-2" />
-                      <p className="text-sm text-[#666666]">Upload a screenshot or image</p>
+                      <p className="text-sm text-[#666666]">Click or drag to upload</p>
                       <p className="text-xs text-[#999999] mt-1">PNG, JPG up to 10MB (16:9 ratio recommended)</p>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFeaturedImageUpload}
-                        className="hidden"
-                      />
-                    </label>
+                    </ImageUpload>
                   )}
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
                     Product Screenshots
-                    <span className="text-[#999999] ml-2">(Up to 3, optional)</span>
+                    <span className="text-[#999999] ml-2">(Additional images shown on product page, up to 3)</span>
                   </label>
                   <div className="space-y-3">
                     {/* Display uploaded screenshots */}
@@ -678,7 +659,8 @@ function SubmitContent() {
                             />
                             <button
                               onClick={() => removeScreenshot(index)}
-                              className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                              className="absolute top-1 right-1 w-6 h-6 bg-white border border-gray-300 text-gray-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm hover:bg-gray-50"
+                              title="Remove screenshot"
                             >
                               <X className="w-3 h-3" />
                             </button>
@@ -689,18 +671,29 @@ function SubmitContent() {
                     
                     {/* Upload button if less than 3 screenshots */}
                     {(!product.screenshot_files || product.screenshot_files.length < 3) && (
-                      <label className="block w-full border-2 border-dashed border-[#E5E5E5] rounded-lg p-4 text-center cursor-pointer hover:border-[#D5D5D5] transition-colors">
+                      <ImageUpload
+                        onFileSelect={(file) => {
+                          const currentScreenshots = product.screenshot_files || []
+                          const currentPreviews = product.screenshot_previews || []
+                          
+                          if (currentScreenshots.length >= 3) {
+                            toast.error('You can upload a maximum of 3 screenshots')
+                            return
+                          }
+                          
+                          setProduct({
+                            ...product,
+                            screenshot_files: [...currentScreenshots, file],
+                            screenshot_previews: [...currentPreviews, URL.createObjectURL(file)]
+                          })
+                        }}
+                        maxSize={10}
+                        className="block w-full border-2 border-dashed rounded-lg p-4 text-center"
+                      >
                         <Upload className="w-6 h-6 text-[#999999] mx-auto mb-2" />
-                        <p className="text-sm text-[#666666]">Add screenshots</p>
+                        <p className="text-sm text-[#666666]">Click or drag to add screenshots</p>
                         <p className="text-xs text-[#999999] mt-1">PNG, JPG up to 10MB each</p>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          multiple
-                          onChange={handleScreenshotUpload}
-                          className="hidden"
-                        />
-                      </label>
+                      </ImageUpload>
                     )}
                   </div>
                 </div>
@@ -719,7 +712,7 @@ function SubmitContent() {
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
-                    Website URL
+                    Website URL <span className="text-orange-500">*</span>
                   </label>
                   <input
                     type="url"
@@ -740,7 +733,7 @@ function SubmitContent() {
 
                 <div>
                   <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
-                    Demo Video URL (optional)
+                    Demo Video URL
                   </label>
                   <input
                     type="url"
@@ -756,7 +749,7 @@ function SubmitContent() {
 
                 <div>
                   <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
-                    Twitter/X (optional)
+                    Twitter/X
                   </label>
                   <div className="relative">
                     <Twitter className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#999999]" />

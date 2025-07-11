@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import { useAuth } from '../../../hooks/useAuth'
-import { supabase } from '../../../lib/supabase'
+import { createClient } from '@/utils/supabase/client'
 import { ProductWithVotes, CommentWithUser } from '../../../types/database'
 import Header from '../../../components/Header'
 import Image from 'next/image'
@@ -32,7 +32,7 @@ export default function ProductDetailPage() {
   const loadProductAndComments = async () => {
     try {
       // Load product details
-      const { data: productData, error: productError } = await supabase
+      const { data: productData, error: productError } = await createClient()
         .from('products')
         .select(`
           *,
@@ -51,10 +51,10 @@ export default function ProductDetailPage() {
       }
 
       // Increment view count
-      await supabase.rpc('increment_product_views', { p_product_id: productId })
+      await createClient().rpc('increment_product_views', { p_product_id: productId })
 
       // Get vote count
-      const { count: voteCount } = await supabase
+      const { count: voteCount } = await createClient()
         .from('votes')
         .select('*', { count: 'exact', head: true })
         .eq('product_id', productId)
@@ -62,7 +62,7 @@ export default function ProductDetailPage() {
       // Check if user has voted
       let userVote = null
       if (user) {
-        const { data: voteData, error: voteError } = await supabase
+        const { data: voteData, error: voteError } = await createClient()
           .from('votes')
           .select('*')
           .eq('product_id', productId)
@@ -82,7 +82,7 @@ export default function ProductDetailPage() {
       })
 
       // Load comments
-      const { data: commentsData, error: commentsError } = await supabase
+      const { data: commentsData, error: commentsError } = await createClient()
         .from('comments')
         .select(`
           *,
@@ -120,7 +120,7 @@ export default function ProductDetailPage() {
     try {
       if (product.user_vote) {
         // Unvote
-        const { error } = await supabase
+        const { error } = await createClient()
           .from('votes')
           .delete()
           .eq('id', product.user_vote.id)
@@ -133,7 +133,7 @@ export default function ProductDetailPage() {
         }
       } else {
         // Vote
-        const { error } = await supabase
+        const { error } = await createClient()
           .from('votes')
           .insert([
             {
@@ -200,7 +200,7 @@ export default function ProductDetailPage() {
     if (!user || !confirm('Are you sure you want to delete this comment?')) return
 
     try {
-      const { error } = await supabase
+      const { error } = await createClient()
         .from('comments')
         .delete()
         .eq('id', commentId)
