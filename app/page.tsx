@@ -1,6 +1,7 @@
 'use client'
 
 import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 import CountdownTimer from '@/components/CountdownTimer'
 import ProductCard from '@/components/ProductCard'
 import SearchBar from '@/components/SearchBar'
@@ -322,6 +323,7 @@ export default function HomePage() {
           </a>
         </div>
       </main>
+      <Footer />
     </div>
   )
 } 
