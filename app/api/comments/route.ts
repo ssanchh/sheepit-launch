@@ -16,6 +16,10 @@ export async function POST(request: NextRequest) {
     // Get the current user
     const { data: { user }, error: authError } = await supabase.auth.getUser()
     requireAuth(user)
+    
+    if (!user) {
+      throw new ApiError('User not authenticated', 401, 'UNAUTHORIZED')
+    }
 
     // Insert the comment
     const { data: comment, error: insertError } = await supabase
