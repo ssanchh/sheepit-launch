@@ -1,7 +1,22 @@
 import { Resend } from 'resend'
 
-// Initialize Resend client
-export const resend = new Resend(process.env.RESEND_API_KEY)
+// Initialize Resend client - handle missing API key during build
+let resendInstance: Resend | null = null
+
+export function getResendClient(): Resend {
+  if (!resendInstance && process.env.RESEND_API_KEY) {
+    resendInstance = new Resend(process.env.RESEND_API_KEY)
+  }
+  
+  if (!resendInstance) {
+    throw new Error('Resend API key not configured')
+  }
+  
+  return resendInstance
+}
+
+// Export for backward compatibility
+export const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null as any
 
 // Email configuration
 export const EMAIL_CONFIG = {

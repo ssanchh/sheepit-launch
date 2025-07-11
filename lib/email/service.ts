@@ -1,4 +1,4 @@
-import { resend, EMAIL_CONFIG, EMAIL_TYPES, type EmailType } from './config'
+import { getResendClient, EMAIL_CONFIG, EMAIL_TYPES, type EmailType } from './config'
 import { createClient } from '@/utils/supabase/server'
 import { ProductApprovedEmail } from './templates/product-approved'
 import { NewCommentEmail } from './templates/new-comment'
@@ -14,8 +14,17 @@ interface EmailOptions {
 
 export async function sendEmail({ to, subject, react, userId, emailType }: EmailOptions) {
   try {
+    // Check if we're in build time
+    if (!process.env.RESEND_API_KEY) {
+      console.warn('Resend API key not available, skipping email send')
+      return { success: false, error: 'Email service not configured' }
+    }
+
+    // Get Resend client
+    const resendClient = getResendClient()
+    
     // Send email via Resend
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await resendClient.emails.send({
       from: `${EMAIL_CONFIG.from.name} <${EMAIL_CONFIG.from.email}>`,
       to: Array.isArray(to) ? to : [to],
       subject,
