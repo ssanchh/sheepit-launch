@@ -8,7 +8,7 @@ import { ProductWithVotes, CommentWithUser } from '../../../types/database'
 import Header from '../../../components/Header'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Heart, ExternalLink, MessageCircle, Send, Tag, ArrowLeft, Twitter, Eye, Trash2 } from 'lucide-react'
+import { Heart, ExternalLink, MessageCircle, Send, Tag, ArrowLeft, Eye, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function ProductDetailPage() {
@@ -323,17 +323,6 @@ export default function ProductDetailPage() {
                   <span>Visit Website</span>
                   <ExternalLink className="w-4 h-4" />
                 </a>
-
-                {product.twitter_url && (
-                  <a
-                    href={product.twitter_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-4 py-2 bg-white text-[#666666] border border-[#E5E5E5] rounded-lg hover:border-[#1DA1F2] hover:text-[#1DA1F2] transition-all font-medium"
-                  >
-                    <Twitter className="w-4 h-4" />
-                  </a>
-                )}
               </div>
 
               {/* View Count */}
