@@ -136,10 +136,10 @@ export default function HomePage() {
         {/* Hero Section for Founders */}
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold text-[#2D2D2D] mb-4">
-            Your product, thousands of early adopters
+            Where indie makers launch together
           </h1>
           <p className="text-lg text-[#666666] max-w-2xl mx-auto leading-relaxed">
-            Launch alongside fellow indie makers every Monday. Winners get featured to 50k+ subscribers, quality backlinks, and real users who love trying new products.
+            Join the weekly launch party every Monday. Get real feedback, connect with fellow builders, and reach early adopters who genuinely care about new products. Winners earn a spot in our weekly newsletter.
           </p>
         </div>
 
