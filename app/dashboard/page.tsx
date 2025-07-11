@@ -82,6 +82,8 @@ export default function DashboardPage() {
   ]
 
   const renderTabContent = () => {
+    if (!user) return null // This should never happen due to the loading check above
+    
     switch (activeTab) {
       case 'profile':
         return <ProfileSection user={user} onProfileComplete={() => {
