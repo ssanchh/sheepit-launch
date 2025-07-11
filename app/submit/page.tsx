@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '../../hooks/useAuth'
 import { createClient } from '@/utils/supabase/client'
@@ -27,7 +27,7 @@ interface ProductDraft {
   categories: string[]
 }
 
-export default function SubmitPage() {
+function SubmitContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { user, loading: authLoading } = useAuth()
@@ -790,5 +790,20 @@ export default function SubmitPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function SubmitPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#FDFCFA]">
+        <Header />
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#1E1E1E]"></div>
+        </div>
+      </div>
+    }>
+      <SubmitContent />
+    </Suspense>
   )
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase } from '../../lib/supabase'
@@ -12,7 +12,7 @@ import Link from 'next/link'
 import PurchaseModal from '../../components/PurchaseModal'
 import EmailPreferences from '../../components/EmailPreferences'
 
-export default function DashboardPage() {
+function DashboardContent() {
   const [activeTab, setActiveTab] = useState('profile')
   const [dashboardLoading, setDashboardLoading] = useState(true)
   const [profileCompleted, setProfileCompleted] = useState(false)
@@ -981,6 +981,21 @@ function ProductCard({ product }: { product: any }) {
         }}
       />
     </div>
+  )
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#1E1E1E]"></div>
+        </div>
+      </div>
+    }>
+      <DashboardContent />
+    </Suspense>
   )
 }
 
