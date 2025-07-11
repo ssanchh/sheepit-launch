@@ -206,15 +206,6 @@ export default function WinnersPage() {
                               <span className="text-[#999999]">
                                 by {creatorName(product.users)}
                               </span>
-                              {product.categories && product.categories.length > 0 && (
-                                <div className="flex gap-2">
-                                  {product.categories.slice(0, 2).map((category) => (
-                                    <span key={category} className="px-2 py-0.5 bg-[#F5F5F5] rounded-full text-xs text-[#666666]">
-                                      {category}
-                                    </span>
-                                  ))}
-                                </div>
-                              )}
                             </div>
                           </div>
                         </div>
