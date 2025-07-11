@@ -11,6 +11,33 @@ import Link from 'next/link'
 import { Heart, ExternalLink, MessageCircle, Send, Tag, ArrowLeft, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useLoginModal } from '@/contexts/LoginModalContext'
+import MarkdownRenderer from '../../../components/MarkdownRenderer'
+
+// Function to convert video URLs to embed URLs
+function getEmbedUrl(url: string): string {
+  if (!url) return ''
+  
+  // YouTube
+  const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/)
+  if (youtubeMatch) {
+    return `https://www.youtube.com/embed/${youtubeMatch[1]}`
+  }
+  
+  // Vimeo
+  const vimeoMatch = url.match(/vimeo\.com\/(\d+)/)
+  if (vimeoMatch) {
+    return `https://player.vimeo.com/video/${vimeoMatch[1]}`
+  }
+  
+  // Loom
+  const loomMatch = url.match(/loom\.com\/share\/([a-zA-Z0-9]+)/)
+  if (loomMatch) {
+    return `https://www.loom.com/embed/${loomMatch[1]}`
+  }
+  
+  // Return original URL if no match
+  return url
+}
 
 export default function ProductDetailPage() {
   const params = useParams()
@@ -298,9 +325,24 @@ export default function ProductDetailPage() {
               <h1 className="text-2xl font-semibold text-[#2D2D2D] mb-2">{product.name}</h1>
               <p className="text-[#666666] mb-3">{product.tagline}</p>
               
-              <div className="flex items-center gap-4 text-sm">
+              <div className="flex items-center gap-4 text-sm mb-3">
                 <span className="text-[#999999]">by {creatorName}</span>
               </div>
+
+              {/* Categories */}
+              {product.categories && product.categories.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {product.categories.map((category, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#F5F5F5] text-[#666666]"
+                    >
+                      <Tag className="w-3 h-3 mr-1" />
+                      {category}
+                    </span>
+                  ))}
+                </div>
+              )}
 
               {/* Action Buttons */}
               <div className="flex items-center gap-3 mt-6">
@@ -332,11 +374,44 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
+        {/* Featured Image */}
+        {product.featured_image_url && (
+          <div className="bg-white rounded-xl border border-[#E5E5E5] p-8 mb-8">
+            <Image
+              src={product.featured_image_url}
+              alt={`${product.name} screenshot`}
+              width={1200}
+              height={675}
+              className="w-full rounded-lg border border-[#E5E5E5]"
+            />
+          </div>
+        )}
+
         {/* Description */}
         {product.description && (
           <div className="bg-white rounded-xl border border-[#E5E5E5] p-8 mb-8">
             <h2 className="text-lg font-semibold text-[#2D2D2D] mb-4">About</h2>
-            <p className="text-[#666666] whitespace-pre-wrap">{product.description}</p>
+            <MarkdownRenderer content={product.description} />
+          </div>
+        )}
+
+        {/* Screenshots */}
+        {product.screenshot_urls && product.screenshot_urls.length > 0 && (
+          <div className="bg-white rounded-xl border border-[#E5E5E5] p-8 mb-8">
+            <h2 className="text-lg font-semibold text-[#2D2D2D] mb-4">Screenshots</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {product.screenshot_urls.map((url, index) => (
+                <Image
+                  key={index}
+                  src={url}
+                  alt={`${product.name} screenshot ${index + 1}`}
+                  width={400}
+                  height={300}
+                  className="w-full rounded-lg border border-[#E5E5E5] cursor-pointer hover:shadow-lg transition-shadow"
+                  onClick={() => window.open(url, '_blank')}
+                />
+              ))}
+            </div>
           </div>
         )}
 
@@ -346,10 +421,11 @@ export default function ProductDetailPage() {
             <h2 className="text-lg font-semibold text-[#2D2D2D] mb-4">Demo Video</h2>
             <div className="relative" style={{ paddingBottom: '56.25%' }}>
               <iframe
-                src={product.video_url}
+                src={getEmbedUrl(product.video_url)}
                 title={`${product.name} demo video`}
                 className="absolute inset-0 w-full h-full rounded-lg"
                 allowFullScreen
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               />
             </div>
           </div>

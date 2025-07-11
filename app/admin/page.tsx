@@ -7,6 +7,7 @@ import { createClient } from '@/utils/supabase/client'
 import { toast } from 'sonner'
 import { Check, X, Clock, ExternalLink, MessageSquare, ArrowUp, ArrowDown, Calendar, Users, Activity, Eye, Play, Square } from 'lucide-react'
 import Header from '@/components/Header'
+import MarkdownRenderer from '@/components/MarkdownRenderer'
 
 interface Product {
   id: string
@@ -677,7 +678,9 @@ export default function AdminPage() {
                     </div>
                   </div>
 
-                  <p className="text-[#666666] mb-4 line-clamp-3">{product.description}</p>
+                  <div className="text-[#666666] mb-4 line-clamp-3 [&_p]:inline [&_ul]:inline [&_li]:inline [&_h3]:inline [&_strong]:font-semibold">
+                    <MarkdownRenderer content={product.description} />
+                  </div>
 
                   {product.admin_notes && (
                     <div className="mb-4 p-3 bg-[#F5F5F5] rounded-lg">
@@ -922,9 +925,9 @@ export default function AdminPage() {
                           </p>
                           
                           {/* Description */}
-                          <p className="text-sm text-[#666666] mt-3 line-clamp-2">
-                            {product.description}
-                          </p>
+                          <div className="text-sm text-[#666666] mt-3 line-clamp-2 [&_p]:inline [&_ul]:inline [&_li]:inline [&_h3]:inline [&_strong]:font-semibold">
+                            <MarkdownRenderer content={product.description} />
+                          </div>
                         </div>
                       </div>
                       
