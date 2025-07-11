@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { ProductWithVotes } from '../types/database'
-import { Heart, ExternalLink, MessageCircle, Tag, Crown } from 'lucide-react'
+import { Heart, ExternalLink, MessageCircle, Crown } from 'lucide-react'
 import { toast } from 'sonner'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -168,18 +168,6 @@ export default function ProductCard({ product, rank, onVoteUpdate, totalProducts
                 <p className="text-sm text-[#666666] mt-1 line-clamp-1">
                   {product.tagline}
                 </p>
-                {product.categories && product.categories.length > 0 && (
-                  <div className="flex items-center gap-1.5 mt-2">
-                    <Tag className="w-3 h-3 text-[#999999]" />
-                    <div className="flex gap-1">
-                      {product.categories.slice(0, 2).map((category) => (
-                        <span key={category} className="px-1.5 py-0.5 bg-[#F5F5F5] rounded text-xs text-[#666666]">
-                          {category}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
 
               {/* Right: Actions */}

@@ -66,6 +66,13 @@ export interface Database {
           is_live: boolean
           payment_status: string
           paid_features: any
+          screenshot_urls: string[] | null
+          twitter_url: string | null
+          view_count: number | null
+          featured_image_url: string | null
+          team_type: 'solo' | 'team' | null
+          primary_goal: string | null
+          categories: string[] | null
           created_at: string
           updated_at: string
         }
@@ -89,6 +96,13 @@ export interface Database {
           is_live?: boolean
           payment_status?: string
           paid_features?: any
+          screenshot_urls?: string[] | null
+          twitter_url?: string | null
+          view_count?: number | null
+          featured_image_url?: string | null
+          team_type?: 'solo' | 'team' | null
+          primary_goal?: string | null
+          categories?: string[] | null
           created_at?: string
           updated_at?: string
         }
@@ -112,6 +126,13 @@ export interface Database {
           is_live?: boolean
           payment_status?: string
           paid_features?: any
+          screenshot_urls?: string[] | null
+          twitter_url?: string | null
+          view_count?: number | null
+          featured_image_url?: string | null
+          team_type?: 'solo' | 'team' | null
+          primary_goal?: string | null
+          categories?: string[] | null
           created_at?: string
           updated_at?: string
         }
