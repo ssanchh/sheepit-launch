@@ -73,26 +73,36 @@ export default function Header() {
               >
                 Launching Now
               </Link>
-              <Link 
-                href="/winners"
-                className={`relative px-5 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
-                  pathname === '/winners' 
-                    ? 'text-[#2D2D2D] bg-white shadow-sm' 
-                    : 'text-[#666666] hover:text-[#2D2D2D] hover:bg-white/50'
-                }`}
-              >
-                Latest Winners
-              </Link>
-              <Link 
-                href="/past-launches"
-                className={`relative px-5 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
-                  pathname === '/past-launches' 
-                    ? 'text-[#2D2D2D] bg-white shadow-sm' 
-                    : 'text-[#666666] hover:text-[#2D2D2D] hover:bg-white/50'
-                }`}
-              >
-                Past Launches
-              </Link>
+              <div className="relative group">
+                <button 
+                  className="relative px-5 py-2 text-sm font-medium rounded-full transition-all duration-200 text-[#999999] cursor-not-allowed"
+                  disabled
+                >
+                  Latest Winners
+                  <Lock className="inline-block w-3 h-3 ml-1 mb-0.5" />
+                </button>
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                  <div className="bg-[#2D2D2D] text-white text-xs px-3 py-2 rounded-lg whitespace-nowrap">
+                    Available after the first launch on Aug 4th
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-[#2D2D2D]"></div>
+                  </div>
+                </div>
+              </div>
+              <div className="relative group">
+                <button 
+                  className="relative px-5 py-2 text-sm font-medium rounded-full transition-all duration-200 text-[#999999] cursor-not-allowed"
+                  disabled
+                >
+                  Past Launches
+                  <Lock className="inline-block w-3 h-3 ml-1 mb-0.5" />
+                </button>
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                  <div className="bg-[#2D2D2D] text-white text-xs px-3 py-2 rounded-lg whitespace-nowrap">
+                    Available after the first launch on Aug 4th
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-[#2D2D2D]"></div>
+                  </div>
+                </div>
+              </div>
             </div>
             <Link 
               href="/how-it-works" 

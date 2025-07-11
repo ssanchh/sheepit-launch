@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Twitter, Github, Mail } from 'lucide-react'
+import { Twitter, Github, Mail, Lock } from 'lucide-react'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
@@ -15,7 +15,7 @@ export default function Footer() {
               <h3 className="text-xl font-bold">Sheep It</h3>
             </div>
             <p className="text-gray-300 mb-4">
-              Weekly product launches for indie makers. Get your product in front of 50k+ early adopters.
+              Weekly product launches for indie makers. Get your product in front of early adopters.
             </p>
             <div className="flex gap-4">
               <a href="https://twitter.com/sheep_it" target="_blank" rel="noopener noreferrer" 
@@ -49,9 +49,10 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/winners" className="text-gray-300 hover:text-white transition-colors">
+                <span className="text-gray-500 cursor-not-allowed flex items-center gap-1">
                   Past Winners
-                </Link>
+                  <Lock className="w-3 h-3" />
+                </span>
               </li>
               <li>
                 <Link href="/about" className="text-gray-300 hover:text-white transition-colors">
