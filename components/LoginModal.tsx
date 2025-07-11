@@ -21,11 +21,11 @@ export default function LoginModal({ isOpen, onClose, redirectTo = '/' }: LoginM
   const router = useRouter()
 
   useEffect(() => {
-    if (user) {
+    if (user && isOpen) {
       onClose()
       router.push(redirectTo)
     }
-  }, [user, redirectTo, router, onClose])
+  }, [user, isOpen, redirectTo, router, onClose])
 
   useEffect(() => {
     if (isOpen) {
