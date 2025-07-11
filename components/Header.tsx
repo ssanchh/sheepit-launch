@@ -79,7 +79,6 @@ export default function Header() {
                   disabled
                 >
                   Latest Winners
-                  <Lock className="inline-block w-3 h-3 ml-1 mb-0.5" />
                 </button>
                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                   <div className="bg-[#2D2D2D] text-white text-xs px-3 py-2 rounded-lg whitespace-nowrap">
@@ -94,7 +93,6 @@ export default function Header() {
                   disabled
                 >
                   Past Launches
-                  <Lock className="inline-block w-3 h-3 ml-1 mb-0.5" />
                 </button>
                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                   <div className="bg-[#2D2D2D] text-white text-xs px-3 py-2 rounded-lg whitespace-nowrap">

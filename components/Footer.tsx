@@ -49,9 +49,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <span className="text-gray-500 cursor-not-allowed flex items-center gap-1">
+                <span className="text-gray-500 cursor-not-allowed">
                   Past Winners
-                  <Lock className="w-3 h-3" />
                 </span>
               </li>
               <li>
