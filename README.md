@@ -1,6 +1,6 @@
-# 🐑 Sheep It - Weekly Launchpad for Indie Startups
+# Sheep It 🐑
 
-A modern web application built with Next.js 14 that serves as a weekly product launch and discovery platform for indie startups, solo founders, and builders.
+A modern product launch platform where indie makers showcase their creations and compete for weekly prizes. Every week, the community votes for their favorite products, with the top 3 winning featured placement in our 50k+ subscriber newsletter.
 
 ## 🚀 Features
 

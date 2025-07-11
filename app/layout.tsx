@@ -12,6 +12,11 @@ export const metadata: Metadata = {
   authors: [{ name: 'Sheep It Team' }],
   creator: 'Sheep It',
   publisher: 'Sheep It',
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/assets/images/logo.png',
+  },
   formatDetection: {
     email: false,
     address: false,
@@ -25,12 +30,21 @@ export const metadata: Metadata = {
     title: 'Sheep It - Weekly Launchpad for Indie Startups',
     description: 'A weekly product launch and discovery platform for small indie startups, solo founders, and builders.',
     siteName: 'Sheep It',
+    images: [
+      {
+        url: '/assets/images/logo.png',
+        width: 512,
+        height: 512,
+        alt: 'Sheep It Logo',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Sheep It - Weekly Launchpad for Indie Startups',
     description: 'A weekly product launch and discovery platform for small indie startups, solo founders, and builders.',
     creator: '@sheep_it',
+    images: ['/assets/images/logo.png'],
   },
   robots: {
     index: true,

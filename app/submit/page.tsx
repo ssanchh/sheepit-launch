@@ -1,428 +1,794 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, useRef } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '../../hooks/useAuth'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/utils/supabase/client'
 import { toast } from 'sonner'
-import { Upload, ExternalLink, ArrowLeft } from 'lucide-react'
-import Link from 'next/link'
+import { Upload, AlertCircle, Sparkles, Globe, Users, Image as ImageIcon, Twitter, X, Zap, Crown } from 'lucide-react'
+import Image from 'next/image'
+import Header from '../../components/Header'
 
-const productSchema = z.object({
-  name: z.string().min(1, 'Product name is required').max(50, 'Product name must be 50 characters or less'),
-  tagline: z.string().min(1, 'Tagline is required').max(120, 'Tagline must be 120 characters or less'),
-  description: z.string().min(10, 'Description must be at least 10 characters').max(500, 'Description must be 500 characters or less'),
-  website_url: z.string().url('Please enter a valid URL'),
-  video_url: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
-})
-
-type ProductFormData = z.infer<typeof productSchema>
+interface ProductDraft {
+  name: string
+  tagline: string
+  description: string
+  website_url: string
+  logo_file?: File
+  logo_preview?: string
+  video_url: string
+  featured_image_file?: File
+  featured_image_preview?: string
+  screenshot_files?: File[]
+  screenshot_previews?: string[]
+  twitter_url: string
+  team_type: 'solo' | 'team' | ''
+  primary_goal: string
+  categories: string[]
+}
 
 export default function SubmitPage() {
-  const [uploading, setUploading] = useState(false)
-  const [logoFile, setLogoFile] = useState<File | null>(null)
-  const [logoPreview, setLogoPreview] = useState<string | null>(null)
-  const [profileCompleted, setProfileCompleted] = useState<boolean | null>(null)
-  const [debugInfo, setDebugInfo] = useState<string[]>([])
-  const { user, loading } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const { user, loading: authLoading } = useAuth()
+  const [loading, setLoading] = useState(false)
+  const [categoryInput, setCategoryInput] = useState('')
+  const [profileCompleted, setProfileCompleted] = useState<boolean | null>(null)
+  const [activeSection, setActiveSection] = useState('basics')
+  
+  // Check for premium or featured flags
+  const isPremium = searchParams.get('premium') === 'true'
+  const isFeatured = searchParams.get('featured') === 'true'
+  const [product, setProduct] = useState<ProductDraft>({
+    name: '',
+    tagline: '',
+    description: '',
+    website_url: '',
+    video_url: '',
+    twitter_url: '',
+    screenshot_files: [],
+    screenshot_previews: [],
+    team_type: '',
+    primary_goal: '',
+    categories: []
+  })
+  const [errors, setErrors] = useState<Partial<Record<keyof ProductDraft, string>>>({})
 
-  // Debug logging function
-  const addDebugLog = (message: string) => {
-    console.log('[SUBMIT DEBUG]', message)
-    setDebugInfo(prev => [...prev, `${new Date().toLocaleTimeString()}: ${message}`])
-  }
+  // Refs for sections
+  const basicsRef = useRef<HTMLDivElement>(null)
+  const detailsRef = useRef<HTMLDivElement>(null)
+  const mediaRef = useRef<HTMLDivElement>(null)
+  const linksRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    addDebugLog('useEffect triggered')
-    addDebugLog(`loading: ${loading}, user: ${user ? 'exists' : 'null'}`)
-    
-    if (!loading && user) {
-      addDebugLog('Starting profile check')
-      checkProfileCompletion()
-    } else if (!loading && !user) {
-      addDebugLog('No user found, redirecting to login')
+    if (!authLoading && !user) {
+      router.push('/login')
+      return
     }
-  }, [user, loading])
+    
+    if (user) {
+      checkProfileCompletion()
+    }
+  }, [user, authLoading, router])
 
   const checkProfileCompletion = async () => {
-    addDebugLog('checkProfileCompletion called')
-    try {
-      addDebugLog('Making supabase query...')
-      const { data, error } = await supabase
-        .from('users')
-        .select('profile_completed')
-        .eq('id', user?.id)
-        .single()
-
-      addDebugLog(`Query result - data: ${JSON.stringify(data)}, error: ${JSON.stringify(error)}`)
-
-      if (error && error.code === 'PGRST116') {
-        addDebugLog('No profile record exists')
-        setProfileCompleted(false)
-        return
+    const supabase = createClient()
+    const { data, error } = await supabase
+      .from('users')
+      .select('profile_completed')
+      .eq('id', user?.id)
+      .single()
+    
+    if (data) {
+      setProfileCompleted(data.profile_completed || false)
+      if (!data.profile_completed) {
+        toast.error('Please complete your profile first')
+        router.push('/dashboard?tab=profile')
       }
-
-      if (data) {
-        addDebugLog(`Profile completed: ${data.profile_completed}`)
-        setProfileCompleted(data.profile_completed || false)
-      } else {
-        addDebugLog('No data returned')
-        setProfileCompleted(false)
-      }
-    } catch (error) {
-      addDebugLog(`Error in checkProfileCompletion: ${error}`)
-      setProfileCompleted(true) // Allow proceed on error
     }
   }
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm<ProductFormData>({
-    resolver: zodResolver(productSchema),
-  })
-
-  // Add timeout fallback
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (profileCompleted === null && user && !loading) {
-        addDebugLog('TIMEOUT: Forcing profile completion to true')
-        setProfileCompleted(true)
-      }
-    }, 5000) // 5 second timeout
-
-    return () => clearTimeout(timeout)
-  }, [profileCompleted, user, loading])
-
-  // Redirect to login if not authenticated
-  if (!loading && !user) {
-    addDebugLog('Redirecting to login - no user')
-    router.push('/login')
-    return null
+  const scrollToSection = (sectionId: string) => {
+    setActiveSection(sectionId)
+    const refs: Record<string, React.RefObject<HTMLDivElement>> = {
+      basics: basicsRef,
+      details: detailsRef,
+      media: mediaRef,
+      links: linksRef
+    }
+    
+    refs[sectionId]?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
-  // Show loading with debug info if profile completion is still being checked
-  if (profileCompleted === null && user && !loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <div className="text-center mb-8">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">Loading Submit Page...</h1>
-              <p className="text-gray-600 mb-4">Checking profile completion...</p>
-              
-              <div className="text-left bg-gray-100 p-4 rounded-md">
-                <h3 className="font-semibold mb-2">Debug Info:</h3>
-                <div className="text-sm text-gray-700 space-y-1 max-h-40 overflow-y-auto">
-                  {debugInfo.map((log, index) => (
-                    <div key={index}>{log}</div>
-                  ))}
-                </div>
-              </div>
-              
-              <button 
-                onClick={() => {
-                  addDebugLog('User clicked skip - forcing completion')
-                  setProfileCompleted(true)
-                }}
-                className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-              >
-                Skip Check & Continue
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
+  const sections = [
+    { id: 'basics', name: 'Basics', icon: Sparkles },
+    { id: 'details', name: 'Details', icon: Users },
+    { id: 'media', name: 'Media', icon: ImageIcon },
+    { id: 'links', name: 'Links', icon: Globe }
+  ]
+
+  const validateForm = (): boolean => {
+    const newErrors: Partial<Record<keyof ProductDraft, string>> = {}
+    
+    if (!product.name) newErrors.name = 'Product name is required'
+    if (!product.tagline) newErrors.tagline = 'Tagline is required'
+    if (product.tagline && product.tagline.length > 60) newErrors.tagline = 'Tagline must be 60 characters or less'
+    if (!product.description) newErrors.description = 'Description is required'
+    if (product.description && product.description.length < 50) newErrors.description = 'Description must be at least 50 characters'
+    if (!product.team_type) newErrors.team_type = 'Please select team type'
+    if (product.categories.length === 0) newErrors.categories = 'Add at least one category'
+    if (!product.website_url) newErrors.website_url = 'Website URL is required'
+    if (product.website_url && !isValidUrl(product.website_url)) newErrors.website_url = 'Please enter a valid URL'
+    
+    setErrors(newErrors)
+    
+    // Scroll to first error
+    if (Object.keys(newErrors).length > 0) {
+      const firstError = Object.keys(newErrors)[0]
+      if (['name', 'tagline'].includes(firstError)) scrollToSection('basics')
+      else if (['description', 'team_type', 'categories'].includes(firstError)) scrollToSection('details')
+      else if (['website_url'].includes(firstError)) scrollToSection('links')
+    }
+    
+    return Object.keys(newErrors).length === 0
   }
 
-
+  const isValidUrl = (url: string) => {
+    try {
+      new URL(url)
+      return true
+    } catch {
+      return false
+    }
+  }
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      if (file.size > 2 * 1024 * 1024) { // 2MB limit
-        toast.error('Logo file size must be less than 2MB')
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('Logo must be less than 5MB')
         return
       }
       
-      if (!file.type.startsWith('image/')) {
-        toast.error('Please upload an image file')
+      setProduct({ 
+        ...product, 
+        logo_file: file,
+        logo_preview: URL.createObjectURL(file)
+      })
+    }
+  }
+
+  const handleFeaturedImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error('Image must be less than 10MB')
         return
       }
+      
+      setProduct({ 
+        ...product, 
+        featured_image_file: file,
+        featured_image_preview: URL.createObjectURL(file)
+      })
+    }
+  }
 
-      setLogoFile(file)
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setLogoPreview(reader.result as string)
+  const handleScreenshotUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    const currentScreenshots = product.screenshot_files || []
+    
+    if (currentScreenshots.length + files.length > 3) {
+      toast.error('You can upload a maximum of 3 screenshots')
+      return
+    }
+    
+    const newFiles: File[] = []
+    const newPreviews: string[] = []
+    
+    for (const file of files) {
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error(`${file.name} is too large. Maximum size is 10MB`)
+        continue
       }
-      reader.readAsDataURL(file)
+      newFiles.push(file)
+      newPreviews.push(URL.createObjectURL(file))
+    }
+    
+    setProduct({
+      ...product,
+      screenshot_files: [...currentScreenshots, ...newFiles],
+      screenshot_previews: [...(product.screenshot_previews || []), ...newPreviews]
+    })
+  }
+
+  const removeScreenshot = (index: number) => {
+    const newFiles = [...(product.screenshot_files || [])]
+    const newPreviews = [...(product.screenshot_previews || [])]
+    
+    newFiles.splice(index, 1)
+    newPreviews.splice(index, 1)
+    
+    setProduct({
+      ...product,
+      screenshot_files: newFiles,
+      screenshot_previews: newPreviews
+    })
+  }
+
+  const handleAddCategory = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault()
+      const category = categoryInput.trim()
+      if (category && !product.categories.includes(category) && product.categories.length < 5) {
+        setProduct(prev => ({
+          ...prev,
+          categories: [...prev.categories, category]
+        }))
+        setCategoryInput('')
+        setErrors({ ...errors, categories: undefined })
+      }
     }
   }
 
-  const uploadLogo = async (): Promise<string | null> => {
-    if (!logoFile || !user) return null
-
-    setUploading(true)
-    const fileExt = logoFile.name.split('.').pop()
-    const fileName = `${user.id}/${Date.now()}.${fileExt}`
-
-    const { error } = await supabase.storage
-      .from('product-logos')
-      .upload(fileName, logoFile)
-
-    if (error) {
-      toast.error('Error uploading logo')
-      setUploading(false)
-      return null
-    }
-
-    const { data } = supabase.storage
-      .from('product-logos')
-      .getPublicUrl(fileName)
-
-    setUploading(false)
-    return data.publicUrl
+  const removeCategory = (categoryToRemove: string) => {
+    setProduct(prev => ({
+      ...prev,
+      categories: prev.categories.filter(c => c !== categoryToRemove)
+    }))
   }
 
-  const onSubmit = async (data: ProductFormData) => {
-    if (!user) return
-
+  const handleSubmit = async () => {
+    if (!validateForm()) return
+    
+    setLoading(true)
+    const supabase = createClient()
+    
     try {
-      // First, get the current active week
-      const { data: weekData, error: weekError } = await supabase
-        .from('weeks')
-        .select('id')
-        .eq('active', true)
-        .single()
-
-      if (weekError || !weekData) {
-        toast.error('No active week found. Please try again later.')
-        return
-      }
-
-      let logoUrl = null
+      let logo_url = ''
+      let featured_image_url = ''
+      let screenshot_urls: string[] = []
       
-      if (logoFile) {
-        logoUrl = await uploadLogo()
-        if (!logoUrl) return // Upload failed
+      // Upload logo if provided
+      if (product.logo_file) {
+        const fileExt = product.logo_file.name.split('.').pop()
+        const fileName = `${Math.random()}.${fileExt}`
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('product-logos')
+          .upload(fileName, product.logo_file)
+        
+        if (uploadError) throw uploadError
+        
+        const { data: { publicUrl } } = supabase.storage
+          .from('product-logos')
+          .getPublicUrl(fileName)
+        
+        logo_url = publicUrl
       }
-
+      
+      // Upload featured image if provided
+      if (product.featured_image_file) {
+        const fileExt = product.featured_image_file.name.split('.').pop()
+        const fileName = `featured-${Math.random()}.${fileExt}`
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('product-logos')
+          .upload(fileName, product.featured_image_file)
+        
+        if (uploadError) throw uploadError
+        
+        const { data: { publicUrl } } = supabase.storage
+          .from('product-logos')
+          .getPublicUrl(fileName)
+        
+        featured_image_url = publicUrl
+      }
+      
+      // Upload screenshots if provided
+      if (product.screenshot_files && product.screenshot_files.length > 0) {
+        for (const file of product.screenshot_files) {
+          const fileExt = file.name.split('.').pop()
+          const fileName = `screenshot-${Math.random()}.${fileExt}`
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('product-logos')
+            .upload(fileName, file)
+          
+          if (uploadError) throw uploadError
+          
+          const { data: { publicUrl } } = supabase.storage
+            .from('product-logos')
+            .getPublicUrl(fileName)
+          
+          screenshot_urls.push(publicUrl)
+        }
+      }
+      
       const { error } = await supabase
         .from('products')
-        .insert([
-          {
-            name: data.name,
-            tagline: data.tagline,
-            description: data.description,
-            website_url: data.website_url,
-            video_url: data.video_url || null,
-            logo_url: logoUrl,
-            created_by: user.id,
-            week_id: weekData.id,
-            status: 'pending', // Requires admin approval
-          },
-        ])
-
-      if (error) {
-        toast.error('Error submitting product')
-        console.error('Error:', error)
-        return
-      }
-
-      toast.success('Product submitted successfully! It will be reviewed by our team.')
-      reset()
-      setLogoFile(null)
-      setLogoPreview(null)
-      router.push('/')
-    } catch (error) {
-      toast.error('Something went wrong. Please try again.')
-      console.error('Error:', error)
+        .insert([{
+          name: product.name,
+          tagline: product.tagline,
+          description: product.description,
+          website_url: product.website_url,
+          logo_url,
+          video_url: product.video_url,
+          featured_image_url,
+          screenshot_urls,
+          twitter_url: product.twitter_url,
+          team_type: product.team_type,
+          primary_goal: product.primary_goal,
+          categories: product.categories,
+          created_by: user?.id,
+          status: 'pending'
+        }])
+      
+      if (error) throw error
+      
+      toast.success('Product submitted for review!')
+      router.push('/dashboard?tab=products')
+    } catch (error: any) {
+      console.error('Error submitting product:', error)
+      toast.error(error.message || 'Failed to submit product')
+    } finally {
+      setLoading(false)
     }
   }
 
-  if (loading) {
+  if (authLoading || profileCompleted === null) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 mb-4">Loading authentication...</p>
-          <div className="text-sm text-gray-500">
-            This might indicate an issue with the useAuth hook
-          </div>
+      <div className="min-h-screen bg-[#FDFCFA]">
+        <Header />
+        <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#2D2D2D]"></div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
-      <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-8">
-          <Link
-            href="/"
-            className="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-500 mb-4"
-          >
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Back to home
-          </Link>
-          
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Submit Your Product</h1>
-          <p className="text-gray-600">
-            Get your indie startup in front of the community this week
-          </p>
+    <div className="min-h-screen bg-[#FDFCFA]">
+      <Header />
+      
+      <div className="max-w-7xl mx-auto px-6 py-8 flex gap-8">
+        {/* Sidebar Navigation */}
+        <div className="hidden lg:block w-64 shrink-0">
+          <div className="sticky top-8">
+            <h2 className="text-sm font-semibold text-[#999999] uppercase tracking-wider mb-6">Product Information</h2>
+            <nav className="space-y-1">
+              {sections.map((section) => {
+                const Icon = section.icon
+                return (
+                  <button
+                    key={section.id}
+                    onClick={() => scrollToSection(section.id)}
+                    className={`w-full text-left px-4 py-3 rounded-lg flex items-center space-x-3 transition-all ${
+                      activeSection === section.id
+                        ? 'bg-[#2D2D2D] text-white'
+                        : 'text-[#666666] hover:bg-[#F5F5F5] hover:text-[#2D2D2D]'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span className="font-medium">{section.name}</span>
+                  </button>
+                )
+              })}
+            </nav>
+          </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                Product Name *
-              </label>
-              <input
-                type="text"
-                id="name"
-                {...register('name')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="My Awesome Product"
-              />
-              {errors.name && (
-                <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
-              )}
-            </div>
+        {/* Main Content */}
+        <div className="flex-1 max-w-3xl">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-[#2D2D2D] mb-2">Submit Your Product</h1>
+            <p className="text-[#666666]">Share your creation with thousands of makers and early adopters</p>
+          </div>
 
-            <div>
-              <label htmlFor="tagline" className="block text-sm font-medium text-gray-700 mb-2">
-                Tagline *
-              </label>
-              <input
-                type="text"
-                id="tagline"
-                {...register('tagline')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="A brief, catchy description of your product"
-              />
-              {errors.tagline && (
-                <p className="mt-1 text-sm text-red-600">{errors.tagline.message}</p>
-              )}
-            </div>
-
-            <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-                Description *
-              </label>
-              <textarea
-                id="description"
-                rows={4}
-                {...register('description')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Tell us more about your product, what problem it solves, and why people should care..."
-              />
-              {errors.description && (
-                <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
-              )}
-            </div>
-
-            <div>
-              <label htmlFor="website_url" className="block text-sm font-medium text-gray-700 mb-2">
-                Website URL *
-              </label>
-              <div className="relative">
-                <input
-                  type="url"
-                  id="website_url"
-                  {...register('website_url')}
-                  className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="https://myproduct.com"
-                />
-                <ExternalLink className="absolute right-3 top-2.5 h-4 w-4 text-gray-400" />
-              </div>
-              {errors.website_url && (
-                <p className="mt-1 text-sm text-red-600">{errors.website_url.message}</p>
-              )}
-            </div>
-
-            <div>
-              <label htmlFor="video_url" className="block text-sm font-medium text-gray-700 mb-2">
-                Video URL (optional)
-              </label>
-              <div className="relative">
-                <input
-                  type="url"
-                  id="video_url"
-                  {...register('video_url')}
-                  className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="https://youtube.com/watch?v=..."
-                />
-                <ExternalLink className="absolute right-3 top-2.5 h-4 w-4 text-gray-400" />
-              </div>
-              {errors.video_url && (
-                <p className="mt-1 text-sm text-red-600">{errors.video_url.message}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Logo (optional)
-              </label>
-              <div className="flex items-center space-x-4">
-                <div className="flex-1">
-                  <label htmlFor="logo-upload" className="cursor-pointer">
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-indigo-500 transition-colors">
-                      <Upload className="mx-auto h-8 w-8 text-gray-400" />
-                      <p className="mt-2 text-sm text-gray-600">
-                        Click to upload or drag and drop
-                      </p>
-                      <p className="text-xs text-gray-500">PNG, JPG, GIF up to 2MB</p>
-                    </div>
-                    <input
-                      id="logo-upload"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleLogoUpload}
-                      className="hidden"
-                    />
-                  </label>
+          <div className="space-y-12">
+            {/* Basics Section */}
+            <section ref={basicsRef} id="basics" className="bg-white rounded-2xl p-8 shadow-sm border border-[#E5E5E5]">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="w-10 h-10 bg-[#2D2D2D] rounded-lg flex items-center justify-center">
+                  <Sparkles className="w-5 h-5 text-white" />
                 </div>
-                {logoPreview && (
-                  <div className="w-20 h-20 rounded-lg overflow-hidden border-2 border-gray-200">
-                    <img
-                      src={logoPreview}
-                      alt="Logo preview"
-                      className="w-full h-full object-cover"
+                <h2 className="text-xl font-bold text-[#2D2D2D]">The Basics</h2>
+              </div>
+              
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
+                    Product Name
+                  </label>
+                  <input
+                    type="text"
+                    value={product.name}
+                    onChange={(e) => setProduct({ ...product, name: e.target.value })}
+                    className={`w-full px-4 py-3 rounded-lg border ${
+                      errors.name ? 'border-red-300' : 'border-[#E5E5E5]'
+                    } focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent`}
+                    placeholder="My Awesome Product"
+                  />
+                  {errors.name && (
+                    <p className="mt-1 text-sm text-red-600 flex items-center">
+                      <AlertCircle className="w-4 h-4 mr-1" />
+                      {errors.name}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
+                    Tagline
+                    <span className="text-[#999999] ml-2">({product.tagline.length}/60)</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={product.tagline}
+                    onChange={(e) => setProduct({ ...product, tagline: e.target.value })}
+                    maxLength={60}
+                    className={`w-full px-4 py-3 rounded-lg border ${
+                      errors.tagline ? 'border-red-300' : 'border-[#E5E5E5]'
+                    } focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent`}
+                    placeholder="A short and catchy description"
+                  />
+                  {errors.tagline && (
+                    <p className="mt-1 text-sm text-red-600 flex items-center">
+                      <AlertCircle className="w-4 h-4 mr-1" />
+                      {errors.tagline}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </section>
+
+            {/* Details Section */}
+            <section ref={detailsRef} id="details" className="bg-white rounded-2xl p-8 shadow-sm border border-[#E5E5E5]">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="w-10 h-10 bg-[#2D2D2D] rounded-lg flex items-center justify-center">
+                  <Users className="w-5 h-5 text-white" />
+                </div>
+                <h2 className="text-xl font-bold text-[#2D2D2D]">Product Details</h2>
+              </div>
+
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
+                    Description
+                    <span className="text-[#999999] ml-2">({product.description.length} characters)</span>
+                  </label>
+                  <textarea
+                    value={product.description}
+                    onChange={(e) => setProduct({ ...product, description: e.target.value })}
+                    rows={6}
+                    className={`w-full px-4 py-3 rounded-lg border ${
+                      errors.description ? 'border-red-300' : 'border-[#E5E5E5]'
+                    } focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none`}
+                    placeholder="Explain what your product does, who it's for, and what makes it unique..."
+                  />
+                  {errors.description && (
+                    <p className="mt-1 text-sm text-red-600 flex items-center">
+                      <AlertCircle className="w-4 h-4 mr-1" />
+                      {errors.description}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
+                    Team Type
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setProduct({ ...product, team_type: 'solo' })}
+                      className={`px-4 py-3 rounded-lg border ${
+                        product.team_type === 'solo' 
+                          ? 'border-[#2D2D2D] bg-[#F5F5F5] text-[#2D2D2D]' 
+                          : 'border-[#E5E5E5] text-[#666666] hover:border-[#D5D5D5]'
+                      } font-medium transition-all`}
+                    >
+                      👤 Solo Founder
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setProduct({ ...product, team_type: 'team' })}
+                      className={`px-4 py-3 rounded-lg border ${
+                        product.team_type === 'team' 
+                          ? 'border-[#2D2D2D] bg-[#F5F5F5] text-[#2D2D2D]' 
+                          : 'border-[#E5E5E5] text-[#666666] hover:border-[#D5D5D5]'
+                      } font-medium transition-all`}
+                    >
+                      👥 Team
+                    </button>
+                  </div>
+                  {errors.team_type && (
+                    <p className="mt-1 text-sm text-red-600 flex items-center">
+                      <AlertCircle className="w-4 h-4 mr-1" />
+                      {errors.team_type}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
+                    Categories
+                    <span className="text-[#999999] ml-2">(Up to 5 tags)</span>
+                  </label>
+                  <div className="space-y-3">
+                    <input
+                      type="text"
+                      value={categoryInput}
+                      onChange={(e) => setCategoryInput(e.target.value)}
+                      onKeyDown={handleAddCategory}
+                      className="w-full px-4 py-3 rounded-lg border border-[#E5E5E5] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      placeholder="Type a category and press Enter (e.g., SaaS, Productivity, AI)"
+                      disabled={product.categories.length >= 5}
+                    />
+                    {product.categories.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {product.categories.map((category) => (
+                          <span
+                            key={category}
+                            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-[#2D2D2D] text-white"
+                          >
+                            {category}
+                            <button
+                              onClick={() => removeCategory(category)}
+                              className="ml-2 hover:text-red-300"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  {errors.categories && (
+                    <p className="mt-1 text-sm text-red-600 flex items-center">
+                      <AlertCircle className="w-4 h-4 mr-1" />
+                      {errors.categories}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
+                    What's your primary goal? (optional)
+                  </label>
+                  <select
+                    value={product.primary_goal}
+                    onChange={(e) => setProduct({ ...product, primary_goal: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg border border-[#E5E5E5] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  >
+                    <option value="">Select a goal...</option>
+                    <option value="traffic">Get more traffic</option>
+                    <option value="users">Acquire early users</option>
+                    <option value="feedback">Collect feedback</option>
+                    <option value="validation">Validate the idea</option>
+                    <option value="exposure">Build brand awareness</option>
+                    <option value="network">Connect with other makers</option>
+                  </select>
+                </div>
+              </div>
+            </section>
+
+            {/* Media Section */}
+            <section ref={mediaRef} id="media" className="bg-white rounded-2xl p-8 shadow-sm border border-[#E5E5E5]">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="w-10 h-10 bg-[#2D2D2D] rounded-lg flex items-center justify-center">
+                  <ImageIcon className="w-5 h-5 text-white" />
+                </div>
+                <h2 className="text-xl font-bold text-[#2D2D2D]">Media</h2>
+              </div>
+
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
+                    Logo (optional)
+                  </label>
+                  <div className="flex items-center space-x-4">
+                    {product.logo_preview ? (
+                      <div className="relative">
+                        <Image
+                          src={product.logo_preview}
+                          alt="Logo preview"
+                          width={80}
+                          height={80}
+                          className="rounded-lg border border-[#E5E5E5]"
+                        />
+                        <button
+                          onClick={() => setProduct({ ...product, logo_file: undefined, logo_preview: undefined })}
+                          className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="w-20 h-20 border-2 border-dashed border-[#E5E5E5] rounded-lg flex items-center justify-center cursor-pointer hover:border-[#D5D5D5] transition-colors">
+                        <Upload className="w-6 h-6 text-[#999999]" />
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleLogoUpload}
+                          className="hidden"
+                        />
+                      </label>
+                    )}
+                    <div className="text-sm text-[#666666]">
+                      <p>PNG, JPG up to 5MB</p>
+                      <p>Recommended: 200x200px</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
+                    Featured Image or Screenshot
+                    <span className="text-[#999999] ml-2">(Recommended)</span>
+                  </label>
+                  {product.featured_image_preview ? (
+                    <div className="relative">
+                      <Image
+                        src={product.featured_image_preview}
+                        alt="Featured image preview"
+                        width={600}
+                        height={338}
+                        className="w-full rounded-lg border border-[#E5E5E5] object-cover"
+                      />
+                      <button
+                        onClick={() => setProduct({ ...product, featured_image_file: undefined, featured_image_preview: undefined })}
+                        className="absolute top-3 right-3 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center text-sm hover:bg-red-600"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ) : (
+                    <label className="block w-full border-2 border-dashed border-[#E5E5E5] rounded-lg p-8 text-center cursor-pointer hover:border-[#D5D5D5] transition-colors">
+                      <Upload className="w-8 h-8 text-[#999999] mx-auto mb-2" />
+                      <p className="text-sm text-[#666666]">Upload a screenshot or image</p>
+                      <p className="text-xs text-[#999999] mt-1">PNG, JPG up to 10MB (16:9 ratio recommended)</p>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFeaturedImageUpload}
+                        className="hidden"
+                      />
+                    </label>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
+                    Product Screenshots
+                    <span className="text-[#999999] ml-2">(Up to 3, optional)</span>
+                  </label>
+                  <div className="space-y-3">
+                    {/* Display uploaded screenshots */}
+                    {product.screenshot_previews && product.screenshot_previews.length > 0 && (
+                      <div className="grid grid-cols-3 gap-3">
+                        {product.screenshot_previews.map((preview, index) => (
+                          <div key={index} className="relative group">
+                            <Image
+                              src={preview}
+                              alt={`Screenshot ${index + 1}`}
+                              width={200}
+                              height={112}
+                              className="w-full h-24 object-cover rounded-lg border border-[#E5E5E5]"
+                            />
+                            <button
+                              onClick={() => removeScreenshot(index)}
+                              className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* Upload button if less than 3 screenshots */}
+                    {(!product.screenshot_files || product.screenshot_files.length < 3) && (
+                      <label className="block w-full border-2 border-dashed border-[#E5E5E5] rounded-lg p-4 text-center cursor-pointer hover:border-[#D5D5D5] transition-colors">
+                        <Upload className="w-6 h-6 text-[#999999] mx-auto mb-2" />
+                        <p className="text-sm text-[#666666]">Add screenshots</p>
+                        <p className="text-xs text-[#999999] mt-1">PNG, JPG up to 10MB each</p>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={handleScreenshotUpload}
+                          className="hidden"
+                        />
+                      </label>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Links Section */}
+            <section ref={linksRef} id="links" className="bg-white rounded-2xl p-8 shadow-sm border border-[#E5E5E5]">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="w-10 h-10 bg-[#2D2D2D] rounded-lg flex items-center justify-center">
+                  <Globe className="w-5 h-5 text-white" />
+                </div>
+                <h2 className="text-xl font-bold text-[#2D2D2D]">Links</h2>
+              </div>
+
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
+                    Website URL
+                  </label>
+                  <input
+                    type="url"
+                    value={product.website_url}
+                    onChange={(e) => setProduct({ ...product, website_url: e.target.value })}
+                    className={`w-full px-4 py-3 rounded-lg border ${
+                      errors.website_url ? 'border-red-300' : 'border-[#E5E5E5]'
+                    } focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent`}
+                    placeholder="https://myproduct.com"
+                  />
+                  {errors.website_url && (
+                    <p className="mt-1 text-sm text-red-600 flex items-center">
+                      <AlertCircle className="w-4 h-4 mr-1" />
+                      {errors.website_url}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
+                    Demo Video URL (optional)
+                  </label>
+                  <input
+                    type="url"
+                    value={product.video_url}
+                    onChange={(e) => setProduct({ ...product, video_url: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg border border-[#E5E5E5] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    placeholder="https://youtube.com/watch?v=..."
+                  />
+                  <p className="mt-1 text-sm text-[#666666]">
+                    YouTube, Vimeo, or Loom links work best
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[#2D2D2D] mb-2">
+                    Twitter/X (optional)
+                  </label>
+                  <div className="relative">
+                    <Twitter className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#999999]" />
+                    <input
+                      type="url"
+                      value={product.twitter_url}
+                      onChange={(e) => setProduct({ ...product, twitter_url: e.target.value })}
+                      className="w-full pl-11 pr-4 py-3 rounded-lg border border-[#E5E5E5] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      placeholder="https://twitter.com/yourhandle"
                     />
                   </div>
-                )}
+                </div>
               </div>
-            </div>
+            </section>
+          </div>
 
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="font-medium text-gray-900 mb-2">Submission Guidelines</h3>
-              <ul className="text-sm text-gray-600 space-y-1">
-                <li>• Products must be functional and publicly accessible</li>
-                <li>• No spam, adult content, or illegal products</li>
-                <li>• All submissions require approval before going live</li>
-                <li>• You can only submit one product per week</li>
-              </ul>
-            </div>
-
+          {/* Submit Button */}
+          <div className="mt-12 flex justify-between items-center">
             <button
-              type="submit"
-              disabled={isSubmitting || uploading}
-              className="w-full bg-indigo-600 text-white py-3 px-4 rounded-md font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+              onClick={() => router.push('/dashboard')}
+              className="px-6 py-3 text-[#666666] hover:text-[#2D2D2D] transition-colors"
             >
-              {isSubmitting || uploading ? 'Submitting...' : 'Submit Product'}
+              Cancel
             </button>
-          </form>
+            
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="px-8 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+            >
+              {loading ? 'Submitting...' : 'Submit for Review'}
+            </button>
+          </div>
         </div>
       </div>
     </div>
   )
-} 
+}

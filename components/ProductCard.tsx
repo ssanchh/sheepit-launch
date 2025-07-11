@@ -4,21 +4,29 @@ import { useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../lib/supabase'
 import { ProductWithVotes } from '../types/database'
-import { Heart, MessageCircle, ExternalLink, Play } from 'lucide-react'
+import { Heart, ExternalLink, MessageCircle, Tag, Crown } from 'lucide-react'
 import { toast } from 'sonner'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 interface ProductCardProps {
   product: ProductWithVotes
   rank: number
   onVoteUpdate: () => void
+  totalProducts?: number
+  leadingVotes?: number
+  isTop3?: boolean
+  isFeatured?: boolean
 }
 
-export default function ProductCard({ product, rank, onVoteUpdate }: ProductCardProps) {
+export default function ProductCard({ product, rank, onVoteUpdate, totalProducts = 0, leadingVotes = 0, isTop3 = false, isFeatured = false }: ProductCardProps) {
   const [isVoting, setIsVoting] = useState(false)
   const { user } = useAuth()
+  const router = useRouter()
 
-  const handleVote = async () => {
+  const handleVote = async (e: React.MouseEvent) => {
+    e.stopPropagation()
+    
     if (!user) {
       toast.error('Please sign in to vote')
       return
@@ -27,25 +35,42 @@ export default function ProductCard({ product, rank, onVoteUpdate }: ProductCard
     setIsVoting(true)
     
     try {
-      const { error } = await supabase
-        .from('votes')
-        .insert([
-          {
-            user_id: user.id,
-            product_id: product.id,
-            week_id: product.week_id,
-          },
-        ])
+      // Check if user has already voted
+      if (product.user_vote) {
+        // Unvote - remove the vote
+        const { error } = await supabase
+          .from('votes')
+          .delete()
+          .eq('id', product.user_vote.id)
 
-      if (error) {
-        if (error.code === '23505') {
-          toast.error('You\'ve already voted for this product')
+        if (error) {
+          toast.error('Error removing vote. Please try again.')
         } else {
-          toast.error('Error voting. Please try again.')
+          toast.success('Vote removed!')
+          onVoteUpdate()
         }
       } else {
-        toast.success('Vote recorded!')
-        onVoteUpdate()
+        // Vote - add new vote
+        const { error } = await supabase
+          .from('votes')
+          .insert([
+            {
+              user_id: user.id,
+              product_id: product.id,
+              week_id: product.week_id,
+            },
+          ])
+
+        if (error) {
+          if (error.code === '23505') {
+            toast.error('You\'ve already voted for this product')
+          } else {
+            toast.error('Error voting. Please try again.')
+          }
+        } else {
+          toast.success('Vote recorded!')
+          onVoteUpdate()
+        }
       }
     } catch (error) {
       toast.error('Something went wrong. Please try again.')
@@ -55,119 +80,141 @@ export default function ProductCard({ product, rank, onVoteUpdate }: ProductCard
   }
 
   const getRankBadge = () => {
-    if (rank === 1) return 'bg-yellow-100 text-yellow-800 border-yellow-200'
-    if (rank === 2) return 'bg-gray-100 text-gray-800 border-gray-200'
-    if (rank === 3) return 'bg-orange-100 text-orange-800 border-orange-200'
-    return 'bg-blue-100 text-blue-800 border-blue-200'
+    if (rank === 1) return { text: '1st Place', color: '#FFD700' }
+    if (rank === 2) return { text: '2nd Place', color: '#C0C0C0' }
+    if (rank === 3) return { text: '3rd Place', color: '#CD7F32' }
+    return null
   }
 
-  const getRankText = () => {
-    if (rank === 1) return '1st Place'
-    if (rank === 2) return '2nd Place'
-    if (rank === 3) return '3rd Place'
-    return `${rank}th Place`
+  const rankBadge = getRankBadge()
+
+  const handleProductClick = () => {
+    router.push(`/product/${product.id}`)
+  }
+
+  const handleCommentClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    router.push(`/product/${product.id}`)
   }
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6 hover:border-gray-300 transition-colors">
-      <div className="flex items-start justify-between">
-        {/* Rank Badge */}
-        <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getRankBadge()}`}>
-          {getRankText()}
+    <div 
+      className={`relative bg-white rounded-xl border transition-all cursor-pointer group hover:bg-gray-50 ${
+        isFeatured ? 'border-orange-300 border-2 shadow-md' : 'border-[#E5E5E5] hover:border-[#D5D5D5]'
+      }`}
+      onClick={handleProductClick}
+    >
+      {/* Rank Badge */}
+      {rankBadge && !isFeatured && (
+        <div 
+          className="absolute -top-2.5 left-4 px-2.5 py-0.5 bg-[#2D2D2D] text-white rounded-full text-xs font-medium"
+        >
+          {rankBadge.text}
         </div>
+      )}
+      <div className="p-4">
+        <div className="flex items-start gap-4">
+          {/* Left: Rank + Logo */}
+          <div className="flex items-center gap-3">
+            {/* Rank Number */}
+            {!isFeatured && (
+              <div className="flex items-center justify-center w-8">
+                <span className="text-sm font-medium text-[#666666]">
+                  {rank}
+                </span>
+              </div>
+            )}
 
-        {/* Featured Badge */}
-        {product.featured && (
-          <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
-            Featured
+            {/* Logo */}
+            {product.logo_url ? (
+              <Image
+                src={product.logo_url}
+                alt={`${product.name} logo`}
+                width={48}
+                height={48}
+                className="rounded-lg border border-[#E5E5E5]"
+              />
+            ) : (
+              <div className="w-12 h-12 bg-[#F5F5F5] rounded-lg flex items-center justify-center border border-[#E5E5E5]">
+                <span className="text-[#666666] font-medium">{product.name.charAt(0)}</span>
+              </div>
+            )}
           </div>
-        )}
-      </div>
 
-      <div className="mt-4 flex items-start space-x-4">
-        {/* Product Logo */}
-        <div className="flex-shrink-0">
-          {product.logo_url ? (
-            <Image
-              src={product.logo_url}
-              alt={`${product.name} logo`}
-              width={64}
-              height={64}
-              className="rounded-lg border border-gray-200"
-            />
-          ) : (
-            <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
-              <span className="text-gray-400 text-sm">No Logo</span>
-            </div>
-          )}
-        </div>
+          {/* Middle: Product Info */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base font-semibold text-[#2D2D2D] group-hover:text-orange-600 transition-colors">
+                    {product.name}
+                  </h3>
+                  {(product as any).is_featured_paid && (
+                    <span className="flex items-center gap-1 bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full text-xs font-medium">
+                      <Crown className="w-3 h-3" />
+                      Featured
+                    </span>
+                  )}
+                  <a
+                    href={product.website_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5 text-[#999999] hover:text-orange-600 transition-colors" />
+                  </a>
+                </div>
+                <p className="text-sm text-[#666666] mt-1 line-clamp-1">
+                  {product.tagline}
+                </p>
+                {product.categories && product.categories.length > 0 && (
+                  <div className="flex items-center gap-1.5 mt-2">
+                    <Tag className="w-3 h-3 text-[#999999]" />
+                    <div className="flex gap-1">
+                      {product.categories.slice(0, 2).map((category) => (
+                        <span key={category} className="px-1.5 py-0.5 bg-[#F5F5F5] rounded text-xs text-[#666666]">
+                          {category}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
 
-        {/* Product Info */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center space-x-2">
-            <h3 className="text-lg font-semibold text-gray-900">
-              {product.name}
-            </h3>
-            <div className="flex items-center space-x-1 text-sm text-gray-500">
-              <span>by</span>
-              <span className="font-medium">@{product.created_by}</span>
+              {/* Right: Actions */}
+              <div className="flex items-center gap-2 ml-4">
+                {/* Vote Button */}
+                <button
+                  onClick={handleVote}
+                  disabled={isVoting}
+                  className={`flex flex-col items-center justify-center w-14 h-14 rounded-lg text-sm font-medium border-2 transition-all ${
+                    product.user_vote
+                      ? 'bg-orange-50 text-orange-600 border-orange-300 hover:border-orange-400'
+                      : 'bg-white text-[#666666] border-[#E5E5E5] hover:border-orange-300 hover:text-orange-600'
+                  }`}
+                >
+                  <Heart 
+                    className={`w-5 h-5 ${product.user_vote ? 'fill-orange-600' : ''}`}
+                  />
+                  <span className="text-xs font-semibold mt-1">
+                    {isVoting ? '...' : product.vote_count}
+                  </span>
+                </button>
+
+                {/* Comments */}
+                <button
+                  onClick={handleCommentClick}
+                  className="flex flex-col items-center justify-center w-14 h-14 rounded-lg text-sm font-medium bg-white text-[#666666] border-2 border-[#E5E5E5] hover:border-orange-300 hover:text-orange-600 transition-all"
+                >
+                  <MessageCircle className="w-5 h-5" />
+                  <span className="text-xs font-semibold mt-1">{product.comment_count || 0}</span>
+                </button>
+              </div>
             </div>
           </div>
-          
-          <p className="text-sm text-gray-600 mt-1">
-            {product.tagline}
-          </p>
-          
-          <p className="text-sm text-gray-700 mt-2 line-clamp-2">
-            {product.description}
-          </p>
-        </div>
-
-        {/* Actions */}
-        <div className="flex items-center space-x-2">
-          {/* Vote Button */}
-          <button
-            onClick={handleVote}
-            disabled={isVoting || product.user_vote !== null}
-            className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-              product.user_vote
-                ? 'bg-red-50 text-red-700 border border-red-200 cursor-not-allowed'
-                : 'bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100'
-            }`}
-          >
-            <Heart className={`h-4 w-4 ${product.user_vote ? 'fill-current' : ''}`} />
-            <span>{product.vote_count}</span>
-          </button>
-
-          {/* Comments */}
-          <button className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100">
-            <MessageCircle className="h-4 w-4" />
-            <span>0</span>
-          </button>
-
-          {/* External Link */}
-          <a
-            href={product.website_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium bg-black text-white hover:bg-gray-800"
-          >
-            <ExternalLink className="h-4 w-4" />
-          </a>
-
-          {/* Video Link */}
-          {product.video_url && (
-            <a
-              href={product.video_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100"
-            >
-              <Play className="h-4 w-4" />
-            </a>
-          )}
         </div>
       </div>
     </div>
   )
-} 
+}

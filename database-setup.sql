@@ -55,6 +55,11 @@ CREATE TABLE products (
   approved_at TIMESTAMP,
   approved_by UUID REFERENCES users(id),
   
+  -- Queue Management System
+  queue_position INTEGER,
+  launch_week_id UUID REFERENCES weeks(id),
+  is_live BOOLEAN DEFAULT false,
+  
   -- Timestamps
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
@@ -91,6 +96,17 @@ CREATE TABLE partners (
   created_at TIMESTAMP DEFAULT NOW()
 );
 
+-- Create comments table
+CREATE TABLE comments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  content TEXT NOT NULL,
+  user_id UUID NOT NULL REFERENCES users(id),
+  product_id UUID NOT NULL REFERENCES products(id),
+  week_id UUID NOT NULL REFERENCES weeks(id),
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
 -- =============================================
 -- Enable Row Level Security (RLS)
 -- =============================================
@@ -101,6 +117,7 @@ ALTER TABLE votes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE winners ENABLE ROW LEVEL SECURITY;
 ALTER TABLE partners ENABLE ROW LEVEL SECURITY;
 ALTER TABLE weeks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
 
 -- =============================================
 -- Create RLS Policies
@@ -164,6 +181,19 @@ CREATE POLICY "Anyone can view active partners" ON partners
 CREATE POLICY "Anyone can view weeks" ON weeks
   FOR SELECT USING (true);
 
+-- Comments table policies
+CREATE POLICY "Anyone can view comments" ON comments
+  FOR SELECT USING (true);
+
+CREATE POLICY "Users can insert own comments" ON comments
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own comments" ON comments
+  FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own comments" ON comments
+  FOR DELETE USING (auth.uid() = user_id);
+
 -- =============================================
 -- Create Indexes for Performance
 -- =============================================
@@ -171,12 +201,18 @@ CREATE POLICY "Anyone can view weeks" ON weeks
 CREATE INDEX idx_products_week_status ON products(week_id, status);
 CREATE INDEX idx_products_created_by ON products(created_by);
 CREATE INDEX idx_products_status ON products(status);
+CREATE INDEX idx_products_queue_position ON products(queue_position);
+CREATE INDEX idx_products_launch_week ON products(launch_week_id);
+CREATE INDEX idx_products_is_live ON products(is_live);
 CREATE INDEX idx_votes_product_week ON votes(product_id, week_id);
 CREATE INDEX idx_votes_user_week ON votes(user_id, week_id);
 CREATE INDEX idx_winners_week ON winners(week_id);
 CREATE INDEX idx_weeks_active ON weeks(active);
 CREATE INDEX idx_users_handle ON users(handle);
 CREATE INDEX idx_users_profile_completed ON users(profile_completed);
+CREATE INDEX idx_comments_product_id ON comments(product_id);
+CREATE INDEX idx_comments_user_id ON comments(user_id);
+CREATE INDEX idx_comments_created_at ON comments(created_at);
 
 -- =============================================
 -- Create Functions for Common Queries
@@ -223,6 +259,109 @@ BEGIN
   WHERE id = user_uuid;
   
   RETURN COALESCE(completed, false);
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to add product to queue when approved
+CREATE OR REPLACE FUNCTION add_to_queue(product_uuid UUID)
+RETURNS INTEGER AS $$
+DECLARE
+  next_position INTEGER;
+BEGIN
+  -- Get the next available queue position
+  SELECT COALESCE(MAX(queue_position), 0) + 1 INTO next_position
+  FROM products
+  WHERE status = 'approved' AND queue_position IS NOT NULL;
+  
+  -- Update the product with queue position
+  UPDATE products 
+  SET queue_position = next_position
+  WHERE id = product_uuid;
+  
+  RETURN next_position;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to reorder queue positions
+CREATE OR REPLACE FUNCTION reorder_queue(product_uuid UUID, new_position INTEGER)
+RETURNS VOID AS $$
+DECLARE
+  old_position INTEGER;
+BEGIN
+  -- Get current position
+  SELECT queue_position INTO old_position FROM products WHERE id = product_uuid;
+  
+  IF old_position IS NULL THEN
+    RETURN;
+  END IF;
+  
+  -- If moving up in queue (lower position number)
+  IF new_position < old_position THEN
+    UPDATE products 
+    SET queue_position = queue_position + 1
+    WHERE queue_position >= new_position 
+    AND queue_position < old_position
+    AND status = 'approved';
+    
+  -- If moving down in queue (higher position number)  
+  ELSIF new_position > old_position THEN
+    UPDATE products 
+    SET queue_position = queue_position - 1
+    WHERE queue_position > old_position 
+    AND queue_position <= new_position
+    AND status = 'approved';
+  END IF;
+  
+  -- Update the product to new position
+  UPDATE products 
+  SET queue_position = new_position
+  WHERE id = product_uuid;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to assign next 10 products to a specific week
+CREATE OR REPLACE FUNCTION assign_to_launch_week(target_week_id UUID)
+RETURNS INTEGER AS $$
+DECLARE
+  assigned_count INTEGER := 0;
+BEGIN
+  -- Assign the top 10 queued products to the target week
+  UPDATE products 
+  SET launch_week_id = target_week_id
+  WHERE id IN (
+    SELECT id FROM products 
+    WHERE status = 'approved' 
+    AND queue_position IS NOT NULL 
+    AND launch_week_id IS NULL
+    ORDER BY queue_position ASC 
+    LIMIT 10
+  );
+  
+  GET DIAGNOSTICS assigned_count = ROW_COUNT;
+  RETURN assigned_count;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to make products live when their week starts
+CREATE OR REPLACE FUNCTION make_products_live(week_id UUID)
+RETURNS INTEGER AS $$
+DECLARE
+  live_count INTEGER := 0;
+BEGIN
+  -- Set products as live for the current week
+  UPDATE products 
+  SET is_live = true
+  WHERE launch_week_id = week_id 
+  AND status = 'approved';
+  
+  -- Set previous week's products as not live
+  UPDATE products 
+  SET is_live = false
+  WHERE launch_week_id != week_id 
+  AND is_live = true;
+  
+  GET DIAGNOSTICS live_count = ROW_COUNT;
+  RETURN live_count;
 END;
 $$ LANGUAGE plpgsql;
 
