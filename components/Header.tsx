@@ -2,51 +2,23 @@
 
 import Link from 'next/link'
 import { useAuth } from '../hooks/useAuth'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { LogOut, User, Settings, Package, TrendingUp, Award, Plus, Lock } from 'lucide-react'
-import { createClient } from '@/utils/supabase/client'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useLoginModal } from '@/contexts/LoginModalContext'
+import { useUserProfile } from '@/contexts/UserProfileContext'
 
-interface UserProfile {
-  first_name: string
-  last_name: string
-  handle: string
-  avatar_url: string
-  profile_completed: boolean
-  is_admin: boolean
-}
 
 export default function Header() {
   const { user, signOut } = useAuth()
-  const [profile, setProfile] = useState<UserProfile | null>(null)
+  const { profile, loading: profileLoading } = useUserProfile()
   const [showDropdown, setShowDropdown] = useState(false)
   const { openLoginModal } = useLoginModal()
   const pathname = usePathname()
 
-  useEffect(() => {
-    if (user) {
-      loadProfile()
-    }
-  }, [user])
-
-  const loadProfile = async () => {
-    const supabase = createClient()
-    const { data, error } = await supabase
-      .from('users')
-      .select('first_name, last_name, handle, avatar_url, profile_completed, is_admin')
-      .eq('id', user?.id)
-      .single()
-
-    if (data) {
-      setProfile(data)
-    }
-  }
-
   const handleSignOut = async () => {
     await signOut()
-    setProfile(null)
   }
 
   const getDisplayName = () => {
@@ -142,17 +114,22 @@ export default function Header() {
             >
               Pricing
             </Link>
-            {profile?.is_admin && (
-              <Link 
-                href="/admin" 
-                className={`ml-4 px-5 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
-                  pathname === '/admin'
-                    ? 'text-white bg-purple-600 shadow-sm'
-                    : 'text-purple-600 hover:bg-purple-50'
-                }`}
-              >
-                Admin
-              </Link>
+            {/* Admin link - show skeleton while loading */}
+            {user && profileLoading ? (
+              <div className="ml-4 px-5 py-2 bg-gray-100 rounded-full animate-pulse h-9 w-20" />
+            ) : (
+              profile?.is_admin && (
+                <Link 
+                  href="/admin" 
+                  className={`ml-4 px-5 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
+                    pathname === '/admin'
+                      ? 'text-white bg-purple-600 shadow-sm'
+                      : 'text-purple-600 hover:bg-purple-50'
+                  }`}
+                >
+                  Admin
+                </Link>
+              )
             )}
           </nav>
 
@@ -160,24 +137,30 @@ export default function Header() {
           <div className="flex items-center space-x-4">
             {user ? (
               <>
-                {/* Profile completion warning */}
-                {profile && !profile.profile_completed && (
-                  <Link
-                    href="/profile"
-                    className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium hover:bg-yellow-200 transition-colors"
-                  >
-                    Complete Profile
-                  </Link>
-                )}
+                {/* Profile completion warning / Submit button */}
+                {profileLoading ? (
+                  <div className="bg-gray-100 rounded-lg animate-pulse h-10 w-28" />
+                ) : (
+                  <>
+                    {profile && !profile.profile_completed && (
+                      <Link
+                        href="/profile"
+                        className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium hover:bg-yellow-200 transition-colors"
+                      >
+                        Complete Profile
+                      </Link>
+                    )}
 
-                {profile?.profile_completed && (
-                  <Link
-                    href="/submit"
-                    className="bg-[#FDFCFA] text-[#2D2D2D] border-[3px] border-orange-400/50 px-5 py-2 rounded-lg text-sm font-medium hover:border-orange-500 transition-all flex items-center"
-                  >
-                    <Plus className="w-5 h-5 mr-1.5 stroke-2" />
-                    Submit
-                  </Link>
+                    {profile?.profile_completed && (
+                      <Link
+                        href="/submit"
+                        className="bg-[#FDFCFA] text-[#2D2D2D] border-[3px] border-orange-400/50 px-5 py-2 rounded-lg text-sm font-medium hover:border-orange-500 transition-all flex items-center"
+                      >
+                        <Plus className="w-5 h-5 mr-1.5 stroke-2" />
+                        Submit
+                      </Link>
+                    )}
+                  </>
                 )}
                 
                 <div className="relative">
@@ -197,7 +180,7 @@ export default function Header() {
                       </div>
                     )}
                     <span className="text-sm font-medium text-[#2D2D2D]">
-                      {getDisplayName()}
+                      {profileLoading ? 'Loading...' : getDisplayName()}
                     </span>
                   </button>
 
