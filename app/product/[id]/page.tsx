@@ -8,7 +8,7 @@ import { ProductWithVotes, CommentWithUser } from '../../../types/database'
 import Header from '../../../components/Header'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Heart, ExternalLink, MessageCircle, Send, Tag, ArrowLeft, Eye, Trash2 } from 'lucide-react'
+import { Heart, ExternalLink, MessageCircle, Send, Tag, ArrowLeft, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function ProductDetailPage() {
@@ -324,14 +324,6 @@ export default function ProductDetailPage() {
                   <ExternalLink className="w-4 h-4" />
                 </a>
               </div>
-
-              {/* View Count */}
-              {product.view_count !== undefined && product.view_count > 0 && (
-                <div className="flex items-center gap-1 mt-3 text-sm text-[#999999]">
-                  <Eye className="w-4 h-4" />
-                  <span>{product.view_count} views</span>
-                </div>
-              )}
             </div>
           </div>
         </div>
