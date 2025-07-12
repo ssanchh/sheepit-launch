@@ -58,13 +58,27 @@ export function BaseEmailTemplate({
                       borderBottom: '1px solid #e5e5e5',
                     }}
                   >
+                    <div style={{ marginBottom: '10px' }}>
+                      {/* Logo - Update the src URL with your actual logo */}
+                      <img
+                        src="https://sheepit.io/sheep-logo.png"
+                        alt="Sheep It"
+                        style={{
+                          height: '50px',
+                          width: 'auto',
+                          display: 'block',
+                          margin: '0 auto',
+                        }}
+                      />
+                    </div>
                     <h1 style={{
                       margin: 0,
                       fontSize: '24px',
                       fontWeight: 'bold',
                       color: '#2D2D2D',
+                      letterSpacing: '-0.5px',
                     }}>
-                      🐑 Sheep It
+                      Sheep It
                     </h1>
                   </td>
                 </tr>
