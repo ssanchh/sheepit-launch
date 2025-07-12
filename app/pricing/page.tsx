@@ -88,33 +88,33 @@ export default function PricingPage() {
             <div className="space-y-4 mb-8 min-h-[320px]">
               <div className="text-xs font-medium text-[#999999] uppercase tracking-wider mb-3">What you get:</div>
               <div className="flex items-start gap-3">
-                <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-[#666666]">Homepage listing for 7 days</p>
+                <Home className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-[#666666]">Live on homepage for multiple days</p>
               </div>
               <div className="flex items-start gap-3">
-                <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-[#666666]">Community voting enabled</p>
+                <Trophy className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-[#666666]">Compete for top 3 badges</p>
               </div>
               <div className="flex items-start gap-3">
-                <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <LinkIcon className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-[#666666]">High-quality backlink if you rank top 3</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <Clock className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-[#666666]">Standard launch queue (2-3 weeks)</p>
+              </div>
+              <div className="text-xs font-medium text-[#999999] uppercase tracking-wider mt-4 mb-3">Additional features:</div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
                 <p className="text-sm text-[#666666]">Product page with comments</p>
               </div>
               <div className="flex items-start gap-3">
-                <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <CheckCircle className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
                 <p className="text-sm text-[#666666]">Basic analytics dashboard</p>
               </div>
-              <div className="text-xs font-medium text-[#999999] uppercase tracking-wider mt-4 mb-3">If you win (Top 3):</div>
               <div className="flex items-start gap-3">
-                <Trophy className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-[#666666]">Winner badge on profile</p>
-              </div>
-              <div className="flex items-start gap-3">
-                <Mail className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-[#666666]">Featured in weekly newsletter</p>
-              </div>
-              <div className="flex items-start gap-3">
-                <LinkIcon className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-[#666666]">Quality DoFollow backlink</p>
+                <CheckCircle className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-[#666666]">Community engagement</p>
               </div>
             </div>
 
@@ -141,31 +141,28 @@ export default function PricingPage() {
             </div>
 
             <div className="space-y-4 mb-8 min-h-[320px]">
-              <div className="text-xs font-medium text-[#999999] uppercase tracking-wider mb-3">Everything in Free, plus:</div>
+              <div className="text-xs font-medium text-[#999999] uppercase tracking-wider mb-3">Everything in Standard, plus:</div>
               <div className="flex items-start gap-3">
-                <Zap className="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-[#2D2D2D] font-medium">Skip the queue entirely</p>
+                <Home className="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-[#666666]">Homepage visibility for 7 days</p>
               </div>
               <div className="flex items-start gap-3">
-                <Star className="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-[#2D2D2D] font-medium">"Premium" badge on listing</p>
+                <Trophy className="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-[#666666]">Eligible for top 3 badges & prizes</p>
               </div>
               <div className="flex items-start gap-3">
                 <LinkIcon className="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-[#2D2D2D] font-medium">Guaranteed DoFollow backlink</p>
+                <p className="text-sm text-[#2D2D2D] font-medium">Guaranteed high-quality backlink</p>
               </div>
               <div className="flex items-start gap-3">
-                <BarChart3 className="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-[#2D2D2D] font-medium">Advanced analytics</p>
+                <Zap className="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-[#2D2D2D] font-medium">Skip the queue completely</p>
               </div>
-              <div className="flex items-start gap-3">
-                <Users className="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-[#2D2D2D] font-medium">Priority support</p>
-              </div>
-              <div className="text-xs font-medium text-[#999999] uppercase tracking-wider mt-4 mb-3">Launch timeline:</div>
+              <div className="text-xs font-medium text-[#999999] uppercase tracking-wider mt-4 mb-3">Key benefits:</div>
               <div className="bg-orange-50 rounded-lg p-3">
-                <p className="text-xs text-[#666666]">Purchase by Sunday → Launch Monday</p>
-                <p className="text-xs text-[#666666] mt-1">Skip 2-3 week wait time</p>
+                <p className="text-xs text-[#666666]">• Launch within days, not weeks</p>
+                <p className="text-xs text-[#666666] mt-1">• Compete for weekly prizes</p>
+                <p className="text-xs text-[#666666] mt-1">• SEO boost guaranteed</p>
               </div>
             </div>
 
@@ -182,38 +179,35 @@ export default function PricingPage() {
             <div className="mb-8">
               <h3 className="text-lg font-medium text-[#2D2D2D] mb-2">Featured Spot</h3>
               <div className="flex items-baseline gap-1">
-                <span className="text-3xl font-medium text-[#2D2D2D]">$45</span>
+                <span className="text-3xl font-medium text-[#2D2D2D]">$30</span>
                 <span className="text-sm text-[#999999]">/week</span>
               </div>
               <p className="text-xs text-[#999999] mt-1">Maximum visibility</p>
             </div>
 
             <div className="space-y-4 mb-8 min-h-[320px]">
-              <div className="text-xs font-medium text-[#999999] uppercase tracking-wider mb-3">Everything in Premium, plus:</div>
+              <div className="text-xs font-medium text-[#999999] uppercase tracking-wider mb-3">Premium placement includes:</div>
               <div className="flex items-start gap-3">
-                <Crown className="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-[#2D2D2D] font-medium">Top spot above all listings</p>
+                <Home className="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-[#2D2D2D] font-medium">Premium placement at the top</p>
               </div>
               <div className="flex items-start gap-3">
-                <Eye className="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-[#2D2D2D] font-medium">3x more visibility</p>
-              </div>
-              <div className="flex items-start gap-3">
-                <Star className="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-[#2D2D2D] font-medium">"Featured" golden badge</p>
-              </div>
-              <div className="flex items-start gap-3">
-                <Mail className="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-[#2D2D2D] font-medium">Priority in newsletter</p>
+                <Trophy className="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-[#2D2D2D] font-medium">Rotating featured product showcase</p>
               </div>
               <div className="flex items-start gap-3">
                 <BarChart3 className="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-[#2D2D2D] font-medium">Real-time analytics</p>
+                <p className="text-sm text-[#2D2D2D] font-medium">High visibility to all visitors</p>
               </div>
-              <div className="text-xs font-medium text-[#999999] uppercase tracking-wider mt-4 mb-3">Placement details:</div>
+              <div className="flex items-start gap-3">
+                <Crown className="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-[#2D2D2D] font-medium">Cancel anytime flexibility</p>
+              </div>
+              <div className="text-xs font-medium text-[#999999] uppercase tracking-wider mt-4 mb-3">How it works:</div>
               <div className="bg-purple-50 rounded-lg p-3">
-                <p className="text-xs text-[#666666]">7 full days of featured placement</p>
-                <p className="text-xs text-[#666666] mt-1">Non-competing (no voting needed)</p>
+                <p className="text-xs text-[#666666]">• Your product rotates in featured section</p>
+                <p className="text-xs text-[#666666] mt-1">• Shown on every page load</p>
+                <p className="text-xs text-[#666666] mt-1">• Non-competitive placement</p>
               </div>
             </div>
 
