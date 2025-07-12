@@ -220,6 +220,8 @@ export default function BadgesSection({ userId }: { userId: string }) {
                       width={200}
                       height={73}
                       className="block"
+                      quality={100}
+                      unoptimized={true}
                       onError={(e) => {
                         // Fallback for missing images
                         const target = e.target as HTMLImageElement
@@ -281,7 +283,7 @@ export default function BadgesSection({ userId }: { userId: string }) {
           {allBadges
             .filter(badge => !userHasBadge(badge.id) && badge.id !== 'maker')
             .map(badge => (
-              <div key={badge.id} className="bg-white rounded-xl border border-[#E5E5E5] p-6 opacity-60">
+              <div key={badge.id} className="bg-white rounded-xl border border-[#E5E5E5] p-6">
                 <div className="mb-4">
                   <h3 className="text-lg font-semibold text-[#2D2D2D] flex items-center gap-2">
                     {badge.name}
@@ -290,10 +292,21 @@ export default function BadgesSection({ userId }: { userId: string }) {
                   <p className="text-sm text-[#666666] mt-1">{badge.description}</p>
                 </div>
 
-                {/* Badge Preview (Blurred) */}
-                <div className="bg-[#F5F5F5] rounded-lg p-4 mb-4 flex items-center justify-center filter blur-sm">
-                  <div className="bg-white p-2 rounded border-2 border-[#E5E5E5]">
-                    <div className="w-[200px] h-[73px] bg-[#E5E5E5] rounded"></div>
+                {/* Badge Preview */}
+                <div className="bg-[#F5F5F5] rounded-lg p-4 mb-4 flex items-center justify-center">
+                  <div className="bg-white p-2 rounded border-2 border-[#E5E5E5] relative">
+                    <Image
+                      src={badge.imageUrl}
+                      alt={badge.name}
+                      width={200}
+                      height={73}
+                      className="block opacity-50"
+                      quality={100}
+                      unoptimized={true}
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-white/80">
+                      <Lock className="w-8 h-8 text-[#999999]" />
+                    </div>
                   </div>
                 </div>
 
