@@ -212,24 +212,23 @@ export default function BadgesSection({ userId }: { userId: string }) {
                 </div>
 
                 {/* Badge Preview */}
-                <div className="bg-[#F5F5F5] rounded-lg p-4 mb-4 flex items-center justify-center">
-                  <div className="bg-white p-2 rounded border-2 border-[#E5E5E5]">
-                    <Image
-                      src={badge.imageUrl}
-                      alt={badge.name}
-                      width={200}
-                      height={73}
-                      className="block"
-                      quality={100}
-                      unoptimized={true}
-                      onError={(e) => {
-                        // Fallback for missing images
-                        const target = e.target as HTMLImageElement
-                        target.style.display = 'none'
-                        target.parentElement!.innerHTML = `<div class="bg-[#2D2D2D] text-white text-xs px-3 py-2 rounded">Badge #${badge.id}</div>`
-                      }}
-                    />
-                  </div>
+                <div className="mb-4 flex items-center justify-center">
+                  <Image
+                    src={badge.imageUrl}
+                    alt={badge.name}
+                    width={300}
+                    height={110}
+                    className="block"
+                    quality={100}
+                    unoptimized={true}
+                    style={{ imageRendering: 'crisp-edges' }}
+                    onError={(e) => {
+                      // Fallback for missing images
+                      const target = e.target as HTMLImageElement
+                      target.style.display = 'none'
+                      target.parentElement!.innerHTML = `<div class="bg-[#2D2D2D] text-white text-xs px-3 py-2 rounded">Badge #${badge.id}</div>`
+                    }}
+                  />
                 </div>
 
                 {/* Actions */}
@@ -293,19 +292,20 @@ export default function BadgesSection({ userId }: { userId: string }) {
                 </div>
 
                 {/* Badge Preview */}
-                <div className="bg-[#F5F5F5] rounded-lg p-4 mb-4 flex items-center justify-center">
-                  <div className="bg-white p-2 rounded border-2 border-[#E5E5E5] relative">
+                <div className="mb-4 flex items-center justify-center">
+                  <div className="relative">
                     <Image
                       src={badge.imageUrl}
                       alt={badge.name}
-                      width={200}
-                      height={73}
-                      className="block opacity-50"
+                      width={300}
+                      height={110}
+                      className="block opacity-40"
                       quality={100}
                       unoptimized={true}
+                      style={{ imageRendering: 'crisp-edges' }}
                     />
-                    <div className="absolute inset-0 flex items-center justify-center bg-white/80">
-                      <Lock className="w-8 h-8 text-[#999999]" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Lock className="w-12 h-12 text-[#666666]" />
                     </div>
                   </div>
                 </div>

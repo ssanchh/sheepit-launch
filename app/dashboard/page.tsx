@@ -42,6 +42,9 @@ function DashboardContent() {
         if (tabParam === 'profile' || profileCompleted) {
           setActiveTab(tabParam)
         }
+      } else if (!tabParam && profileCompleted) {
+        // If no tab param and profile is completed, default to products
+        router.replace('/dashboard?tab=products')
       }
       
       setDashboardLoading(false)
@@ -134,7 +137,12 @@ function DashboardContent() {
             return (
               <button
                 key={tab.id}
-                onClick={() => !isDisabled && setActiveTab(tab.id)}
+                onClick={() => {
+                  if (!isDisabled) {
+                    setActiveTab(tab.id)
+                    router.push(`/dashboard?tab=${tab.id}`)
+                  }
+                }}
                 disabled={isDisabled}
                 className={`flex-1 px-4 py-3 rounded-lg font-medium flex items-center justify-center space-x-2 transition-all ${
                   activeTab === tab.id
