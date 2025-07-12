@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef, Suspense } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '../../hooks/useAuth'
 import { createClient } from '@/utils/supabase/client'
@@ -37,7 +37,6 @@ function SubmitContent() {
   const [loading, setLoading] = useState(false)
   const [categoryInput, setCategoryInput] = useState('')
   const [profileCompleted, setProfileCompleted] = useState<boolean | null>(null)
-  const [activeSection, setActiveSection] = useState('basics')
   
   // Check for premium or featured flags
   const isPremium = searchParams.get('premium') === 'true'
@@ -56,13 +55,6 @@ function SubmitContent() {
     categories: []
   })
   const [errors, setErrors] = useState<Partial<Record<keyof ProductDraft, string>>>({})
-
-  // Refs for sections
-  const basicsRef = useRef<HTMLDivElement>(null)
-  const detailsRef = useRef<HTMLDivElement>(null)
-  const mediaRef = useRef<HTMLDivElement>(null)
-  const linksRef = useRef<HTMLDivElement>(null)
-
   const { openLoginModal } = useLoginModal()
 
   useEffect(() => {
@@ -93,24 +85,6 @@ function SubmitContent() {
     }
   }
 
-  const scrollToSection = (sectionId: string) => {
-    setActiveSection(sectionId)
-    const refs: Record<string, React.RefObject<HTMLDivElement>> = {
-      basics: basicsRef,
-      details: detailsRef,
-      media: mediaRef,
-      links: linksRef
-    }
-    
-    refs[sectionId]?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
-
-  const sections = [
-    { id: 'basics', name: 'Basics', icon: Sparkles },
-    { id: 'details', name: 'Details', icon: Users },
-    { id: 'media', name: 'Media', icon: ImageIcon },
-    { id: 'links', name: 'Links', icon: Globe }
-  ]
 
   const validateForm = (): boolean => {
     const newErrors: Partial<Record<keyof ProductDraft, string>> = {}
@@ -128,12 +102,6 @@ function SubmitContent() {
     setErrors(newErrors)
     
     // Scroll to first error
-    if (Object.keys(newErrors).length > 0) {
-      const firstError = Object.keys(newErrors)[0]
-      if (['name', 'tagline'].includes(firstError)) scrollToSection('basics')
-      else if (['description', 'team_type', 'categories'].includes(firstError)) scrollToSection('details')
-      else if (['website_url'].includes(firstError)) scrollToSection('links')
-    }
     
     return Object.keys(newErrors).length === 0
   }
@@ -325,35 +293,9 @@ function SubmitContent() {
     <div className="min-h-screen bg-[#FDFCFA]">
       <Header />
       
-      <div className="max-w-7xl mx-auto px-6 py-8 flex gap-8">
-        {/* Sidebar Navigation */}
-        <div className="hidden lg:block w-64 shrink-0">
-          <div className="sticky top-8">
-            <h2 className="text-sm font-semibold text-[#999999] uppercase tracking-wider mb-6">Product Information</h2>
-            <nav className="space-y-1">
-              {sections.map((section) => {
-                const Icon = section.icon
-                return (
-                  <button
-                    key={section.id}
-                    onClick={() => scrollToSection(section.id)}
-                    className={`w-full text-left px-4 py-3 rounded-lg flex items-center space-x-3 transition-all ${
-                      activeSection === section.id
-                        ? 'bg-[#2D2D2D] text-white'
-                        : 'text-[#666666] hover:bg-[#F5F5F5] hover:text-[#2D2D2D]'
-                    }`}
-                  >
-                    <Icon className="w-5 h-5" />
-                    <span className="font-medium">{section.name}</span>
-                  </button>
-                )
-              })}
-            </nav>
-          </div>
-        </div>
-
+      <div className="max-w-3xl mx-auto px-6 py-8">
         {/* Main Content */}
-        <div className="flex-1 max-w-3xl">
+        <div>
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-[#2D2D2D] mb-2">Submit Your Product</h1>
             <p className="text-[#666666]">Share your creation with thousands of makers and early adopters</p>
@@ -361,7 +303,7 @@ function SubmitContent() {
 
           <div className="space-y-12">
             {/* Basics Section */}
-            <section ref={basicsRef} id="basics" className="bg-white rounded-2xl p-8 shadow-sm border border-[#E5E5E5]">
+            <section id="basics" className="bg-white rounded-2xl p-8 shadow-sm border border-[#E5E5E5]">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-10 h-10 bg-[#2D2D2D] rounded-lg flex items-center justify-center">
                   <Sparkles className="w-5 h-5 text-white" />
@@ -417,7 +359,7 @@ function SubmitContent() {
             </section>
 
             {/* Details Section */}
-            <section ref={detailsRef} id="details" className="bg-white rounded-2xl p-8 shadow-sm border border-[#E5E5E5]">
+            <section id="details" className="bg-white rounded-2xl p-8 shadow-sm border border-[#E5E5E5]">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-10 h-10 bg-[#2D2D2D] rounded-lg flex items-center justify-center">
                   <Users className="w-5 h-5 text-white" />
@@ -545,7 +487,7 @@ function SubmitContent() {
             </section>
 
             {/* Media Section */}
-            <section ref={mediaRef} id="media" className="bg-white rounded-2xl p-8 shadow-sm border border-[#E5E5E5]">
+            <section id="media" className="bg-white rounded-2xl p-8 shadow-sm border border-[#E5E5E5]">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-10 h-10 bg-[#2D2D2D] rounded-lg flex items-center justify-center">
                   <ImageIcon className="w-5 h-5 text-white" />
@@ -701,7 +643,7 @@ function SubmitContent() {
             </section>
 
             {/* Links Section */}
-            <section ref={linksRef} id="links" className="bg-white rounded-2xl p-8 shadow-sm border border-[#E5E5E5]">
+            <section id="links" className="bg-white rounded-2xl p-8 shadow-sm border border-[#E5E5E5]">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-10 h-10 bg-[#2D2D2D] rounded-lg flex items-center justify-center">
                   <Globe className="w-5 h-5 text-white" />
