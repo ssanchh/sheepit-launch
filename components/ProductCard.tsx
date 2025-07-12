@@ -100,7 +100,7 @@ export default function ProductCard({ product, rank, onVoteUpdate, totalProducts
   return (
     <div 
       className={`relative bg-white rounded-xl border-4 transition-all cursor-pointer group ${
-        isFeatured ? 'border-orange-300 shadow-md' : 'border-[#E5E5E5] hover:border-orange-400'
+        isFeatured ? 'border-orange-300 shadow-md' : 'border-[#E5E5E5] sm:hover:border-orange-400'
       }`}
       onClick={handleProductClick}
     >
@@ -146,7 +146,7 @@ export default function ProductCard({ product, rank, onVoteUpdate, totalProducts
             <div className="flex items-start justify-between">
               <div className="flex-1 pr-2">
                 <div className="flex items-center gap-1 sm:gap-2">
-                  <h3 className="text-sm sm:text-base font-semibold text-[#2D2D2D] group-hover:text-orange-600 transition-colors truncate">
+                  <h3 className="text-sm sm:text-base font-semibold text-[#2D2D2D] sm:group-hover:text-orange-600 transition-colors truncate">
                     {product.name}
                   </h3>
                   {(product as any).is_featured_paid && (
@@ -160,9 +160,9 @@ export default function ProductCard({ product, rank, onVoteUpdate, totalProducts
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
                   >
-                    <ExternalLink className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#999999] hover:text-orange-600 transition-colors" />
+                    <ExternalLink className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#999999] sm:hover:text-orange-600 transition-colors" />
                   </a>
                 </div>
                 <p className="text-xs sm:text-sm text-[#666666] mt-0.5 sm:mt-1 line-clamp-1">
@@ -178,8 +178,8 @@ export default function ProductCard({ product, rank, onVoteUpdate, totalProducts
                   disabled={isVoting}
                   className={`flex flex-col items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-lg text-xs sm:text-sm font-medium border-2 transition-all ${
                     product.user_vote
-                      ? 'bg-orange-50 text-orange-600 border-orange-300 hover:border-orange-400'
-                      : 'bg-white text-[#666666] border-[#E5E5E5] hover:border-orange-300 hover:text-orange-600'
+                      ? 'bg-orange-50 text-orange-600 border-orange-300 sm:hover:border-orange-400'
+                      : 'bg-white text-[#666666] border-[#E5E5E5] sm:hover:border-orange-300 sm:hover:text-orange-600'
                   }`}
                 >
                   <Heart 
@@ -190,13 +190,13 @@ export default function ProductCard({ product, rank, onVoteUpdate, totalProducts
                   </span>
                 </button>
 
-                {/* Comments */}
+                {/* Comments - Hidden on mobile */}
                 <button
                   onClick={handleCommentClick}
-                  className="flex flex-col items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-lg text-xs sm:text-sm font-medium bg-white text-[#666666] border-2 border-[#E5E5E5] hover:border-orange-300 hover:text-orange-600 transition-all"
+                  className="hidden sm:flex flex-col items-center justify-center w-14 h-14 rounded-lg text-sm font-medium bg-white text-[#666666] border-2 border-[#E5E5E5] hover:border-orange-300 hover:text-orange-600 transition-all"
                 >
-                  <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
-                  <span className="text-[10px] sm:text-xs font-semibold mt-0.5 sm:mt-1">{product.comment_count || 0}</span>
+                  <MessageCircle className="w-5 h-5" />
+                  <span className="text-xs font-semibold mt-1">{product.comment_count || 0}</span>
                 </button>
               </div>
             </div>

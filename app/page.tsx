@@ -127,10 +127,10 @@ export default function HomePage() {
       <main className="max-w-[900px] mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Hero Section for Founders */}
         <div className="text-center mb-8 sm:mb-10">
-          <h1 className="text-2xl sm:text-4xl font-bold text-[#2D2D2D] mb-3 sm:mb-4">
+          <h1 className="text-2xl sm:text-4xl font-bold text-[#2D2D2D] mb-3 sm:mb-4 px-4 sm:px-0">
             Where indie makers launch together
           </h1>
-          <p className="text-base sm:text-lg text-[#666666] max-w-2xl mx-auto leading-relaxed px-2 sm:px-0">
+          <p className="text-sm sm:text-lg text-[#666666] max-w-2xl mx-auto leading-relaxed px-4 sm:px-0">
             Join the weekly launch party every Monday. Get real feedback, connect with fellow builders, and reach early adopters who genuinely care about new products. Winners earn a spot in our weekly newsletter.
           </p>
         </div>
