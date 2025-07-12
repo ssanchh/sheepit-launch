@@ -55,7 +55,7 @@ export default function PricingPage() {
           <div className="max-w-3xl mx-auto bg-gray-50 rounded-xl p-6 text-left">
             <h2 className="text-lg font-medium text-[#2D2D2D] mb-3">What is Sheep It?</h2>
             <p className="text-sm text-[#666666] mb-4">
-              Sheep It is a weekly product launch platform for indie makers. Every Monday, we showcase new products to our community of 50,000+ early adopters, tech enthusiasts, and fellow entrepreneurs.
+              Sheep It is a weekly product launch platform for indie makers. Every Monday, we showcase new products to our growing community of early adopters, tech enthusiasts, and fellow entrepreneurs.
             </p>
             <div className="grid md:grid-cols-3 gap-4 text-sm">
               <div>
@@ -68,7 +68,7 @@ export default function PricingPage() {
               </div>
               <div>
                 <div className="font-medium text-[#2D2D2D] mb-1">Marketing Boost</div>
-                <p className="text-[#666666]">Winners get featured to 50k+ subscribers and quality backlinks</p>
+                <p className="text-[#666666]">Winners get featured in our newsletter and receive quality backlinks</p>
               </div>
             </div>
           </div>
@@ -110,11 +110,11 @@ export default function PricingPage() {
               </div>
               <div className="flex items-start gap-3">
                 <Mail className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-[#666666]">Featured in 50k+ newsletter</p>
+                <p className="text-sm text-[#666666]">Featured in weekly newsletter</p>
               </div>
               <div className="flex items-start gap-3">
                 <LinkIcon className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
-                <p className="text-sm text-[#666666]">DoFollow backlink (DA 40+)</p>
+                <p className="text-sm text-[#666666]">Quality DoFollow backlink</p>
               </div>
             </div>
 
