@@ -61,7 +61,7 @@ export function BaseEmailTemplate({
                     <div style={{ marginBottom: '10px' }}>
                       {/* Logo - Update the src URL with your actual logo */}
                       <img
-                        src="https://sheepit.io/sheep-logo.png"
+                        src="https://sheepit.io/assets/images/logo.png"
                         alt="Sheep It"
                         style={{
                           height: '50px',
