@@ -89,8 +89,8 @@ export default function CountdownTimer() {
   if (isTransitioning) {
     return (
       <div className="text-left">
-        <div className="text-xs text-indigo-600 mb-1">Transitioning...</div>
-        <div className="text-sm font-mono font-semibold text-indigo-600">New Week!</div>
+        <div className="text-[10px] sm:text-xs text-indigo-600 mb-0.5 sm:mb-1">Transitioning...</div>
+        <div className="text-xs sm:text-sm font-mono font-semibold text-indigo-600">New Week!</div>
       </div>
     )
   }
@@ -98,8 +98,8 @@ export default function CountdownTimer() {
   if (hasTransitioned) {
     return (
       <div className="text-left">
-        <div className="text-xs text-green-600 mb-1">Started!</div>
-        <div className="text-sm font-mono font-semibold text-green-600">New Cycle</div>
+        <div className="text-[10px] sm:text-xs text-green-600 mb-0.5 sm:mb-1">Started!</div>
+        <div className="text-xs sm:text-sm font-mono font-semibold text-green-600">New Cycle</div>
       </div>
     )
   }
@@ -108,8 +108,8 @@ export default function CountdownTimer() {
   if (isBeforeFirstLaunch) {
     return (
       <div className="text-left">
-        <div className="text-xs text-orange-600 mb-1">First Launch</div>
-        <div className="text-sm font-semibold text-orange-600">Aug 4, 2025</div>
+        <div className="text-[10px] sm:text-xs text-orange-600 mb-0.5 sm:mb-1">First Launch</div>
+        <div className="text-xs sm:text-sm font-semibold text-orange-600">Aug 4, 2025</div>
       </div>
     )
   }
@@ -117,16 +117,16 @@ export default function CountdownTimer() {
   if (!timeLeft || typeof timeLeft !== 'object' || typeof timeLeft.days !== 'number') {
     return (
       <div className="text-left">
-        <div className="text-xs text-gray-500 mb-1">Ends in</div>
-        <div className="text-sm font-mono font-semibold text-gray-400">--:--:--:--</div>
+        <div className="text-[10px] sm:text-xs text-gray-500 mb-0.5 sm:mb-1">Ends in</div>
+        <div className="text-xs sm:text-sm font-mono font-semibold text-gray-400">--:--:--:--</div>
       </div>
     )
   }
 
   return (
     <div className="text-left">
-      <div className="text-xs text-gray-500 mb-1">Ends in</div>
-      <div className="flex items-center gap-1 text-sm font-mono">
+      <div className="text-[10px] sm:text-xs text-gray-500 mb-0.5 sm:mb-1">Ends in</div>
+      <div className="flex items-center gap-0.5 sm:gap-1 text-xs sm:text-sm font-mono">
         <span className="font-semibold text-gray-900">{String(timeLeft.days).padStart(2, '0')}</span>
         <span className="text-gray-400">:</span>
         <span className="font-semibold text-gray-900">{String(timeLeft.hours).padStart(2, '0')}</span>

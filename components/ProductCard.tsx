@@ -112,14 +112,14 @@ export default function ProductCard({ product, rank, onVoteUpdate, totalProducts
           {rankBadge.text}
         </div>
       )}
-      <div className="p-4">
-        <div className="flex items-start gap-4">
+      <div className="p-3 sm:p-4">
+        <div className="flex items-start gap-3 sm:gap-4">
           {/* Left: Rank + Logo */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             {/* Rank Number */}
             {!isFeatured && (
-              <div className="flex items-center justify-center w-8">
-                <span className="text-sm font-medium text-[#666666]">
+              <div className="flex items-center justify-center w-6 sm:w-8">
+                <span className="text-xs sm:text-sm font-medium text-[#666666]">
                   {rank}
                 </span>
               </div>
@@ -132,11 +132,11 @@ export default function ProductCard({ product, rank, onVoteUpdate, totalProducts
                 alt={`${product.name} logo`}
                 width={48}
                 height={48}
-                className="rounded-lg border border-[#E5E5E5]"
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg border border-[#E5E5E5]"
               />
             ) : (
-              <div className="w-12 h-12 bg-[#F5F5F5] rounded-lg flex items-center justify-center border border-[#E5E5E5]">
-                <span className="text-[#666666] font-medium">{product.name.charAt(0)}</span>
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#F5F5F5] rounded-lg flex items-center justify-center border border-[#E5E5E5]">
+                <span className="text-[#666666] font-medium text-sm">{product.name.charAt(0)}</span>
               </div>
             )}
           </div>
@@ -144,13 +144,13 @@ export default function ProductCard({ product, rank, onVoteUpdate, totalProducts
           {/* Middle: Product Info */}
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-base font-semibold text-[#2D2D2D] group-hover:text-orange-600 transition-colors">
+              <div className="flex-1 pr-2">
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <h3 className="text-sm sm:text-base font-semibold text-[#2D2D2D] group-hover:text-orange-600 transition-colors truncate">
                     {product.name}
                   </h3>
                   {(product as any).is_featured_paid && (
-                    <span className="flex items-center gap-1 bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full text-xs font-medium">
+                    <span className="hidden sm:flex items-center gap-1 bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full text-xs font-medium">
                       <Crown className="w-3 h-3" />
                       Featured
                     </span>
@@ -162,30 +162,30 @@ export default function ProductCard({ product, rank, onVoteUpdate, totalProducts
                     onClick={(e) => e.stopPropagation()}
                     className="opacity-0 group-hover:opacity-100 transition-opacity"
                   >
-                    <ExternalLink className="w-3.5 h-3.5 text-[#999999] hover:text-orange-600 transition-colors" />
+                    <ExternalLink className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#999999] hover:text-orange-600 transition-colors" />
                   </a>
                 </div>
-                <p className="text-sm text-[#666666] mt-1 line-clamp-1">
+                <p className="text-xs sm:text-sm text-[#666666] mt-0.5 sm:mt-1 line-clamp-1">
                   {product.tagline}
                 </p>
               </div>
 
               {/* Right: Actions */}
-              <div className="flex items-center gap-2 ml-4">
+              <div className="flex items-center gap-1.5 sm:gap-2 ml-2 sm:ml-4">
                 {/* Vote Button */}
                 <button
                   onClick={handleVote}
                   disabled={isVoting}
-                  className={`flex flex-col items-center justify-center w-14 h-14 rounded-lg text-sm font-medium border-2 transition-all ${
+                  className={`flex flex-col items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-lg text-xs sm:text-sm font-medium border-2 transition-all ${
                     product.user_vote
                       ? 'bg-orange-50 text-orange-600 border-orange-300 hover:border-orange-400'
                       : 'bg-white text-[#666666] border-[#E5E5E5] hover:border-orange-300 hover:text-orange-600'
                   }`}
                 >
                   <Heart 
-                    className={`w-5 h-5 ${product.user_vote ? 'fill-orange-600' : ''}`}
+                    className={`w-4 h-4 sm:w-5 sm:h-5 ${product.user_vote ? 'fill-orange-600' : ''}`}
                   />
-                  <span className="text-xs font-semibold mt-1">
+                  <span className="text-[10px] sm:text-xs font-semibold mt-0.5 sm:mt-1">
                     {isVoting ? '...' : product.vote_count}
                   </span>
                 </button>
@@ -193,10 +193,10 @@ export default function ProductCard({ product, rank, onVoteUpdate, totalProducts
                 {/* Comments */}
                 <button
                   onClick={handleCommentClick}
-                  className="flex flex-col items-center justify-center w-14 h-14 rounded-lg text-sm font-medium bg-white text-[#666666] border-2 border-[#E5E5E5] hover:border-orange-300 hover:text-orange-600 transition-all"
+                  className="flex flex-col items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-lg text-xs sm:text-sm font-medium bg-white text-[#666666] border-2 border-[#E5E5E5] hover:border-orange-300 hover:text-orange-600 transition-all"
                 >
-                  <MessageCircle className="w-5 h-5" />
-                  <span className="text-xs font-semibold mt-1">{product.comment_count || 0}</span>
+                  <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <span className="text-[10px] sm:text-xs font-semibold mt-0.5 sm:mt-1">{product.comment_count || 0}</span>
                 </button>
               </div>
             </div>

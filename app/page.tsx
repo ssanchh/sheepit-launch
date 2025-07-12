@@ -124,13 +124,13 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#FDFCFA]">
       <Header />
-      <main className="max-w-[900px] mx-auto px-6 py-8">
+      <main className="max-w-[900px] mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Hero Section for Founders */}
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-[#2D2D2D] mb-4">
+        <div className="text-center mb-8 sm:mb-10">
+          <h1 className="text-2xl sm:text-4xl font-bold text-[#2D2D2D] mb-3 sm:mb-4">
             Where indie makers launch together
           </h1>
-          <p className="text-lg text-[#666666] max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg text-[#666666] max-w-2xl mx-auto leading-relaxed px-2 sm:px-0">
             Join the weekly launch party every Monday. Get real feedback, connect with fellow builders, and reach early adopters who genuinely care about new products. Winners earn a spot in our weekly newsletter.
           </p>
         </div>
@@ -140,19 +140,19 @@ export default function HomePage() {
 
         {/* Stats Bar - Only show after first launch */}
         {products.length > 0 && (
-          <div className="bg-white rounded-xl border border-[#E5E5E5] p-4 mb-8">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-8">
+          <div className="bg-white rounded-xl border border-[#E5E5E5] p-4 mb-6 sm:mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center gap-4 sm:gap-8">
                 <div>
-                  <div className="text-2xl font-bold text-[#2D2D2D]">{products.length}</div>
-                  <div className="text-sm text-[#666666]">Launching this week</div>
+                  <div className="text-xl sm:text-2xl font-bold text-[#2D2D2D]">{products.length}</div>
+                  <div className="text-xs sm:text-sm text-[#666666]">Launching this week</div>
                 </div>
-                <div className="border-l border-[#E5E5E5] pl-8">
-                  <div className="text-2xl font-bold text-indigo-600">{products.reduce((sum, p) => sum + p.vote_count, 0)}</div>
-                  <div className="text-sm text-[#666666]">Total votes</div>
+                <div className="border-l border-[#E5E5E5] pl-4 sm:pl-8">
+                  <div className="text-xl sm:text-2xl font-bold text-indigo-600">{products.reduce((sum, p) => sum + p.vote_count, 0)}</div>
+                  <div className="text-xs sm:text-sm text-[#666666]">Total votes</div>
                 </div>
               </div>
-              <div className="text-right">
+              <div className="text-left sm:text-right">
                 <CountdownTimer />
               </div>
             </div>
@@ -172,10 +172,10 @@ export default function HomePage() {
         {/* This Week's Launches */}
         {products.length > 0 && (
           <div className="mb-4">
-            <h2 className="text-xl font-semibold text-[#2D2D2D]">
+            <h2 className="text-lg sm:text-xl font-semibold text-[#2D2D2D]">
               {searchQuery ? `Search results for "${searchQuery}"` : "This week's launches"}
             </h2>
-            <p className="text-sm text-[#666666] mt-1">
+            <p className="text-xs sm:text-sm text-[#666666] mt-1">
               {searchQuery ? `Found ${filteredProducts.length} products` : "Vote for your favorites • Top 3 win prizes"}
             </p>
           </div>
@@ -206,27 +206,27 @@ export default function HomePage() {
               ))}
             </div>
           ) : (
-            <div className="bg-white rounded-xl border border-[#E5E5E5] p-16 text-center">
-              <div className="text-6xl mb-4">{searchQuery ? '🔍' : '🚀'}</div>
-              <h3 className="text-xl font-semibold text-[#2D2D2D] mb-2">
+            <div className="bg-white rounded-xl border border-[#E5E5E5] p-8 sm:p-16 text-center">
+              <div className="text-5xl sm:text-6xl mb-4">{searchQuery ? '🔍' : '🚀'}</div>
+              <h3 className="text-lg sm:text-xl font-semibold text-[#2D2D2D] mb-2">
                 {searchQuery ? 'No products found' : 'The queue is building!'}
               </h3>
-              <p className="text-[#666666] mb-6">
+              <p className="text-sm sm:text-base text-[#666666] mb-6 px-4 sm:px-0">
                 {searchQuery 
                   ? `No products match "${searchQuery}". Try a different search term.`
                   : 'Products are gathering in the queue for our inaugural launch on August 4th. Be part of the first batch!'
                 }
               </p>
-              <div className="flex gap-3 justify-center">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <a 
                   href="/submit"
-                  className="inline-flex items-center gap-2 bg-[#2D2D2D] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#1D1D1D] transition-colors"
+                  className="inline-flex items-center justify-center gap-2 bg-[#2D2D2D] text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-medium hover:bg-[#1D1D1D] transition-colors text-sm sm:text-base"
                 >
                   Submit Your Product
                 </a>
                 <a 
                   href="/past-launches"
-                  className="inline-flex items-center gap-2 bg-white text-[#666666] border border-[#E5E5E5] px-6 py-3 rounded-lg font-medium hover:border-[#D5D5D5] transition-colors"
+                  className="inline-flex items-center justify-center gap-2 bg-white text-[#666666] border border-[#E5E5E5] px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-medium hover:border-[#D5D5D5] transition-colors text-sm sm:text-base"
                 >
                   View Past Launches
                 </a>
@@ -241,13 +241,13 @@ export default function HomePage() {
         </div>
 
         {/* Bottom CTA */}
-        <div className="mt-16 text-center py-8 border-t border-[#E5E5E5]">
-          <p className="text-sm text-[#666666] mb-4">
+        <div className="mt-12 sm:mt-16 text-center py-6 sm:py-8 border-t border-[#E5E5E5]">
+          <p className="text-xs sm:text-sm text-[#666666] mb-4">
             Ready to get your product in front of 50k+ makers?
           </p>
           <a 
             href="/submit" 
-            className="inline-flex items-center gap-2 bg-[#2D2D2D] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#1D1D1D] transition-colors"
+            className="inline-flex items-center gap-2 bg-[#2D2D2D] text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-medium hover:bg-[#1D1D1D] transition-colors text-sm sm:text-base"
           >
             <span>🚀</span>
             <span>Launch Your Product</span>
