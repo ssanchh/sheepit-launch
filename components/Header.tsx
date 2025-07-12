@@ -122,16 +122,6 @@ export default function Header() {
             >
               Pricing
             </Link>
-            <Link 
-              href="/backlinks" 
-              className={`ml-2 px-5 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
-                pathname === '/backlinks'
-                  ? 'text-[#2D2D2D] bg-white border-2 border-[#E5E5E5]'
-                  : 'text-[#666666] hover:text-[#2D2D2D]'
-              }`}
-            >
-              Backlinks
-            </Link>
             {/* Admin link - show skeleton while loading */}
             {user && profileLoading ? (
               <div className="ml-4 px-5 py-2 bg-gray-100 rounded-full animate-pulse h-9 w-20" />
