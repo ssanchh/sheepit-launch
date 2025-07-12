@@ -171,7 +171,7 @@ export default function ProductCard({ product, rank, onVoteUpdate, totalProducts
               </div>
 
               {/* Right: Actions */}
-              <div className="flex items-center gap-1.5 sm:gap-2 ml-2 sm:ml-4">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 {/* Vote Button */}
                 <button
                   onClick={handleVote}

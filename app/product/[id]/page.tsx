@@ -297,35 +297,36 @@ export default function ProductDetailPage() {
     <div className="min-h-screen bg-[#FDFCFA]">
       <Header />
       
-      <main className="max-w-4xl mx-auto px-6 py-8">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Back Link */}
-        <Link href="/" className="inline-flex items-center gap-2 text-sm text-[#666666] hover:text-[#2D2D2D] mb-6">
+        <Link href="/" className="inline-flex items-center gap-2 text-sm text-[#666666] hover:text-[#2D2D2D] mb-4 sm:mb-6">
           <ArrowLeft className="w-4 h-4" />
           Back to launches
         </Link>
 
         {/* Product Header */}
-        <div className="bg-white rounded-xl border border-[#E5E5E5] p-8 mb-8">
-          <div className="flex items-start gap-6">
-            {product.logo_url ? (
-              <Image
-                src={product.logo_url}
-                alt={`${product.name} logo`}
-                width={80}
-                height={80}
-                className="rounded-xl border border-[#E5E5E5]"
-              />
-            ) : (
-              <div className="w-20 h-20 bg-[#F5F5F5] rounded-xl flex items-center justify-center text-2xl font-bold text-[#666666]">
-                {product.name.charAt(0)}
-              </div>
-            )}
+        <div className="bg-white rounded-xl border border-[#E5E5E5] p-4 sm:p-8 mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+            <div className="flex-shrink-0">
+              {product.logo_url ? (
+                <Image
+                  src={product.logo_url}
+                  alt={`${product.name} logo`}
+                  width={80}
+                  height={80}
+                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl border border-[#E5E5E5]"
+                />
+              ) : (
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#F5F5F5] rounded-xl flex items-center justify-center text-xl sm:text-2xl font-bold text-[#666666]">
+                  {product.name.charAt(0)}
+                </div>
+              )}</div>
             
-            <div className="flex-1">
-              <h1 className="text-2xl font-semibold text-[#2D2D2D] mb-2">{product.name}</h1>
-              <p className="text-[#666666] mb-3">{product.tagline}</p>
+            <div className="flex-1 w-full">
+              <h1 className="text-xl sm:text-2xl font-semibold text-[#2D2D2D] mb-2">{product.name}</h1>
+              <p className="text-sm sm:text-base text-[#666666] mb-3">{product.tagline}</p>
               
-              <div className="flex items-center gap-4 text-sm mb-3">
+              <div className="flex items-center gap-4 text-xs sm:text-sm mb-3">
                 <span className="text-[#999999]">by {creatorName}</span>
               </div>
 
@@ -345,14 +346,14 @@ export default function ProductDetailPage() {
               )}
 
               {/* Action Buttons */}
-              <div className="flex items-center gap-3 mt-6">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-4 sm:mt-6">
                 <button
                   onClick={handleVote}
                   disabled={isVoting}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                  className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all text-sm sm:text-base ${
                     product.user_vote
-                      ? 'bg-orange-50 text-orange-600 border border-orange-300 hover:border-orange-400'
-                      : 'bg-white text-[#666666] border border-[#E5E5E5] hover:border-orange-300 hover:text-orange-600'
+                      ? 'bg-orange-50 text-orange-600 border border-orange-300 sm:hover:border-orange-400'
+                      : 'bg-white text-[#666666] border border-[#E5E5E5] sm:hover:border-orange-300 sm:hover:text-orange-600'
                   }`}
                 >
                   <Heart className={`w-4 h-4 ${product.user_vote ? 'fill-orange-600' : ''}`} />
@@ -364,7 +365,7 @@ export default function ProductDetailPage() {
                   href={product.website_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 bg-[#2D2D2D] text-white rounded-lg hover:bg-[#1D1D1D] transition-colors font-medium"
+                  className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#2D2D2D] text-white rounded-lg sm:hover:bg-[#1D1D1D] transition-colors font-medium text-sm sm:text-base"
                 >
                   <span>Visit Website</span>
                   <ExternalLink className="w-4 h-4" />
@@ -376,7 +377,7 @@ export default function ProductDetailPage() {
 
         {/* Featured Image */}
         {product.featured_image_url && (
-          <div className="bg-white rounded-xl border border-[#E5E5E5] p-8 mb-8">
+          <div className="bg-white rounded-xl border border-[#E5E5E5] p-4 sm:p-8 mb-6 sm:mb-8">
             <Image
               src={product.featured_image_url}
               alt={`${product.name} screenshot`}
@@ -389,16 +390,18 @@ export default function ProductDetailPage() {
 
         {/* Description */}
         {product.description && (
-          <div className="bg-white rounded-xl border border-[#E5E5E5] p-8 mb-8">
-            <h2 className="text-lg font-semibold text-[#2D2D2D] mb-4">About</h2>
-            <MarkdownRenderer content={product.description} />
+          <div className="bg-white rounded-xl border border-[#E5E5E5] p-4 sm:p-8 mb-6 sm:mb-8">
+            <h2 className="text-base sm:text-lg font-semibold text-[#2D2D2D] mb-3 sm:mb-4">About</h2>
+            <div className="text-sm sm:text-base">
+              <MarkdownRenderer content={product.description} />
+            </div>
           </div>
         )}
 
         {/* Screenshots */}
         {product.screenshot_urls && product.screenshot_urls.length > 0 && (
-          <div className="bg-white rounded-xl border border-[#E5E5E5] p-8 mb-8">
-            <h2 className="text-lg font-semibold text-[#2D2D2D] mb-4">Screenshots</h2>
+          <div className="bg-white rounded-xl border border-[#E5E5E5] p-4 sm:p-8 mb-6 sm:mb-8">
+            <h2 className="text-base sm:text-lg font-semibold text-[#2D2D2D] mb-3 sm:mb-4">Screenshots</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {product.screenshot_urls.map((url, index) => (
                 <Image
@@ -417,8 +420,8 @@ export default function ProductDetailPage() {
 
         {/* Video */}
         {product.video_url && (
-          <div className="bg-white rounded-xl border border-[#E5E5E5] p-8 mb-8">
-            <h2 className="text-lg font-semibold text-[#2D2D2D] mb-4">Demo Video</h2>
+          <div className="bg-white rounded-xl border border-[#E5E5E5] p-4 sm:p-8 mb-6 sm:mb-8">
+            <h2 className="text-base sm:text-lg font-semibold text-[#2D2D2D] mb-3 sm:mb-4">Demo Video</h2>
             <div className="relative" style={{ paddingBottom: '56.25%' }}>
               <iframe
                 src={getEmbedUrl(product.video_url)}
@@ -432,9 +435,9 @@ export default function ProductDetailPage() {
         )}
 
         {/* Comments Section */}
-        <div className="bg-white rounded-xl border border-[#E5E5E5] p-8">
-          <h2 className="text-lg font-semibold text-[#2D2D2D] mb-6 flex items-center">
-            <MessageCircle className="w-5 h-5 mr-2" />
+        <div className="bg-white rounded-xl border border-[#E5E5E5] p-4 sm:p-8">
+          <h2 className="text-base sm:text-lg font-semibold text-[#2D2D2D] mb-4 sm:mb-6 flex items-center">
+            <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             Comments ({comments.length})
           </h2>
 
