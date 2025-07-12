@@ -34,22 +34,31 @@ function DashboardContent() {
       console.log('User found, dashboard should load')
       // Check profile completion status
       checkProfileCompletion()
-      
-      // Check URL params for tab
-      const tabParam = searchParams.get('tab')
-      if (tabParam && ['products', 'profile', 'analytics', 'badges', 'payments', 'email'].includes(tabParam)) {
-        // Only allow switching to other tabs if profile is completed
-        if (tabParam === 'profile' || profileCompleted) {
-          setActiveTab(tabParam)
-        }
-      } else if (!tabParam && profileCompleted) {
-        // If no tab param and profile is completed, default to products
-        router.replace('/dashboard?tab=products')
-      }
-      
       setDashboardLoading(false)
     }
-  }, [user, router, searchParams, loading])
+  }, [user, router, loading])
+
+  // Separate effect for handling tab changes
+  useEffect(() => {
+    if (!user || dashboardLoading) return
+    
+    const tabParam = searchParams.get('tab')
+    if (tabParam && ['products', 'profile', 'analytics', 'badges', 'payments', 'email'].includes(tabParam)) {
+      // Check if tab is accessible
+      if (tabParam === 'profile' || profileCompleted) {
+        setActiveTab(tabParam)
+      } else {
+        // If trying to access a locked tab, redirect to profile
+        setActiveTab('profile')
+        router.replace('/dashboard?tab=profile')
+      }
+    } else if (!tabParam) {
+      // If no tab param, default based on profile completion
+      const defaultTab = profileCompleted ? 'products' : 'profile'
+      setActiveTab(defaultTab)
+      router.replace(`/dashboard?tab=${defaultTab}`)
+    }
+  }, [user, router, searchParams, dashboardLoading, profileCompleted])
 
   const checkProfileCompletion = async () => {
     if (!user) return

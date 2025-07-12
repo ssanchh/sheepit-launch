@@ -218,10 +218,9 @@ export default function BadgesSection({ userId }: { userId: string }) {
                     alt={badge.name}
                     width={300}
                     height={110}
-                    className="block"
+                    className="block w-[300px] h-[110px]"
                     quality={100}
                     unoptimized={true}
-                    style={{ imageRendering: 'crisp-edges' }}
                     onError={(e) => {
                       // Fallback for missing images
                       const target = e.target as HTMLImageElement
@@ -299,10 +298,9 @@ export default function BadgesSection({ userId }: { userId: string }) {
                       alt={badge.name}
                       width={300}
                       height={110}
-                      className="block opacity-40"
+                      className="block opacity-40 w-[300px] h-[110px]"
                       quality={100}
                       unoptimized={true}
-                      style={{ imageRendering: 'crisp-edges' }}
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
                       <Lock className="w-12 h-12 text-[#666666]" />
