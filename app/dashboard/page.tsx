@@ -479,6 +479,26 @@ function ProfileSection({ user, onProfileComplete }: { user: any, onProfileCompl
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Validate required fields
+    if (!profile.first_name.trim() || !profile.last_name.trim() || !profile.handle.trim()) {
+      toast.error('Please fill in all required fields')
+      return
+    }
+    
+    // Validate handle format
+    const handleRegex = /^[a-zA-Z0-9_]{5,20}$/
+    if (!handleRegex.test(profile.handle)) {
+      toast.error('Handle must be 5-20 characters and contain only letters, numbers, and underscores')
+      return
+    }
+    
+    // Check if handle is available
+    if (handleAvailable === false) {
+      toast.error('This handle is already taken')
+      return
+    }
+    
     setSaving(true)
 
     try {
@@ -488,12 +508,14 @@ function ProfileSection({ user, onProfileComplete }: { user: any, onProfileCompl
         .eq('id', user?.id)
         .single()
 
-      const profileData = {
-        id: user?.id,
-        email: user?.email,
-        ...profile,
+      // Prepare update data (exclude id and email from updates)
+      const updateData = {
+        first_name: profile.first_name,
+        last_name: profile.last_name,
         handle: profile.handle.toLowerCase(),
         twitter_handle: profile.twitter_handle.replace('@', ''),
+        website_url: profile.website_url,
+        avatar_url: profile.avatar_url,
         profile_completed: true,
         updated_at: new Date().toISOString()
       }
@@ -502,15 +524,21 @@ function ProfileSection({ user, onProfileComplete }: { user: any, onProfileCompl
       if (existingProfile) {
         result = await createClient()
           .from('users')
-          .update(profileData)
+          .update(updateData)
           .eq('id', user?.id)
       } else {
+        // For insert, include id and email
         result = await createClient()
           .from('users')
-          .insert(profileData)
+          .insert({
+            id: user?.id,
+            email: user?.email,
+            ...updateData
+          })
       }
 
       if (result.error) {
+        console.error('Profile update error:', result.error)
         throw result.error
       }
 
@@ -553,7 +581,13 @@ function ProfileSection({ user, onProfileComplete }: { user: any, onProfileCompl
       }
     } catch (error: any) {
       console.error('Error saving profile:', error)
-      toast.error('Failed to save profile')
+      if (error.code === '23505') {
+        toast.error('This handle is already taken. Please choose another one.')
+      } else if (error.code === 'PGRST116') {
+        toast.error('Profile not found. Please refresh the page and try again.')
+      } else {
+        toast.error(error.message || 'Failed to save profile')
+      }
     } finally {
       setSaving(false)
     }
@@ -594,7 +628,7 @@ function ProfileSection({ user, onProfileComplete }: { user: any, onProfileCompl
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                First Name
+                First Name <span className="text-orange-500">*</span>
               </label>
               <input
                 type="text"
@@ -608,7 +642,7 @@ function ProfileSection({ user, onProfileComplete }: { user: any, onProfileCompl
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Last Name
+                Last Name <span className="text-orange-500">*</span>
               </label>
               <input
                 type="text"
@@ -623,7 +657,7 @@ function ProfileSection({ user, onProfileComplete }: { user: any, onProfileCompl
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Handle
+              Handle <span className="text-orange-500">*</span>
             </label>
             <input
               type="text"

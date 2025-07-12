@@ -5,7 +5,7 @@ import { subscribeToNewsletter, unsubscribeFromNewsletter } from '@/lib/newslett
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, firstName } = await request.json()
+    const { email, firstName, userId, source } = await request.json()
     
     if (!email) {
       throw new ApiError('Email is required', 400, 'EMAIL_REQUIRED')
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
       if (error) throw error
 
       // Resubscribe to Beehiiv
-      const result = await subscribeToNewsletter(email, user?.id, 'website_reactivation')
+      const result = await subscribeToNewsletter(email, userId || user?.id, source || 'website_reactivation')
       
       if (!result.success) {
         // Update status to failed
@@ -76,8 +76,8 @@ export async function POST(request: NextRequest) {
       .insert({
         email,
         first_name: firstName || null,
-        user_id: user?.id || null,
-        source: 'website',
+        user_id: userId || user?.id || null,
+        source: source || 'website',
         status: 'pending', // Will be updated to active after Beehiiv confirms
       })
 
@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Subscribe to Beehiiv
-    const result = await subscribeToNewsletter(email, user?.id, 'website')
+    const result = await subscribeToNewsletter(email, userId || user?.id, source || 'website')
     
     if (!result.success) {
       // Update status to failed

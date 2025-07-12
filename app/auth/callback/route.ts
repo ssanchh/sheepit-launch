@@ -44,13 +44,21 @@ export async function GET(request: NextRequest) {
             userData.first_name
           )
           
-          // Subscribe to newsletter (if they haven't opted out)
-          await handleNewUserSignup(
-            authData.user.id,
-            userData.email,
-            userData.first_name,
-            true // Default to opt-in, could be controlled by a checkbox during signup
-          )
+          // Subscribe to newsletter via API (non-blocking)
+          try {
+            fetch(`${requestUrl.origin}/api/newsletter/subscribe`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                email: userData.email,
+                userId: authData.user.id,
+                firstName: userData.first_name,
+                source: 'signup'
+              })
+            }).catch(err => console.log('Newsletter subscription queued'))
+          } catch (err) {
+            console.log('Newsletter subscription will be processed later')
+          }
         }
       }
     }
