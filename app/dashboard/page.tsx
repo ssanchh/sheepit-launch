@@ -14,13 +14,17 @@ import BadgesSection from '../../components/BadgesSection'
 import { useLoginModal } from '@/contexts/LoginModalContext'
 
 function DashboardContent() {
-  const [activeTab, setActiveTab] = useState('profile')
-  const [dashboardLoading, setDashboardLoading] = useState(true)
-  const [profileCompleted, setProfileCompleted] = useState(false)
-  const { user, loading } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
   const { openLoginModal } = useLoginModal()
+  const { user, loading } = useAuth()
+  
+  // Initialize activeTab from URL or default to 'profile'
+  const initialTab = searchParams.get('tab') || 'profile'
+  const [activeTab, setActiveTab] = useState(initialTab)
+  const [dashboardLoading, setDashboardLoading] = useState(true)
+  const [profileCompleted, setProfileCompleted] = useState(false)
+  const [profileCheckComplete, setProfileCheckComplete] = useState(false)
 
   useEffect(() => {
     console.log('Dashboard useEffect - user:', user)
@@ -40,7 +44,7 @@ function DashboardContent() {
 
   // Separate effect for handling tab changes
   useEffect(() => {
-    if (!user || dashboardLoading) return
+    if (!user || dashboardLoading || !profileCheckComplete) return
     
     const tabParam = searchParams.get('tab')
     if (tabParam && ['products', 'profile', 'analytics', 'badges', 'payments', 'email'].includes(tabParam)) {
@@ -58,7 +62,7 @@ function DashboardContent() {
       setActiveTab(defaultTab)
       router.replace(`/dashboard?tab=${defaultTab}`)
     }
-  }, [user, router, searchParams, dashboardLoading, profileCompleted])
+  }, [user, router, searchParams, dashboardLoading, profileCompleted, profileCheckComplete])
 
   const checkProfileCompletion = async () => {
     if (!user) return
@@ -72,6 +76,7 @@ function DashboardContent() {
     if (data) {
       setProfileCompleted(data.profile_completed || false)
     }
+    setProfileCheckComplete(true)
   }
 
   if (loading || dashboardLoading) {
