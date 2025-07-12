@@ -10,6 +10,7 @@ import { Plus, Package, User, TrendingUp, Lock, Award, Download, CreditCard, Zap
 import Link from 'next/link'
 import PurchaseModal from '../../components/PurchaseModal'
 import EmailPreferences from '../../components/EmailPreferences'
+import BadgesSection from '../../components/BadgesSection'
 import { useLoginModal } from '@/contexts/LoginModalContext'
 
 function DashboardContent() {
@@ -97,7 +98,7 @@ function DashboardContent() {
       case 'analytics':
         return <AnalyticsSection />
       case 'badges':
-        return <BadgesSection />
+        return <BadgesSection userId={user.id} />
       case 'email':
         return <EmailPreferences userId={user.id} />
       default:
@@ -163,7 +164,6 @@ function DashboardContent() {
   )
 }
 
-// Products Section Component
 function ProductsSection({ user }: { user: any }) {
   const router = useRouter()
   const [products, setProducts] = useState<any[]>([])
@@ -241,7 +241,6 @@ function ProductsSection({ user }: { user: any }) {
   )
 }
 
-// Payments Section Component
 function PaymentsSection({ user }: { user: any }) {
   const [payments, setPayments] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -392,7 +391,6 @@ function PaymentsSection({ user }: { user: any }) {
   )
 }
 
-// Profile Section Component
 function ProfileSection({ user, onProfileComplete }: { user: any, onProfileComplete?: () => void }) {
   const [profile, setProfile] = useState({
     first_name: '',
@@ -661,7 +659,6 @@ function ProfileSection({ user, onProfileComplete }: { user: any, onProfileCompl
   )
 }
 
-// Analytics Section Component
 function AnalyticsSection() {
   return (
     <div className="max-w-6xl mx-auto">
@@ -706,177 +703,10 @@ function AnalyticsSection() {
   )
 }
 
-// Badges Section Component
-function BadgesSection() {
-  const badges = [
-    {
-      id: 'maker',
-      name: 'Maker Badge',
-      description: 'Show that you\'re part of the Sheep It community',
-      bgColor: 'bg-[#2D2D2D]',
-      textColor: 'text-white',
-      preview: '🐑 MAKER'
-    },
-    {
-      id: 'launched',
-      name: 'Product Launched',
-      description: 'You\'ve successfully launched a product',
-      bgColor: 'bg-green-600',
-      textColor: 'text-white',
-      preview: '🚀 LAUNCHED'
-    },
-    {
-      id: 'winner',
-      name: 'Weekly Winner',
-      description: 'Your product won a weekly competition',
-      bgColor: 'bg-gradient-to-r from-yellow-400 to-orange-500',
-      textColor: 'text-white',
-      preview: '🏆 WINNER'
-    },
-    {
-      id: 'top3',
-      name: 'Top 3 Finish',
-      description: 'Your product finished in the top 3',
-      bgColor: 'bg-gradient-to-r from-purple-500 to-pink-500',
-      textColor: 'text-white',
-      preview: '🥈 TOP 3'
-    }
-  ]
-
-  const downloadBadge = (badge: any) => {
-    // Create a canvas element
-    const canvas = document.createElement('canvas')
-    canvas.width = 200
-    canvas.height = 60
-    const ctx = canvas.getContext('2d')
-    
-    if (!ctx) return
-    
-    // Set background
-    if (badge.bgColor.includes('gradient')) {
-      const gradient = ctx.createLinearGradient(0, 0, 200, 0)
-      if (badge.id === 'winner') {
-        gradient.addColorStop(0, '#FBBF24')
-        gradient.addColorStop(1, '#F97316')
-      } else {
-        gradient.addColorStop(0, '#A855F7')
-        gradient.addColorStop(1, '#EC4899')
-      }
-      ctx.fillStyle = gradient
-    } else {
-      ctx.fillStyle = badge.id === 'maker' ? '#2D2D2D' : '#16A34A'
-    }
-    
-    // Draw rounded rectangle
-    const radius = 12
-    ctx.beginPath()
-    ctx.moveTo(radius, 0)
-    ctx.lineTo(canvas.width - radius, 0)
-    ctx.quadraticCurveTo(canvas.width, 0, canvas.width, radius)
-    ctx.lineTo(canvas.width, canvas.height - radius)
-    ctx.quadraticCurveTo(canvas.width, canvas.height, canvas.width - radius, canvas.height)
-    ctx.lineTo(radius, canvas.height)
-    ctx.quadraticCurveTo(0, canvas.height, 0, canvas.height - radius)
-    ctx.lineTo(0, radius)
-    ctx.quadraticCurveTo(0, 0, radius, 0)
-    ctx.closePath()
-    ctx.fill()
-    
-    // Set text
-    ctx.fillStyle = 'white'
-    ctx.font = 'bold 20px system-ui'
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
-    ctx.fillText(badge.preview, canvas.width / 2, canvas.height / 2)
-    
-    // Convert to PNG and download
-    canvas.toBlob((blob) => {
-      if (blob) {
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = `sheep-it-${badge.id}-badge.png`
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
-        URL.revokeObjectURL(url)
-        toast.success('Badge downloaded!')
-      }
-    })
-  }
-
-  return (
-    <div className="max-w-6xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#2D2D2D]">Badges & Achievements</h1>
-        <p className="text-[#666666] mt-2">Download badges to showcase your achievements</p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {badges.map((badge) => (
-          <div key={badge.id} className="bg-white rounded-xl border border-[#E5E5E5] p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h3 className="text-lg font-semibold text-[#2D2D2D]">{badge.name}</h3>
-                <p className="text-sm text-[#666666] mt-1">{badge.description}</p>
-              </div>
-              <button
-                onClick={() => downloadBadge(badge)}
-                className="p-2 hover:bg-gray-50 rounded-lg transition-colors"
-                title="Download badge"
-              >
-                <Download className="w-5 h-5 text-[#666666]" />
-              </button>
-            </div>
-            
-            {/* Badge Preview */}
-            <div className="mt-4">
-              <p className="text-xs text-[#999999] mb-2">Preview:</p>
-              <div className={`inline-flex items-center px-6 py-3 rounded-xl ${badge.bgColor} ${badge.textColor} font-bold text-sm`}>
-                {badge.preview}
-              </div>
-            </div>
-            
-            {/* Usage Instructions */}
-            <div className="mt-4 p-3 bg-[#F5F5F5] rounded-lg">
-              <p className="text-xs text-[#666666]">
-                <strong>Usage:</strong> Add to your website, social media, or email signature
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* HTML Embed Section */}
-      <div className="mt-8 bg-white rounded-xl border border-[#E5E5E5] p-6">
-        <h3 className="text-lg font-semibold text-[#2D2D2D] mb-4">HTML Embed Code</h3>
-        <p className="text-sm text-[#666666] mb-4">
-          Copy this code to embed your maker badge on your website:
-        </p>
-        <div className="bg-[#F5F5F5] rounded-lg p-4 font-mono text-xs">
-          <code>
-            {`<a href="https://sheepit.com" target="_blank">
-  <img src="https://sheepit.com/badge/maker" alt="Sheep It Maker" />
-</a>`}
-          </code>
-        </div>
-        <button
-          onClick={() => {
-            navigator.clipboard.writeText(`<a href="https://sheepit.com" target="_blank"><img src="https://sheepit.com/badge/maker" alt="Sheep It Maker" /></a>`)
-            toast.success('Code copied to clipboard!')
-          }}
-          className="mt-3 px-4 py-2 bg-[#2D2D2D] text-white rounded-lg text-sm hover:bg-[#1D1D1D] transition-colors"
-        >
-          Copy Code
-        </button>
-      </div>
-    </div>
-  )
-}
-
 // Product Card Component (for products list)
 function ProductCard({ product }: { product: any }) {
   const router = useRouter()
+  const supabase = createClient()
   const [showPurchaseModal, setShowPurchaseModal] = useState(false)
   const [purchaseType, setPurchaseType] = useState<'skip_queue' | 'featured_product'>('skip_queue')
   
@@ -906,6 +736,82 @@ function ProductCard({ product }: { product: any }) {
 
   const statusInfo = getStatusInfo()
 
+  return (
+    <div className="bg-white rounded-xl border border-gray-100 p-6">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
+            {product.logo_url ? (
+              <img src={product.logo_url} alt={product.name} className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-2xl">🚀</span>
+            )}
+          </div>
+          <div className="flex-1">
+            <h3 className="font-bold text-gray-900">{product.name}</h3>
+            <p className="text-gray-600 text-sm mb-2">{product.tagline}</p>
+            <div className="flex items-center space-x-4 text-sm text-gray-500">
+              <span>{product.vote_count || 0} votes</span>
+              <span>{new Date(product.created_at).toLocaleDateString()}</span>
+            </div>
+          </div>
+        </div>
+        <div className="text-right">
+          <div className={`px-3 py-1.5 rounded-lg text-xs font-medium ${statusInfo.bg} ${statusInfo.color} ${statusInfo.border} border`}>
+            {statusInfo.text}
+          </div>
+          <div className="mt-3 flex flex-col gap-2 items-end">
+            {/* Action buttons based on status */}
+            {product.status === 'approved' && product.queue_position && !product.is_live && (
+              <button 
+                onClick={() => {
+                  setPurchaseType('skip_queue')
+                  setShowPurchaseModal(true)
+                }}
+                className="flex items-center gap-1 text-xs bg-[#2D2D2D] text-white px-3 py-1.5 rounded-md hover:bg-[#1D1D1D] transition-colors"
+              >
+                <Zap className="w-3 h-3" />
+                Skip Queue
+              </button>
+            )}
+            {product.status === 'approved' && !product.payment_status?.includes('featured') && (
+              <button 
+                onClick={() => {
+                  setPurchaseType('featured_product')
+                  setShowPurchaseModal(true)
+                }}
+                className="flex items-center gap-1.5 text-xs bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700 transition-colors font-medium shadow-sm"
+              >
+                <Crown className="w-3.5 h-3.5" />
+                Get Featured
+              </button>
+            )}
+            <div className="flex gap-2">
+              <button 
+                onClick={() => router.push(`/product/${product.id}`)}
+                className="text-gray-600 hover:text-gray-900 text-sm font-medium"
+              >
+                View
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Purchase Modal */}
+      <PurchaseModal
+        isOpen={showPurchaseModal}
+        onClose={() => setShowPurchaseModal(false)}
+        product={product}
+        type={purchaseType}
+        onSuccess={() => {
+          setShowPurchaseModal(false)
+          // Reload products to reflect changes
+          window.location.reload()
+        }}
+      />
+    </div>
+  )
   return (
     <div className="bg-white rounded-xl border border-gray-100 p-6">
       <div className="flex items-center justify-between">
