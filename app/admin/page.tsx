@@ -749,25 +749,43 @@ export default function AdminPage() {
                 <h2 className="text-2xl font-bold text-[#2D2D2D]">Launch Queue</h2>
                 <p className="text-[#666666] mt-1">Drag products to reorder the launch sequence</p>
               </div>
-              <button
-                onClick={async () => {
-                  const supabase = createClient()
-                  const { data, error } = await supabase.rpc('auto_weekly_transition')
-                  
-                  if (error) {
-                    toast.error(`Test failed: ${error.message}`)
-                  } else {
-                    const result = data?.[0]
-                    toast.success(`Test successful: ${result?.products_made_live} products made live`)
-                    loadProducts()
-                    loadQueueProducts()
-                    loadLiveProducts()
-                  }
-                }}
-                className="bg-white text-[#666666] border border-[#E5E5E5] px-4 py-2 rounded-full hover:border-[#D5D5D5] transition-colors text-sm font-medium"
-              >
-                Test Transition
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={async () => {
+                    const supabase = createClient()
+                    const { error } = await supabase.rpc('recalculate_queue_positions')
+                    
+                    if (error) {
+                      toast.error(`Failed to recalculate: ${error.message}`)
+                    } else {
+                      toast.success('Queue positions recalculated!')
+                      loadQueueProducts()
+                    }
+                  }}
+                  className="bg-white text-[#666666] border border-[#E5E5E5] px-4 py-2 rounded-full hover:border-[#D5D5D5] transition-colors text-sm font-medium"
+                >
+                  Fix Queue Numbers
+                </button>
+                <button
+                  onClick={async () => {
+                    const supabase = createClient()
+                    const { data, error } = await supabase.rpc('auto_weekly_transition')
+                    
+                    if (error) {
+                      toast.error(`Test failed: ${error.message}`)
+                    } else {
+                      const result = data?.[0]
+                      toast.success(`Test successful: ${result?.products_made_live} products made live`)
+                      loadProducts()
+                      loadQueueProducts()
+                      loadLiveProducts()
+                    }
+                  }}
+                  className="bg-white text-[#666666] border border-[#E5E5E5] px-4 py-2 rounded-full hover:border-[#D5D5D5] transition-colors text-sm font-medium"
+                >
+                  Test Transition
+                </button>
+              </div>
             </div>
 
             {/* Automatic System Info */}
