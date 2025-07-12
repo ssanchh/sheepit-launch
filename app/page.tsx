@@ -17,9 +17,11 @@ export default function HomePage() {
   const [filteredProducts, setFilteredProducts] = useState<ProductWithVotes[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
+  const [featuredProduct, setFeaturedProduct] = useState<ProductWithVotes | null>(null)
 
   useEffect(() => {
     loadApprovedProducts()
+    loadFeaturedProduct()
   }, [])
 
   const loadApprovedProducts = async () => {
@@ -99,6 +101,60 @@ export default function HomePage() {
     setLoading(false)
   }
 
+  const loadFeaturedProduct = async () => {
+    const supabase = createClient()
+    
+    // Get random featured product using the database function
+    const { data: featuredId } = await supabase
+      .rpc('get_random_featured_product')
+    
+    if (featuredId) {
+      // Get the full product details
+      const { data: product } = await supabase
+        .from('products')
+        .select(`
+          *,
+          users!created_by (
+            first_name,
+            last_name,
+            handle
+          )
+        `)
+        .eq('id', featuredId)
+        .single()
+      
+      if (product) {
+        // Get vote count
+        const { count } = await supabase
+          .from('votes')
+          .select('*', { count: 'exact', head: true })
+          .eq('product_id', product.id)
+        
+        // Check if current user has voted
+        const { data: { user } } = await supabase.auth.getUser()
+        let userVote = null
+        if (user) {
+          const { data: voteData } = await supabase
+            .from('votes')
+            .select('*')
+            .eq('product_id', product.id)
+            .eq('user_id', user.id)
+            .limit(1)
+          
+          userVote = voteData && voteData.length > 0 ? voteData[0] : null
+        }
+        
+        setFeaturedProduct({
+          ...product,
+          votes: [],
+          vote_count: count || 0,
+          user_vote: userVote,
+          is_featured: true
+        })
+      }
+    }
+  }
+
   const handleVoteUpdate = () => {
     loadApprovedProducts()
   }
@@ -159,6 +215,28 @@ export default function HomePage() {
           </div>
         )}
 
+
+        {/* Featured Product Rotation */}
+        {featuredProduct && (
+          <div className="mb-8">
+            <div className="bg-gradient-to-r from-purple-50 to-orange-50 rounded-xl p-6 border-2 border-purple-200">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-semibold text-purple-700 uppercase tracking-wider">✨ Featured Product</h3>
+                <span className="text-xs text-purple-600 bg-purple-100 px-2 py-1 rounded-full">Rotates on each visit</span>
+              </div>
+              <ProductCard 
+                key={featuredProduct.id}
+                product={featuredProduct}
+                rank={0}
+                onVoteUpdate={() => {
+                  loadApprovedProducts()
+                  loadFeaturedProduct()
+                }}
+                isFeatured={true}
+              />
+            </div>
+          </div>
+        )}
 
         {/* Search Bar */}
         <div className="mb-6">

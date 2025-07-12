@@ -19,8 +19,8 @@ export const LEMON_SQUEEZY_CONFIG = {
     featured: {
       productId: process.env.NEXT_PUBLIC_LEMON_SQUEEZY_FEATURED_PRODUCT_ID!,
       variantId: process.env.NEXT_PUBLIC_LEMON_SQUEEZY_FEATURED_VARIANT_ID!,
-      price: 45,
-      name: 'Featured Product Spot'
+      price: 30,
+      name: 'Featured Spot (Weekly)'
     }
   }
 }
@@ -41,7 +41,7 @@ export async function createCheckoutUrl(
       user_id: userId,
       product_id: productId,
       payment_type: paymentType,
-      amount: paymentType === 'skip_queue' ? 35 : 45,
+      amount: paymentType === 'skip_queue' ? 35 : 30,
       currency: 'USD',
       status: 'pending'
     })
@@ -132,12 +132,44 @@ export async function processSuccessfulPayment(
         original_position: 999, // Will be set when applied
         new_position: 1
       })
+    
+    // Create guaranteed backlink for premium
+    const { data: product } = await supabase
+      .from('products')
+      .select('name')
+      .eq('id', payment.product_id)
+      .single()
+    
+    if (product) {
+      await supabase
+        .from('product_backlinks')
+        .insert({
+          product_id: payment.product_id,
+          payment_id: payment.id,
+          anchor_text: product.name,
+          target_url: `https://sheepit.io/product/${payment.product_id}`,
+          is_dofollow: true,
+          is_active: true
+        })
+    }
   } else if (payment.payment_type === 'featured_product') {
-    // Create featured purchase record
+    // Create featured rotation record
     const startDate = new Date()
     const endDate = new Date()
     endDate.setDate(endDate.getDate() + 7) // 7 days featured
     
+    await supabase
+      .from('featured_rotation')
+      .insert({
+        product_id: payment.product_id,
+        payment_id: payment.id,
+        start_date: startDate.toISOString(),
+        end_date: endDate.toISOString(),
+        is_active: true,
+        rotation_order: 0
+      })
+    
+    // Also create featured purchase for backwards compatibility
     await supabase
       .from('featured_purchases')
       .insert({
@@ -147,6 +179,12 @@ export async function processSuccessfulPayment(
         end_date: endDate.toISOString(),
         active: true
       })
+    
+    // Update product to show as featured
+    await supabase
+      .from('products')
+      .update({ is_featured_rotation: true })
+      .eq('id', payment.product_id)
   }
 
   return payment
