@@ -51,7 +51,6 @@ CREATE TABLE IF NOT EXISTS email_logs (
 CREATE INDEX IF NOT EXISTS idx_email_logs_user_id ON email_logs(user_id);
 CREATE INDEX IF NOT EXISTS idx_email_logs_email ON email_logs(email);
 CREATE INDEX IF NOT EXISTS idx_email_logs_type ON email_logs(email_type);
-CREATE INDEX IF NOT EXISTS idx_email_logs_created ON email_logs(created_at);
 
 -- Enable RLS
 ALTER TABLE newsletter_subscribers ENABLE ROW LEVEL SECURITY;
