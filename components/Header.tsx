@@ -152,8 +152,8 @@ export default function Header() {
                   <>
                     {profile && !profile.profile_completed && (
                       <Link
-                        href="/profile"
-                        className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium hover:bg-yellow-200 transition-colors"
+                        href="/dashboard?tab=profile"
+                        className="bg-orange-50 text-orange-600 border-2 border-orange-200 px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-100 hover:border-orange-300 transition-all"
                       >
                         Complete Profile
                       </Link>
