@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '../../hooks/useAuth'
+import { useUserProfile } from '@/contexts/UserProfileContext'
 import { createClient } from '@/utils/supabase/client'
 import { toast } from 'sonner'
 import Header from '../../components/Header'
@@ -414,6 +415,7 @@ function PaymentsSection({ user }: { user: any }) {
 }
 
 function ProfileSection({ user, onProfileComplete }: { user: any, onProfileComplete?: () => void }) {
+  const { refreshProfile } = useUserProfile()
   const [profile, setProfile] = useState({
     first_name: '',
     last_name: '',
@@ -502,8 +504,6 @@ function ProfileSection({ user, onProfileComplete }: { user: any, onProfileCompl
     setSaving(true)
 
     try {
-      console.log('Current user ID:', user?.id)
-      
       const { data: existingProfile, error: selectError } = await createClient()
         .from('users')
         .select('id')
@@ -513,8 +513,6 @@ function ProfileSection({ user, onProfileComplete }: { user: any, onProfileCompl
       if (selectError && selectError.code !== 'PGRST116') {
         console.error('Error checking profile:', selectError)
       }
-      
-      console.log('Existing profile:', existingProfile)
 
       // Prepare update data (exclude id and email from updates)
       const updateData = {
@@ -531,15 +529,11 @@ function ProfileSection({ user, onProfileComplete }: { user: any, onProfileCompl
       let result
       // Since we have the auth trigger, user should always exist
       // Force update instead of checking
-      console.log('Updating profile with data:', updateData)
-      
       result = await createClient()
         .from('users')
         .update(updateData)
         .eq('id', user?.id)
         .select()
-        
-      console.log('Update result:', result)
 
       if (result.error) {
         console.error('Profile update error:', result.error)
@@ -575,9 +569,11 @@ function ProfileSection({ user, onProfileComplete }: { user: any, onProfileCompl
         }
       }
       
-      // Show success message instead of redirecting
-      console.log('Profile saved successfully!')
+      // Show success message
       toast.success('Profile saved successfully!')
+      
+      // Refresh the profile in the context so header updates
+      await refreshProfile()
       
       // Call the callback if profile is now complete
       if (onProfileComplete && !isProfileComplete) {
