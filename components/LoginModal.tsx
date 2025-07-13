@@ -160,10 +160,6 @@ export default function LoginModal({ isOpen, onClose, redirectTo = '/' }: LoginM
                 </button>
               </form>
 
-              {/* Newsletter notice */}
-              <p className="text-xs text-center text-[#666666] mb-4">
-                By signing up, you'll be subscribed to our weekly newsletter
-              </p>
 
               {/* Divider */}
               <div className="relative mb-6">

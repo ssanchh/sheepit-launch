@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/utils/supabase/server'
 import { sendWelcomeEmail } from '@/lib/email/service'
-import { handleNewUserSignup } from '@/lib/newsletter/weekly-sync'
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url)
@@ -44,21 +43,7 @@ export async function GET(request: NextRequest) {
             userData.first_name
           )
           
-          // Subscribe to newsletter via API (non-blocking)
-          try {
-            fetch(`${requestUrl.origin}/api/newsletter/subscribe`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                email: userData.email,
-                userId: authData.user.id,
-                firstName: userData.first_name,
-                source: 'signup'
-              })
-            }).catch(err => console.log('Newsletter subscription queued'))
-          } catch (err) {
-            console.log('Newsletter subscription will be processed later')
-          }
+          // Newsletter subscription removed - using manual export process
         }
       }
     }

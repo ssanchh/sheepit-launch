@@ -540,34 +540,7 @@ function ProfileSection({ user, onProfileComplete }: { user: any, onProfileCompl
         throw result.error
       }
 
-      // If profile is newly completed, subscribe to newsletter
-      if (!isProfileComplete && updateData.profile_completed) {
-        try {
-          // Add to newsletter subscribers table
-          await createClient()
-            .from('newsletter_subscribers')
-            .insert({
-              email: user?.email,
-              user_id: user?.id,
-              status: 'active',
-              source: 'profile_completion'
-            })
-          
-          // Subscribe to Beehiiv (async, don't wait)
-          fetch('/api/newsletter/subscribe', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-              email: user?.email,
-              userId: user?.id,
-              source: 'profile_completion'
-            })
-          })
-        } catch (error) {
-          console.error('Newsletter subscription error:', error)
-          // Don't fail profile update if newsletter fails
-        }
-      }
+      // Newsletter subscription removed - using manual export process
       
       // Show success message
       toast.success('Profile saved successfully!')
