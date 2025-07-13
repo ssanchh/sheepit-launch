@@ -502,11 +502,19 @@ function ProfileSection({ user, onProfileComplete }: { user: any, onProfileCompl
     setSaving(true)
 
     try {
-      const { data: existingProfile } = await createClient()
+      console.log('Current user ID:', user?.id)
+      
+      const { data: existingProfile, error: selectError } = await createClient()
         .from('users')
         .select('id')
         .eq('id', user?.id)
         .single()
+        
+      if (selectError && selectError.code !== 'PGRST116') {
+        console.error('Error checking profile:', selectError)
+      }
+      
+      console.log('Existing profile:', existingProfile)
 
       // Prepare update data (exclude id and email from updates)
       const updateData = {
@@ -521,21 +529,17 @@ function ProfileSection({ user, onProfileComplete }: { user: any, onProfileCompl
       }
 
       let result
-      if (existingProfile) {
-        result = await createClient()
-          .from('users')
-          .update(updateData)
-          .eq('id', user?.id)
-      } else {
-        // For insert, include id and email
-        result = await createClient()
-          .from('users')
-          .insert({
-            id: user?.id,
-            email: user?.email,
-            ...updateData
-          })
-      }
+      // Since we have the auth trigger, user should always exist
+      // Force update instead of checking
+      console.log('Updating profile with data:', updateData)
+      
+      result = await createClient()
+        .from('users')
+        .update(updateData)
+        .eq('id', user?.id)
+        .select()
+        
+      console.log('Update result:', result)
 
       if (result.error) {
         console.error('Profile update error:', result.error)
