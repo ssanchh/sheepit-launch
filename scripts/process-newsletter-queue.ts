@@ -51,7 +51,7 @@ async function subscribeToBeehiiv(email: string, userId?: string, firstName?: st
     }
   } catch (error) {
     console.error(`Error subscribing ${email}:`, error)
-    return { success: false, error: error.message }
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
 

@@ -10,4 +10,3 @@ async function checkStatus() {
 }
 
 checkStatus()
-EOF && tsx scripts/check-beehiiv.ts < /dev/null

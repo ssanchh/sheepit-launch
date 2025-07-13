@@ -158,15 +158,8 @@ export async function unsubscribeFromNewsletter(
       }
     }
 
-    // Update our database
-    const supabase = createClient()
-    await supabase
-      .from('newsletter_subscribers')
-      .update({
-        status: 'unsubscribed',
-        unsubscribed_at: new Date().toISOString(),
-      })
-      .eq('email', email)
+    // Note: Database update should be handled by the calling function
+    // to avoid circular dependencies
 
     return { success: true }
   } catch (error) {
@@ -178,43 +171,8 @@ export async function unsubscribeFromNewsletter(
   }
 }
 
-// Function to sync existing users to Beehiiv
-export async function syncExistingSubscribers() {
-  const supabase = createClient()
-  
-  // Get all active newsletter subscribers without Beehiiv ID
-  const { data: subscribers, error } = await supabase
-    .from('newsletter_subscribers')
-    .select('email, user_id')
-    .eq('status', 'active')
-    .is('beehiiv_subscriber_id', null)
-
-  if (error || !subscribers) {
-    console.error('Error fetching subscribers:', error)
-    return
-  }
-
-  console.log(`Syncing ${subscribers.length} subscribers to Beehiiv...`)
-
-  for (const subscriber of subscribers) {
-    const result = await subscribeToNewsletter(
-      subscriber.email,
-      subscriber.user_id,
-      'sync'
-    )
-    
-    if (result.success) {
-      console.log(`✓ Synced ${subscriber.email}`)
-    } else {
-      console.error(`✗ Failed to sync ${subscriber.email}:`, result.error)
-    }
-    
-    // Add a small delay to avoid rate limiting
-    await new Promise(resolve => setTimeout(resolve, 100))
-  }
-
-  console.log('Sync complete!')
-}
+// Note: syncExistingSubscribers function moved to scripts/process-newsletter-queue.ts
+// to avoid circular dependencies with Supabase client
 
 // Get subscriber status from Beehiiv
 export async function getSubscriberStatus(email: string): Promise<{

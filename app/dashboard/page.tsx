@@ -543,7 +543,7 @@ function ProfileSection({ user, onProfileComplete }: { user: any, onProfileCompl
       }
 
       // If profile is newly completed, subscribe to newsletter
-      if (!isProfileComplete && profileData.profile_completed) {
+      if (!isProfileComplete && updateData.profile_completed) {
         try {
           // Add to newsletter subscribers table
           await createClient()
