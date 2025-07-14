@@ -12,6 +12,133 @@ import { createClient } from '@/utils/supabase/client'
 import { ProductWithVotes } from '@/types/database'
 import './animations.css'
 
+const getExampleProducts = (): ProductWithVotes[] => {
+  const exampleProducts = [
+    {
+      id: 'example-1',
+      name: 'Duolingo',
+      tagline: 'Language learning made fun',
+      description: 'Learn a new language with the world\'s most-downloaded education app',
+      logo_url: 'https://logo.clearbit.com/duolingo.com',
+      website_url: 'https://duolingo.com',
+      vote_count: 452,
+      comment_count: 23,
+    },
+    {
+      id: 'example-2',
+      name: 'Grammarly',
+      tagline: 'AI-powered writing assistant',
+      description: 'Compose bold, clear, mistake-free writing with Grammarly\'s AI-powered writing assistant',
+      logo_url: 'https://logo.clearbit.com/grammarly.com',
+      website_url: 'https://grammarly.com',
+      vote_count: 398,
+      comment_count: 18,
+    },
+    {
+      id: 'example-3',
+      name: 'Notion',
+      tagline: 'Your all-in-one workspace',
+      description: 'Write, plan, collaborate, and get organized. Notion is all you need — in one tool',
+      logo_url: 'https://logo.clearbit.com/notion.so',
+      website_url: 'https://notion.so',
+      vote_count: 367,
+      comment_count: 21,
+    },
+    {
+      id: 'example-4',
+      name: 'Linear',
+      tagline: 'Streamline software projects',
+      description: 'Linear is a better way to build products. Meet the new standard for modern software development',
+      logo_url: 'https://logo.clearbit.com/linear.app',
+      website_url: 'https://linear.app',
+      vote_count: 312,
+      comment_count: 15,
+    },
+    {
+      id: 'example-5',
+      name: 'Figma',
+      tagline: 'Collaborative design tool',
+      description: 'Build better products as a team. Design, prototype, and gather feedback all in one place',
+      logo_url: 'https://logo.clearbit.com/figma.com',
+      website_url: 'https://figma.com',
+      vote_count: 289,
+      comment_count: 19,
+    },
+    {
+      id: 'example-6',
+      name: 'Stripe',
+      tagline: 'Payments infrastructure for the internet',
+      description: 'Millions of businesses use Stripe to accept payments and manage their businesses online',
+      logo_url: 'https://logo.clearbit.com/stripe.com',
+      website_url: 'https://stripe.com',
+      vote_count: 256,
+      comment_count: 12,
+    },
+    {
+      id: 'example-7',
+      name: 'Vercel',
+      tagline: 'Deploy frontend apps in seconds',
+      description: 'Vercel is the platform for frontend developers, providing the speed and reliability to create at the moment of inspiration',
+      logo_url: 'https://logo.clearbit.com/vercel.com',
+      website_url: 'https://vercel.com',
+      vote_count: 223,
+      comment_count: 14,
+    },
+    {
+      id: 'example-8',
+      name: 'Spotify',
+      tagline: 'Music for everyone',
+      description: 'With Spotify, it\'s easy to find the right music or podcast for every moment – on your phone, computer, tablet and more',
+      logo_url: 'https://logo.clearbit.com/spotify.com',
+      website_url: 'https://spotify.com',
+      vote_count: 198,
+      comment_count: 16,
+    },
+    {
+      id: 'example-9',
+      name: 'Slack',
+      tagline: 'Where work happens',
+      description: 'Slack is a new way to communicate with your team. It\'s faster, better organized, and more secure than email',
+      logo_url: 'https://logo.clearbit.com/slack.com',
+      website_url: 'https://slack.com',
+      vote_count: 176,
+      comment_count: 11,
+    },
+    {
+      id: 'example-10',
+      name: 'GitHub',
+      tagline: 'Where the world builds software',
+      description: 'GitHub is where over 100 million developers shape the future of software, together',
+      logo_url: 'https://logo.clearbit.com/github.com',
+      website_url: 'https://github.com',
+      vote_count: 154,
+      comment_count: 13,
+    },
+  ]
+
+  // Add required fields to match ProductWithVotes type
+  return exampleProducts.map(product => ({
+    ...product,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    created_by: 'example-user',
+    status: 'approved',
+    week_id: 'example-week',
+    launch_date: new Date().toISOString(),
+    is_live: true,
+    queue_position: 0,
+    images: null,
+    users: {
+      first_name: 'Example',
+      last_name: 'Maker',
+      handle: 'examplemaker'
+    },
+    votes: [],
+    user_vote: null,
+    is_example: true // Flag to identify example products
+  } as ProductWithVotes & { is_example: boolean }))
+}
+
 export default function HomePage() {
   const [products, setProducts] = useState<ProductWithVotes[]>([])
   const [filteredProducts, setFilteredProducts] = useState<ProductWithVotes[]>([])
@@ -63,6 +190,19 @@ export default function HomePage() {
       // Set all products (no featured separation)
       setProducts(productsWithVotes)
       setFilteredProducts(productsWithVotes)
+    } else {
+      // If no real products, show example products until August 4th
+      const launchDate = new Date('2024-08-04')
+      const now = new Date()
+      
+      if (now < launchDate) {
+        const examples = getExampleProducts()
+        setProducts(examples)
+        setFilteredProducts(examples)
+      } else {
+        setProducts([])
+        setFilteredProducts([])
+      }
     }
     setLoading(false)
   }
@@ -245,14 +385,16 @@ export default function HomePage() {
         {/* First Launch Announcement */}
         <FirstLaunchCountdown />
 
-        {/* Stats Bar - Only show after first launch */}
+        {/* Stats Bar - Show when we have products (including examples) */}
         {products.length > 0 && (
           <div className="bg-white rounded-xl border border-[#E5E5E5] p-4 mb-6 sm:mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div className="flex items-center gap-4 sm:gap-8">
                 <div>
                   <div className="text-xl sm:text-2xl font-bold text-[#2D2D2D]">{products.length}</div>
-                  <div className="text-xs sm:text-sm text-[#666666]">Launching this week</div>
+                  <div className="text-xs sm:text-sm text-[#666666]">
+                    {products[0]?.is_example ? 'Example products' : 'Launching this week'}
+                  </div>
                 </div>
                 <div className="border-l border-[#E5E5E5] pl-4 sm:pl-8">
                   <div className="text-xl sm:text-2xl font-bold text-indigo-600">{products.reduce((sum, p) => sum + p.vote_count, 0)}</div>
@@ -299,10 +441,10 @@ export default function HomePage() {
         {products.length > 0 && (
           <div className="mb-4">
             <h2 className="text-lg sm:text-xl font-semibold text-[#2D2D2D]">
-              {searchQuery ? `Search results for "${searchQuery}"` : "This week's launches"}
+              {searchQuery ? `Search results for "${searchQuery}"` : products[0]?.is_example ? "See how your product could look" : "This week's launches"}
             </h2>
             <p className="text-xs sm:text-sm text-[#666666] mt-1">
-              {searchQuery ? `Found ${filteredProducts.length} products` : "Vote for your favorites • Top 3 win prizes"}
+              {searchQuery ? `Found ${filteredProducts.length} products` : products[0]?.is_example ? "These are example products • Real launches begin August 4th" : "Vote for your favorites • Top 3 win prizes"}
             </p>
           </div>
         )}
@@ -331,41 +473,21 @@ export default function HomePage() {
                 />
               ))}
             </div>
-          ) : (
+          ) : searchQuery ? (
             <div className="bg-white rounded-xl border border-[#E5E5E5] p-8 sm:p-12 text-center">
-              {searchQuery ? (
-                <>
-                  <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-[#F5F5F5] flex items-center justify-center">
-                    <svg className="w-6 h-6 text-[#666666]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-lg sm:text-xl font-semibold text-[#2D2D2D] mb-2">
-                    No products found
-                  </h3>
-                  <p className="text-sm sm:text-base text-[#666666]">
-                    No products match "{searchQuery}". Try a different search term.
-                  </p>
-                </>
-              ) : (
-                <>
-                  <div className="w-1 h-16 mx-auto mb-6 bg-[#E5E5E5] rounded-full"></div>
-                  <h3 className="text-lg sm:text-xl font-semibold text-[#2D2D2D] mb-2">
-                    Ready to launch?
-                  </h3>
-                  <p className="text-sm sm:text-base text-[#666666] mb-6 max-w-md mx-auto">
-                    The queue is open. Submit your product to be featured in our weekly launch showcase.
-                  </p>
-                  <a 
-                    href="/submit"
-                    className="inline-flex items-center justify-center bg-[#2D2D2D] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#1D1D1D] transition-colors"
-                  >
-                    Submit Your Product
-                  </a>
-                </>
-              )}
+              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-[#F5F5F5] flex items-center justify-center">
+                <svg className="w-6 h-6 text-[#666666]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <h3 className="text-lg sm:text-xl font-semibold text-[#2D2D2D] mb-2">
+                No products found
+              </h3>
+              <p className="text-sm sm:text-base text-[#666666]">
+                No products match "{searchQuery}". Try a different search term.
+              </p>
             </div>
-          )}
+          ) : null}
         </section>
 
         {/* Newsletter Signup */}

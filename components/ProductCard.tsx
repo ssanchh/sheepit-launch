@@ -10,7 +10,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
 interface ProductCardProps {
-  product: ProductWithVotes
+  product: ProductWithVotes & { is_example?: boolean }
   rank: number
   onVoteUpdate: (productId: string, isVoting: boolean) => void
   totalProducts?: number
@@ -26,6 +26,11 @@ export default function ProductCard({ product, rank, onVoteUpdate, totalProducts
 
   const handleVote = async (e: React.MouseEvent) => {
     e.stopPropagation()
+    
+    if (product.is_example) {
+      toast.info('This is an example product. Sign up to vote on real products!')
+      return
+    }
     
     if (!user) {
       toast.error('Please sign in to vote')
@@ -98,11 +103,19 @@ export default function ProductCard({ product, rank, onVoteUpdate, totalProducts
   const rankBadge = getRankBadge()
 
   const handleProductClick = () => {
+    if (product.is_example) {
+      toast.info('This is an example product. Real products will be available on August 4th!')
+      return
+    }
     router.push(`/product/${product.id}`)
   }
 
   const handleCommentClick = (e: React.MouseEvent) => {
     e.stopPropagation()
+    if (product.is_example) {
+      toast.info('This is an example product. Real products will be available on August 4th!')
+      return
+    }
     router.push(`/product/${product.id}`)
   }
 
@@ -119,6 +132,15 @@ export default function ProductCard({ product, rank, onVoteUpdate, totalProducts
           className="absolute -top-2.5 left-4 px-2.5 py-0.5 bg-[#2D2D2D] text-white rounded-full text-xs font-medium"
         >
           {rankBadge.text}
+        </div>
+      )}
+      
+      {/* Example Badge */}
+      {product.is_example && (
+        <div 
+          className="absolute -top-2.5 right-4 px-2.5 py-0.5 bg-[#666666] text-white rounded-full text-xs font-medium"
+        >
+          Example
         </div>
       )}
       <div className="p-3 sm:p-4">
