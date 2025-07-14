@@ -18,11 +18,19 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [featuredProduct, setFeaturedProduct] = useState<ProductWithVotes | null>(null)
+  const [user, setUser] = useState<any>(null)
 
   useEffect(() => {
+    loadUser()
     loadApprovedProducts()
     loadFeaturedProduct()
   }, [])
+
+  const loadUser = async () => {
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    setUser(user)
+  }
 
   const loadApprovedProducts = async () => {
     const supabase = createClient()
@@ -102,7 +110,13 @@ export default function HomePage() {
           return {
             ...product,
             vote_count: isVoting ? product.vote_count + 1 : product.vote_count - 1,
-            user_vote: isVoting ? { id: 'temp-id' } : null
+            user_vote: isVoting ? { 
+              id: 'temp-id',
+              user_id: user?.id || '',
+              product_id: productId,
+              week_id: product.week_id,
+              created_at: new Date().toISOString()
+            } : null
           }
         }
         return product
@@ -115,7 +129,13 @@ export default function HomePage() {
           return {
             ...product,
             vote_count: isVoting ? product.vote_count + 1 : product.vote_count - 1,
-            user_vote: isVoting ? { id: 'temp-id' } : null
+            user_vote: isVoting ? { 
+              id: 'temp-id',
+              user_id: user?.id || '',
+              product_id: productId,
+              week_id: product.week_id,
+              created_at: new Date().toISOString()
+            } : null
           }
         }
         return product
@@ -127,7 +147,13 @@ export default function HomePage() {
       setFeaturedProduct({
         ...featuredProduct,
         vote_count: isVoting ? featuredProduct.vote_count + 1 : featuredProduct.vote_count - 1,
-        user_vote: isVoting ? { id: 'temp-id' } : null
+        user_vote: isVoting ? { 
+          id: 'temp-id',
+          user_id: user?.id || '',
+          product_id: productId,
+          week_id: featuredProduct.week_id,
+          created_at: new Date().toISOString()
+        } : null
       })
     }
     
@@ -174,11 +200,11 @@ export default function HomePage() {
         
         // Update featured product with actual data
         if (featuredProduct && featuredProduct.id === productId) {
-          setFeaturedProduct({
-            ...featuredProduct,
+          setFeaturedProduct(prev => prev ? {
+            ...prev,
             vote_count: actualData.vote_count,
-            user_vote: actualData.user_vote_id ? { id: actualData.user_vote_id } : null
-          })
+            user_vote: actualData.user_vote_id ? prev.user_vote : null
+          } : null)
         }
       }
     }
