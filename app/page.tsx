@@ -128,6 +128,18 @@ const getExampleProducts = (): ProductWithVotes[] => {
     is_live: true,
     queue_position: 0,
     images: null,
+    video_url: null,
+    featured: false,
+    admin_notes: null,
+    approved_at: new Date().toISOString(),
+    approved_by: null,
+    rejection_reason: null,
+    slug: product.name.toLowerCase().replace(/\s+/g, '-'),
+    views: 0,
+    submission_date: new Date().toISOString(),
+    twitter_handle: null,
+    linkedin_url: null,
+    is_featured: false,
     users: {
       first_name: 'Example',
       last_name: 'Maker',
@@ -136,7 +148,7 @@ const getExampleProducts = (): ProductWithVotes[] => {
     votes: [],
     user_vote: null,
     is_example: true // Flag to identify example products
-  } as ProductWithVotes & { is_example: boolean }))
+  } as any))
 }
 
 export default function HomePage() {
