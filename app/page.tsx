@@ -159,13 +159,13 @@ export default function HomePage() {
     
     // Then fetch the actual updated data for that specific product
     const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user: currentUser } } = await supabase.auth.getUser()
     
-    if (user) {
+    if (currentUser) {
       const { data: voteData } = await supabase
         .rpc('get_product_vote_data', { 
           product_id_param: productId, 
-          user_id_param: user.id 
+          user_id_param: currentUser.id 
         })
       
       if (voteData && voteData.length > 0) {
@@ -178,7 +178,7 @@ export default function HomePage() {
               return {
                 ...product,
                 vote_count: actualData.vote_count,
-                user_vote: actualData.user_vote_id ? { id: actualData.user_vote_id } : null
+                user_vote: actualData.user_vote_id ? product.user_vote : null
               }
             }
             return product
@@ -191,7 +191,7 @@ export default function HomePage() {
               return {
                 ...product,
                 vote_count: actualData.vote_count,
-                user_vote: actualData.user_vote_id ? { id: actualData.user_vote_id } : null
+                user_vote: actualData.user_vote_id ? product.user_vote : null
               }
             }
             return product
