@@ -50,7 +50,7 @@ export default function HomePage() {
       }))
 
       // Sort by vote count (highest first)
-      productsWithVotes.sort((a, b) => b.vote_count - a.vote_count)
+      productsWithVotes.sort((a: any, b: any) => b.vote_count - a.vote_count)
       
       // Set all products (no featured separation)
       setProducts(productsWithVotes)
