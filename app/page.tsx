@@ -30,66 +30,24 @@ export default function HomePage() {
     // Get current user
     const { data: { user } } = await supabase.auth.getUser()
     
-    // Get approved products with user information and vote counts
-    const { data: products, error } = await supabase
-      .from('products')
-      .select(`
-        *,
-        users!created_by (
-          first_name,
-          last_name,
-          handle
-        )
-      `)
-      .eq('status', 'approved')
-      .eq('is_live', true)  // Only show products that are currently live
-      .order('created_at', { ascending: false })
+    // Use the optimized function to get all products with vote data in a single query
+    const { data: productsData, error } = await supabase
+      .rpc('get_products_with_votes', { user_id_param: user?.id || null })
 
-    if (!error && products) {
-      // Check for featured products
-      const { data: featuredPurchases } = await supabase
-        .from('featured_purchases')
-        .select('product_id')
-        .eq('active', true)
-        .gte('end_date', new Date().toISOString())
-        .lte('start_date', new Date().toISOString())
-
-      const featuredProductIds = featuredPurchases?.map(fp => fp.product_id) || []
-
-      // Get vote counts and user votes for each product
-      const productsWithVotes = await Promise.all(
-        products.map(async (product: any) => {
-          // Get total vote count
-          const { count } = await supabase
-            .from('votes')
-            .select('*', { count: 'exact', head: true })
-            .eq('product_id', product.id)
-
-          // Check if current user has voted for this product
-          let userVote = null
-          if (user) {
-            const { data: voteData } = await supabase
-              .from('votes')
-              .select('*')
-              .eq('product_id', product.id)
-              .eq('user_id', user.id)
-              .limit(1)
-            
-            userVote = voteData && voteData.length > 0 ? voteData[0] : null
-          }
-
-          // Check if product is featured
-          const isFeatured = featuredProductIds.includes(product.id)
-
-          return {
-            ...product,
-            votes: [],
-            vote_count: count || 0,
-            user_vote: userVote,
-            is_featured_paid: isFeatured
-          }
-        })
-      )
+    if (!error && productsData) {
+      // Transform the data to match the expected format
+      const productsWithVotes = productsData.map((product: any) => ({
+        ...product,
+        users: {
+          first_name: product.creator_first_name,
+          last_name: product.creator_last_name,
+          handle: product.creator_handle
+        },
+        votes: [],
+        vote_count: product.vote_count,
+        user_vote: product.user_vote_id ? { id: product.user_vote_id } : null,
+        is_featured_paid: product.is_featured_paid
+      }))
 
       // Sort by vote count (highest first)
       productsWithVotes.sort((a, b) => b.vote_count - a.vote_count)
@@ -104,59 +62,126 @@ export default function HomePage() {
   const loadFeaturedProduct = async () => {
     const supabase = createClient()
     
+    // Get current user
+    const { data: { user } } = await supabase.auth.getUser()
+    
     // Get random featured product using the database function
     const { data: featuredId } = await supabase
       .rpc('get_random_featured_product')
     
     if (featuredId) {
-      // Get the full product details
-      const { data: product } = await supabase
-        .from('products')
-        .select(`
-          *,
-          users!created_by (
-            first_name,
-            last_name,
-            handle
-          )
-        `)
+      // Use optimized function to get product with vote data
+      const { data: productsData } = await supabase
+        .rpc('get_products_with_votes', { user_id_param: user?.id || null })
         .eq('id', featuredId)
-        .single()
       
-      if (product) {
-        // Get vote count
-        const { count } = await supabase
-          .from('votes')
-          .select('*', { count: 'exact', head: true })
-          .eq('product_id', product.id)
-        
-        // Check if current user has voted
-        const { data: { user } } = await supabase.auth.getUser()
-        let userVote = null
-        if (user) {
-          const { data: voteData } = await supabase
-            .from('votes')
-            .select('*')
-            .eq('product_id', product.id)
-            .eq('user_id', user.id)
-            .limit(1)
-          
-          userVote = voteData && voteData.length > 0 ? voteData[0] : null
-        }
+      if (productsData && productsData.length > 0) {
+        const product = productsData[0]
         
         setFeaturedProduct({
           ...product,
+          users: {
+            first_name: product.creator_first_name,
+            last_name: product.creator_last_name,
+            handle: product.creator_handle
+          },
           votes: [],
-          vote_count: count || 0,
-          user_vote: userVote,
+          vote_count: product.vote_count,
+          user_vote: product.user_vote_id ? { id: product.user_vote_id } : null,
           is_featured: true
         })
       }
     }
   }
 
-  const handleVoteUpdate = () => {
-    loadApprovedProducts()
+  const handleVoteUpdate = async (productId: string, isVoting: boolean) => {
+    // Optimistically update the UI immediately
+    setProducts(prevProducts => 
+      prevProducts.map(product => {
+        if (product.id === productId) {
+          return {
+            ...product,
+            vote_count: isVoting ? product.vote_count + 1 : product.vote_count - 1,
+            user_vote: isVoting ? { id: 'temp-id' } : null
+          }
+        }
+        return product
+      })
+    )
+    
+    setFilteredProducts(prevProducts => 
+      prevProducts.map(product => {
+        if (product.id === productId) {
+          return {
+            ...product,
+            vote_count: isVoting ? product.vote_count + 1 : product.vote_count - 1,
+            user_vote: isVoting ? { id: 'temp-id' } : null
+          }
+        }
+        return product
+      })
+    )
+    
+    // Update featured product if it's the one being voted on
+    if (featuredProduct && featuredProduct.id === productId) {
+      setFeaturedProduct({
+        ...featuredProduct,
+        vote_count: isVoting ? featuredProduct.vote_count + 1 : featuredProduct.vote_count - 1,
+        user_vote: isVoting ? { id: 'temp-id' } : null
+      })
+    }
+    
+    // Then fetch the actual updated data for that specific product
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    
+    if (user) {
+      const { data: voteData } = await supabase
+        .rpc('get_product_vote_data', { 
+          product_id_param: productId, 
+          user_id_param: user.id 
+        })
+      
+      if (voteData && voteData.length > 0) {
+        const actualData = voteData[0]
+        
+        // Update with actual server data
+        setProducts(prevProducts => 
+          prevProducts.map(product => {
+            if (product.id === productId) {
+              return {
+                ...product,
+                vote_count: actualData.vote_count,
+                user_vote: actualData.user_vote_id ? { id: actualData.user_vote_id } : null
+              }
+            }
+            return product
+          })
+        )
+        
+        setFilteredProducts(prevProducts => 
+          prevProducts.map(product => {
+            if (product.id === productId) {
+              return {
+                ...product,
+                vote_count: actualData.vote_count,
+                user_vote: actualData.user_vote_id ? { id: actualData.user_vote_id } : null
+              }
+            }
+            return product
+          })
+        )
+        
+        // Update featured product with actual data
+        if (featuredProduct && featuredProduct.id === productId) {
+          setFeaturedProduct({
+            ...featuredProduct,
+            vote_count: actualData.vote_count,
+            user_vote: actualData.user_vote_id ? { id: actualData.user_vote_id } : null
+          })
+        }
+      }
+    }
   }
 
   const handleSearch = useCallback((query: string) => {
@@ -228,10 +253,7 @@ export default function HomePage() {
                 key={featuredProduct.id}
                 product={featuredProduct}
                 rank={0}
-                onVoteUpdate={() => {
-                  loadApprovedProducts()
-                  loadFeaturedProduct()
-                }}
+                onVoteUpdate={handleVoteUpdate}
                 isFeatured={true}
               />
             </div>

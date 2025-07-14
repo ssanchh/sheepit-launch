@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation'
 interface ProductCardProps {
   product: ProductWithVotes
   rank: number
-  onVoteUpdate: () => void
+  onVoteUpdate: (productId: string, isVoting: boolean) => void
   totalProducts?: number
   leadingVotes?: number
   isTop3?: boolean
@@ -32,6 +32,11 @@ export default function ProductCard({ product, rank, onVoteUpdate, totalProducts
       return
     }
 
+    const isVoting = !product.user_vote
+    
+    // Call the optimistic update immediately
+    onVoteUpdate(product.id, isVoting)
+    
     setIsVoting(true)
     
     try {
@@ -45,9 +50,10 @@ export default function ProductCard({ product, rank, onVoteUpdate, totalProducts
 
         if (error) {
           toast.error('Error removing vote. Please try again.')
+          // Revert the optimistic update on error
+          onVoteUpdate(product.id, !isVoting)
         } else {
           toast.success('Vote removed!')
-          onVoteUpdate()
         }
       } else {
         // Vote - add new vote
@@ -67,13 +73,16 @@ export default function ProductCard({ product, rank, onVoteUpdate, totalProducts
           } else {
             toast.error('Error voting. Please try again.')
           }
+          // Revert the optimistic update on error
+          onVoteUpdate(product.id, !isVoting)
         } else {
           toast.success('Vote recorded!')
-          onVoteUpdate()
         }
       }
     } catch (error) {
       toast.error('Something went wrong. Please try again.')
+      // Revert the optimistic update on error
+      onVoteUpdate(product.id, !isVoting)
     } finally {
       setIsVoting(false)
     }
