@@ -12,7 +12,9 @@ import { createClient } from '@/utils/supabase/client'
 import { ProductWithVotes } from '@/types/database'
 import './animations.css'
 
-const getExampleProducts = (): ProductWithVotes[] => {
+type ProductWithExample = ProductWithVotes & { is_example?: boolean }
+
+const getExampleProducts = (): ProductWithExample[] => {
   const exampleProducts = [
     {
       id: 'example-1',
@@ -152,11 +154,11 @@ const getExampleProducts = (): ProductWithVotes[] => {
 }
 
 export default function HomePage() {
-  const [products, setProducts] = useState<ProductWithVotes[]>([])
-  const [filteredProducts, setFilteredProducts] = useState<ProductWithVotes[]>([])
+  const [products, setProducts] = useState<ProductWithExample[]>([])
+  const [filteredProducts, setFilteredProducts] = useState<ProductWithExample[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
-  const [featuredProduct, setFeaturedProduct] = useState<ProductWithVotes | null>(null)
+  const [featuredProduct, setFeaturedProduct] = useState<ProductWithExample | null>(null)
   const [user, setUser] = useState<any>(null)
 
   useEffect(() => {
