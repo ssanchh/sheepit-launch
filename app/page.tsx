@@ -183,8 +183,17 @@ export default function HomePage() {
     const { data: productsData, error } = await supabase
       .rpc('get_products_with_votes', { user_id_param: user?.id || null })
 
-    if (!error && productsData) {
-      // Transform the data to match the expected format
+    // Check if we should show example products (before August 4th)
+    const launchDate = new Date('2025-08-04')
+    const now = new Date()
+    
+    if (now < launchDate) {
+      // Show example products before launch
+      const examples = getExampleProducts()
+      setProducts(examples)
+      setFilteredProducts(examples)
+    } else if (!error && productsData) {
+      // After launch date, show real products
       const productsWithVotes = productsData.map((product: any) => ({
         ...product,
         users: {
@@ -205,18 +214,8 @@ export default function HomePage() {
       setProducts(productsWithVotes)
       setFilteredProducts(productsWithVotes)
     } else {
-      // If no real products, show example products until August 4th
-      const launchDate = new Date('2024-08-04')
-      const now = new Date()
-      
-      if (now < launchDate) {
-        const examples = getExampleProducts()
-        setProducts(examples)
-        setFilteredProducts(examples)
-      } else {
-        setProducts([])
-        setFilteredProducts([])
-      }
+      setProducts([])
+      setFilteredProducts([])
     }
     setLoading(false)
   }
