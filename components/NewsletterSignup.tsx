@@ -69,23 +69,23 @@ export default function NewsletterSignup({ className = '', variant = 'default' }
   }
 
   return (
-    <div className={`bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl p-8 border border-orange-200 ${className}`}>
+    <div className={`bg-white rounded-xl p-6 sm:p-8 border-4 border-[#E5E5E5] ${className}`}>
       <div className="max-w-md mx-auto text-center">
-        <h3 className="text-2xl font-semibold text-[#2D2D2D] mb-2">
-          Join 10,000+ makers 🚀
+        <h3 className="text-xl sm:text-2xl font-semibold text-[#2D2D2D] mb-2">
+          Stay in the loop
         </h3>
-        <p className="text-[#666666] mb-6">
-          Get weekly updates on the hottest new products, exclusive tips, and winner announcements.
+        <p className="text-sm sm:text-base text-[#666666] mb-6">
+          Get weekly updates on new launches, winner announcements, and exclusive tips.
         </p>
         
         <form onSubmit={handleSubmit} className="space-y-3">
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <input
               type="text"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               placeholder="First name (optional)"
-              className="flex-1 px-4 py-3 border border-[#E5E5E5] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="flex-1 px-4 py-3 border-2 border-[#E5E5E5] rounded-lg focus:outline-none focus:border-orange-400 transition-colors"
               disabled={loading}
             />
             <input
@@ -94,7 +94,7 @@ export default function NewsletterSignup({ className = '', variant = 'default' }
               onChange={(e) => setEmail(e.target.value)}
               placeholder="your@email.com"
               required
-              className="flex-1 px-4 py-3 border border-[#E5E5E5] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="flex-1 px-4 py-3 border-2 border-[#E5E5E5] rounded-lg focus:outline-none focus:border-orange-400 transition-colors"
               disabled={loading}
             />
           </div>
@@ -102,10 +102,9 @@ export default function NewsletterSignup({ className = '', variant = 'default' }
           <button
             type="submit"
             disabled={loading}
-            className="w-full px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2"
+            className="w-full px-6 py-3 bg-[#2D2D2D] text-white rounded-lg hover:bg-[#1D1D1D] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
-            <Send className="w-4 h-4" />
-            {loading ? 'Subscribing...' : 'Get Weekly Updates'}
+            {loading ? 'Subscribing...' : 'Subscribe to Newsletter'}
           </button>
         </form>
         
