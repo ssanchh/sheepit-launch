@@ -332,31 +332,75 @@ export default function HomePage() {
               ))}
             </div>
           ) : (
-            <div className="bg-white rounded-xl border border-[#E5E5E5] p-8 sm:p-16 text-center">
-              <div className="text-5xl sm:text-6xl mb-4">{searchQuery ? '🔍' : '🚀'}</div>
-              <h3 className="text-lg sm:text-xl font-semibold text-[#2D2D2D] mb-2">
-                {searchQuery ? 'No products found' : 'The queue is building!'}
-              </h3>
-              <p className="text-sm sm:text-base text-[#666666] mb-6 px-4 sm:px-0">
-                {searchQuery 
-                  ? `No products match "${searchQuery}". Try a different search term.`
-                  : 'Products are gathering in the queue for our inaugural launch on August 4th. Be part of the first batch!'
-                }
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <a 
-                  href="/submit"
-                  className="inline-flex items-center justify-center gap-2 bg-[#2D2D2D] text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-medium hover:bg-[#1D1D1D] transition-colors text-sm sm:text-base"
-                >
-                  Submit Your Product
-                </a>
-                <a 
-                  href="/past-launches"
-                  className="inline-flex items-center justify-center gap-2 bg-white text-[#666666] border border-[#E5E5E5] px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-medium hover:border-[#D5D5D5] transition-colors text-sm sm:text-base"
-                >
-                  View Past Launches
-                </a>
-              </div>
+            <div className="bg-white rounded-xl border border-[#E5E5E5] overflow-hidden">
+              {searchQuery ? (
+                <div className="p-8 sm:p-16 text-center">
+                  <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#F5F5F5] flex items-center justify-center">
+                    <svg className="w-8 h-8 text-[#666666]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-semibold text-[#2D2D2D] mb-2">
+                    No products found
+                  </h3>
+                  <p className="text-sm sm:text-base text-[#666666] mb-6 px-4 sm:px-0">
+                    No products match "{searchQuery}". Try a different search term.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <div className="bg-gradient-to-br from-orange-50 to-purple-50 p-8 sm:p-12">
+                    <div className="max-w-2xl mx-auto">
+                      <div className="flex items-center justify-center mb-6">
+                        <div className="relative">
+                          <div className="w-20 h-20 rounded-full bg-white shadow-sm flex items-center justify-center">
+                            <svg className="w-10 h-10 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
+                            </svg>
+                          </div>
+                          <div className="absolute -top-1 -right-1 w-6 h-6 bg-purple-500 rounded-full animate-pulse"></div>
+                        </div>
+                      </div>
+                      <h3 className="text-xl sm:text-2xl font-bold text-[#2D2D2D] mb-3 text-center">
+                        The Launch Queue is Open
+                      </h3>
+                      <p className="text-base text-[#666666] mb-8 text-center max-w-xl mx-auto">
+                        Be among the first makers to launch on Sheep It. Submit your product now for our inaugural launch event on August 4th.
+                      </p>
+                      <div className="grid grid-cols-3 gap-4 mb-8 max-w-sm mx-auto">
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-[#2D2D2D]">50k+</div>
+                          <div className="text-xs text-[#666666]">Early Adopters</div>
+                        </div>
+                        <div className="text-center border-x border-[#E5E5E5]">
+                          <div className="text-2xl font-bold text-[#2D2D2D]">$500</div>
+                          <div className="text-xs text-[#666666]">Weekly Prizes</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-[#2D2D2D]">Top 3</div>
+                          <div className="text-xs text-[#666666]">Winners</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-6 sm:p-8 border-t border-[#E5E5E5] bg-[#FAFAFA]">
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                      <a 
+                        href="/submit"
+                        className="inline-flex items-center justify-center gap-2 bg-[#2D2D2D] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#1D1D1D] transition-colors"
+                      >
+                        Submit Your Product
+                      </a>
+                      <a 
+                        href="/how-it-works"
+                        className="inline-flex items-center justify-center gap-2 bg-white text-[#666666] border border-[#E5E5E5] px-6 py-3 rounded-lg font-medium hover:border-[#D5D5D5] transition-colors"
+                      >
+                        Learn How It Works
+                      </a>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           )}
         </section>
