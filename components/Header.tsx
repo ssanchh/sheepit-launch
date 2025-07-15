@@ -122,6 +122,25 @@ export default function Header() {
             >
               Pricing
             </Link>
+            <div className="relative group ml-2">
+              <button className="px-5 py-2 text-sm font-medium rounded-full transition-all duration-200 text-[#666666] hover:text-[#2D2D2D]">
+                Resources
+              </button>
+              <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-[#E5E5E5] py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                <Link href="/blog" className="block px-4 py-2 text-sm text-[#666666] hover:bg-gray-50">
+                  Blog
+                </Link>
+                <Link href="/resources" className="block px-4 py-2 text-sm text-[#666666] hover:bg-gray-50">
+                  Launch Resources
+                </Link>
+                <Link href="/stats" className="block px-4 py-2 text-sm text-[#666666] hover:bg-gray-50">
+                  Launch Stats
+                </Link>
+                <Link href="/supporters" className="block px-4 py-2 text-sm text-[#666666] hover:bg-gray-50">
+                  Supporters
+                </Link>
+              </div>
+            </div>
             {/* Admin link - show skeleton while loading */}
             {user && profileLoading ? (
               <div className="ml-4 px-5 py-2 bg-gray-100 rounded-full animate-pulse h-9 w-20" />
