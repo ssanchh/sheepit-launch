@@ -1,5 +1,4 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { createClient } from '@/utils/supabase/server'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
@@ -13,7 +12,7 @@ export async function POST(request: Request) {
       )
     }
 
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = createClient()
 
     // Check if email already exists in newsletter_subscribers table
     const { data: existingSubscriber } = await supabase
