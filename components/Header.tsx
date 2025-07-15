@@ -61,11 +61,11 @@ export default function Header() {
           </div>
 
           {/* Navigation */}
-          <nav className="hidden md:flex items-center">
+          <nav className="hidden xl:flex items-center">
             <div className="flex items-center bg-[#F5F5F5] rounded-full p-1">
               <Link 
                 href="/" 
-                className={`relative px-5 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
+                className={`relative px-3 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
                   pathname === '/' 
                     ? 'text-[#2D2D2D] bg-white shadow-sm' 
                     : 'text-[#666666] hover:text-[#2D2D2D] hover:bg-white/50'
@@ -75,7 +75,7 @@ export default function Header() {
               </Link>
               <div className="relative group">
                 <button 
-                  className="relative px-5 py-2 text-sm font-medium rounded-full transition-all duration-200 text-[#999999] cursor-not-allowed"
+                  className="relative px-3 py-2 text-sm font-medium rounded-full transition-all duration-200 text-[#999999] cursor-not-allowed"
                   disabled
                 >
                   Latest Winners
@@ -89,7 +89,7 @@ export default function Header() {
               </div>
               <div className="relative group">
                 <button 
-                  className="relative px-5 py-2 text-sm font-medium rounded-full transition-all duration-200 text-[#999999] cursor-not-allowed"
+                  className="relative px-3 py-2 text-sm font-medium rounded-full transition-all duration-200 text-[#999999] cursor-not-allowed"
                   disabled
                 >
                   Past Launches
@@ -104,7 +104,7 @@ export default function Header() {
             </div>
             <Link 
               href="/how-it-works" 
-              className={`ml-2 px-5 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
+              className={`ml-4 px-3 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
                 pathname === '/how-it-works'
                   ? 'text-[#2D2D2D] bg-white border-2 border-[#E5E5E5]'
                   : 'text-[#666666] hover:text-[#2D2D2D]'
@@ -114,7 +114,7 @@ export default function Header() {
             </Link>
             <Link 
               href="/pricing" 
-              className={`ml-2 px-5 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
+              className={`ml-4 px-3 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
                 pathname === '/pricing'
                   ? 'text-[#2D2D2D] bg-white border-2 border-[#E5E5E5]'
                   : 'text-[#666666] hover:text-[#2D2D2D]'
@@ -124,7 +124,7 @@ export default function Header() {
             </Link>
             <Link 
               href="/blog" 
-              className={`ml-2 px-5 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
+              className={`ml-4 px-3 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
                 pathname === '/blog'
                   ? 'text-[#2D2D2D] bg-white border-2 border-[#E5E5E5]'
                   : 'text-[#666666] hover:text-[#2D2D2D]'
@@ -134,12 +134,12 @@ export default function Header() {
             </Link>
             {/* Admin link - show skeleton while loading */}
             {user && profileLoading ? (
-              <div className="ml-4 px-5 py-2 bg-gray-100 rounded-full animate-pulse h-9 w-20" />
+              <div className="ml-6 px-4 py-2 bg-gray-100 rounded-full animate-pulse h-9 w-16" />
             ) : (
               profile?.is_admin && (
                 <Link 
                   href="/admin" 
-                  className={`ml-4 px-5 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
+                  className={`ml-6 px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
                     pathname === '/admin'
                       ? 'text-white bg-purple-600 shadow-sm'
                       : 'text-purple-600 hover:bg-purple-50'
