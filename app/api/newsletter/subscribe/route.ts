@@ -15,11 +15,19 @@ export async function POST(request: Request) {
     const supabase = createClient()
 
     // Check if email already exists in newsletter_subscribers table
-    const { data: existingSubscriber } = await supabase
+    const { data: existingSubscriber, error: selectError } = await supabase
       .from('newsletter_subscribers')
       .select('id')
       .eq('email', email)
-      .single()
+      .maybeSingle() // Use maybeSingle instead of single to avoid error when no row exists
+
+    if (selectError) {
+      console.error('Newsletter select error:', selectError)
+      return NextResponse.json(
+        { error: `Database error: ${selectError.message}` },
+        { status: 500 }
+      )
+    }
 
     if (existingSubscriber) {
       return NextResponse.json(
@@ -29,7 +37,7 @@ export async function POST(request: Request) {
     }
 
     // Add to newsletter_subscribers table
-    const { error: insertError } = await supabase
+    const { data, error: insertError } = await supabase
       .from('newsletter_subscribers')
       .insert({
         email,
@@ -37,20 +45,38 @@ export async function POST(request: Request) {
         subscribed_at: new Date().toISOString(),
         status: 'active'
       })
+      .select()
 
     if (insertError) {
-      console.error('Newsletter subscribe error:', insertError)
+      console.error('Newsletter insert error:', insertError)
+      
+      // Provide more specific error messages
+      if (insertError.code === '42P01') {
+        return NextResponse.json(
+          { error: 'Newsletter table not found. Please contact support.' },
+          { status: 500 }
+        )
+      }
+      
+      if (insertError.code === '23505') {
+        return NextResponse.json(
+          { error: 'This email is already subscribed!' },
+          { status: 400 }
+        )
+      }
+      
       return NextResponse.json(
-        { error: 'Failed to subscribe. Please try again.' },
+        { error: `Failed to subscribe: ${insertError.message}` },
         { status: 500 }
       )
     }
 
+    console.log('Newsletter subscription successful:', data)
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Newsletter subscribe error:', error)
     return NextResponse.json(
-      { error: 'An unexpected error occurred' },
+      { error: `An unexpected error occurred: ${error instanceof Error ? error.message : 'Unknown error'}` },
       { status: 500 }
     )
   }
