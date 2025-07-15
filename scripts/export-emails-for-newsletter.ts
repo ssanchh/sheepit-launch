@@ -13,28 +13,66 @@ async function exportEmailsForNewsletter() {
   console.log('Exporting emails for newsletter...\n')
   
   // Get all users who want newsletter (profile_completed = true means they're active)
-  const { data: users, error } = await supabase
+  const { data: users, error: usersError } = await supabase
     .from('users')
     .select('email, first_name, last_name, created_at')
     .eq('profile_completed', true)
     .order('created_at', { ascending: false })
   
-  if (error) {
-    console.error('Error:', error)
+  // Also get newsletter subscribers
+  const { data: newsletterSubs, error: subsError } = await supabase
+    .from('newsletter_subscribers')
+    .select('email, first_name, created_at')
+    .eq('status', 'active')
+    .order('created_at', { ascending: false })
+  
+  if (usersError || subsError) {
+    console.error('Error:', usersError || subsError)
     return
   }
   
-  if (!users || users.length === 0) {
-    console.log('No users found')
+  // Combine and deduplicate emails
+  const allEmails = new Map()
+  
+  // Add users first
+  if (users) {
+    users.forEach(user => {
+      allEmails.set(user.email, {
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        created_at: user.created_at
+      })
+    })
+  }
+  
+  // Add newsletter subscribers (will update if email already exists)
+  if (newsletterSubs) {
+    newsletterSubs.forEach(sub => {
+      if (!allEmails.has(sub.email)) {
+        allEmails.set(sub.email, {
+          email: sub.email,
+          first_name: sub.first_name,
+          last_name: '',
+          created_at: sub.created_at
+        })
+      }
+    })
+  }
+  
+  const uniqueSubscribers = Array.from(allEmails.values())
+  
+  if (uniqueSubscribers.length === 0) {
+    console.log('No subscribers found')
     return
   }
   
-  console.log(`Found ${users.length} active users`)
+  console.log(`Found ${uniqueSubscribers.length} total unique subscribers (${users?.length || 0} users + ${newsletterSubs?.length || 0} newsletter subscribers)`)
   
   // Create CSV content
   const csvHeader = 'email,first_name,last_name,signup_date\n'
-  const csvContent = users.map(user => 
-    `${user.email},${user.first_name || ''},${user.last_name || ''},${new Date(user.created_at).toLocaleDateString()}`
+  const csvContent = uniqueSubscribers.map(sub => 
+    `${sub.email},${sub.first_name || ''},${sub.last_name || ''},${new Date(sub.created_at).toLocaleDateString()}`
   ).join('\n')
   
   const fullCsv = csvHeader + csvContent
@@ -59,31 +97,69 @@ async function exportWeeklyNewSignups() {
   const oneWeekAgo = new Date()
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
   
-  const { data: newUsers, error } = await supabase
+  // Get new users from this week
+  const { data: newUsers, error: usersError } = await supabase
     .from('users')
     .select('email, first_name, last_name, created_at')
     .gte('created_at', oneWeekAgo.toISOString())
     .order('created_at', { ascending: false })
   
-  if (error) {
-    console.error('Error:', error)
+  // Get new newsletter subscribers from this week
+  const { data: newSubs, error: subsError } = await supabase
+    .from('newsletter_subscribers')
+    .select('email, first_name, created_at')
+    .eq('status', 'active')
+    .gte('created_at', oneWeekAgo.toISOString())
+    .order('created_at', { ascending: false })
+  
+  if (usersError || subsError) {
+    console.error('Error:', usersError || subsError)
     return
   }
   
-  if (!newUsers || newUsers.length === 0) {
-    console.log('No new users this week')
+  // Combine and deduplicate
+  const allNewEmails = new Map()
+  
+  if (newUsers) {
+    newUsers.forEach(user => {
+      allNewEmails.set(user.email, {
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        created_at: user.created_at
+      })
+    })
+  }
+  
+  if (newSubs) {
+    newSubs.forEach(sub => {
+      if (!allNewEmails.has(sub.email)) {
+        allNewEmails.set(sub.email, {
+          email: sub.email,
+          first_name: sub.first_name,
+          last_name: '',
+          created_at: sub.created_at
+        })
+      }
+    })
+  }
+  
+  const uniqueNewSubscribers = Array.from(allNewEmails.values())
+  
+  if (uniqueNewSubscribers.length === 0) {
+    console.log('No new subscribers this week')
     return
   }
   
-  console.log(`Found ${newUsers.length} new users this week:`)
-  newUsers.forEach(user => {
-    console.log(`- ${user.email} (${new Date(user.created_at).toLocaleDateString()})`)
+  console.log(`Found ${uniqueNewSubscribers.length} new subscribers this week:`)
+  uniqueNewSubscribers.forEach(sub => {
+    console.log(`- ${sub.email} (${new Date(sub.created_at).toLocaleDateString()})`)
   })
   
   // Create CSV for weekly signups
   const csvHeader = 'email,first_name,last_name,signup_date\n'
-  const csvContent = newUsers.map(user => 
-    `${user.email},${user.first_name || ''},${user.last_name || ''},${new Date(user.created_at).toLocaleDateString()}`
+  const csvContent = uniqueNewSubscribers.map(sub => 
+    `${sub.email},${sub.first_name || ''},${sub.last_name || ''},${new Date(sub.created_at).toLocaleDateString()}`
   ).join('\n')
   
   const fullCsv = csvHeader + csvContent
