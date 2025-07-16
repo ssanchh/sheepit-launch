@@ -24,14 +24,14 @@ CREATE POLICY "Anyone can submit MVP proposals" ON mvp_proposals
 CREATE POLICY "Only admins can view MVP proposals" ON mvp_proposals
   FOR SELECT USING (
     auth.uid() IN (
-      SELECT user_id FROM user_profiles WHERE is_admin = true
+      SELECT id FROM users WHERE is_admin = true
     )
   );
 
 CREATE POLICY "Only admins can update MVP proposals" ON mvp_proposals
   FOR UPDATE USING (
     auth.uid() IN (
-      SELECT user_id FROM user_profiles WHERE is_admin = true
+      SELECT id FROM users WHERE is_admin = true
     )
   );
 
