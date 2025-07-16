@@ -40,10 +40,12 @@ export default function AdminPage() {
   const [loadingProducts, setLoadingProducts] = useState(true)
   const [isAdmin, setIsAdmin] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<'all' | 'pending' | 'approved' | 'rejected'>('pending')
-  const [activeTab, setActiveTab] = useState<'analytics' | 'approvals' | 'queue' | 'live'>('analytics')
+  const [activeTab, setActiveTab] = useState<'analytics' | 'approvals' | 'queue' | 'live' | 'mvp'>('analytics')
   const [queueProducts, setQueueProducts] = useState<Product[]>([])
   const [liveProducts, setLiveProducts] = useState<Product[]>([])
   const [analytics, setAnalytics] = useState<any>(null)
+  const [mvpProposals, setMvpProposals] = useState<any[]>([])
+  const [loadingMvpProposals, setLoadingMvpProposals] = useState(false)
 
   useEffect(() => {
     if (user) {
@@ -61,6 +63,8 @@ export default function AdminPage() {
         loadQueueProducts()
       } else if (activeTab === 'live') {
         loadLiveProducts()
+      } else if (activeTab === 'mvp') {
+        loadMvpProposals()
       }
     }
   }, [isAdmin, selectedStatus, activeTab])
@@ -178,6 +182,40 @@ export default function AdminPage() {
       setLiveProducts(productsWithVotes)
     }
     setLoadingProducts(false)
+  }
+
+  const loadMvpProposals = async () => {
+    setLoadingMvpProposals(true)
+    const supabase = createClient()
+    
+    const { data, error } = await supabase
+      .from('mvp_proposals')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('Error loading MVP proposals:', error)
+      toast.error('Failed to load MVP proposals')
+    } else {
+      setMvpProposals(data || [])
+    }
+    setLoadingMvpProposals(false)
+  }
+
+  const updateMvpProposalStatus = async (proposalId: string, status: 'pending' | 'reviewing' | 'accepted' | 'rejected') => {
+    const supabase = createClient()
+    
+    const { error } = await supabase
+      .from('mvp_proposals')
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq('id', proposalId)
+
+    if (error) {
+      toast.error('Failed to update proposal status')
+    } else {
+      toast.success(`Proposal ${status}`)
+      loadMvpProposals() // Reload the list
+    }
   }
 
   const loadAnalytics = async () => {
@@ -395,6 +433,16 @@ export default function AdminPage() {
               }`}
             >
               Live Now
+            </button>
+            <button
+              onClick={() => setActiveTab('mvp')}
+              className={`px-5 py-2 text-sm font-medium rounded-full transition-all ${
+                activeTab === 'mvp'
+                  ? 'bg-white text-[#2D2D2D] shadow-sm'
+                  : 'text-[#666666] hover:text-[#2D2D2D]'
+              }`}
+            >
+              MVP Proposals
             </button>
           </div>
         </div>
@@ -996,6 +1044,98 @@ export default function AdminPage() {
                 </div>
               )}
             </div>
+          </div>
+        )}
+
+        {/* MVP Proposals Tab */}
+        {activeTab === 'mvp' && (
+          <div>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-[#2D2D2D]">MVP Proposals</h2>
+              <p className="text-[#666666] mt-1">Review and manage MVP building service requests</p>
+            </div>
+            
+            {loadingMvpProposals ? (
+              <div className="text-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2D2D2D] mx-auto"></div>
+                <p className="text-[#666666] mt-4">Loading proposals...</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {mvpProposals.length > 0 ? (
+                  mvpProposals.map((proposal) => (
+                    <div key={proposal.id} className="bg-white rounded-xl border-4 border-[#E5E5E5] hover:border-purple-400 transition-all p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <h3 className="text-lg font-semibold text-[#2D2D2D]">{proposal.name}</h3>
+                          <p className="text-sm text-[#666666]">{proposal.email}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            proposal.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                            proposal.status === 'reviewing' ? 'bg-blue-100 text-blue-700' :
+                            proposal.status === 'accepted' ? 'bg-green-100 text-green-700' :
+                            'bg-red-100 text-red-700'
+                          }`}>
+                            {proposal.status}
+                          </span>
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            proposal.timeline === 'urgent' ? 'bg-orange-100 text-orange-700' : 'bg-[#F5F5F5] text-[#666666]'
+                          }`}>
+                            {proposal.timeline === 'urgent' ? 'ASAP' : 'Flexible'}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div>
+                          <h4 className="text-sm font-medium text-[#2D2D2D] mb-1">Idea</h4>
+                          <p className="text-sm text-[#666666] whitespace-pre-wrap">{proposal.idea}</p>
+                        </div>
+                        
+                        <div>
+                          <h4 className="text-sm font-medium text-[#2D2D2D] mb-1">Core Features</h4>
+                          <p className="text-sm text-[#666666] whitespace-pre-wrap">{proposal.features}</p>
+                        </div>
+                        
+                        <div className="flex items-center justify-between pt-4 border-t border-[#E5E5E5]">
+                          <span className="text-xs text-[#999999]">
+                            Submitted {new Date(proposal.created_at).toLocaleDateString()}
+                          </span>
+                          
+                          {proposal.status === 'pending' && (
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => updateMvpProposalStatus(proposal.id, 'reviewing')}
+                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                              >
+                                Start Review
+                              </button>
+                              <button
+                                onClick={() => updateMvpProposalStatus(proposal.id, 'accepted')}
+                                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+                              >
+                                Accept
+                              </button>
+                              <button
+                                onClick={() => updateMvpProposalStatus(proposal.id, 'rejected')}
+                                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+                              >
+                                Reject
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-12 bg-white rounded-xl border border-[#E5E5E5]">
+                    <p className="text-[#666666]">No MVP proposals yet</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>

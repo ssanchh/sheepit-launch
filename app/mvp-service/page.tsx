@@ -36,23 +36,21 @@ export default function MVPServicePage() {
     setIsSubmitting(true)
 
     try {
-      // Send email via mailto for now
-      const subject = encodeURIComponent('MVP Building Service Request')
-      const body = encodeURIComponent(`
-Name: ${formData.name}
-Email: ${formData.email}
-Timeline: ${formData.timeline === 'urgent' ? 'ASAP' : 'Flexible'}
+      const response = await fetch('/api/mvp-proposal', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      })
 
-Idea Description:
-${formData.idea}
+      const data = await response.json()
 
-Core Features:
-${formData.features}
-      `)
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to submit proposal')
+      }
       
-      window.location.href = `mailto:mvp@sheepit.io?subject=${subject}&body=${body}`
-      
-      toast.success('Request sent! We\'ll get back to you within 24 hours.')
+      toast.success('Proposal submitted! We\'ll get back to you within 24 hours.')
       
       // Reset form
       setFormData({
@@ -63,7 +61,8 @@ ${formData.features}
         timeline: 'urgent'
       })
     } catch (error) {
-      toast.error('Failed to send request. Please try again.')
+      console.error('Error submitting proposal:', error)
+      toast.error('Failed to submit proposal. Please try again.')
     } finally {
       setIsSubmitting(false)
     }
@@ -125,15 +124,15 @@ ${formData.features}
         {/* Process */}
         <div className="bg-gradient-to-br from-purple-50 to-white rounded-2xl border-4 border-[#E5E5E5] p-8 mb-12">
           <h2 className="text-2xl font-bold text-[#2D2D2D] mb-6">The Process</h2>
-          <div className="space-y-4">
+          <div className="space-y-6">
             {processSteps.map((step, index) => (
-              <div key={index} className="flex gap-4">
-                <div className="bg-purple-600 text-white text-sm font-medium px-3 py-1 rounded-full flex-shrink-0">
+              <div key={index} className="flex items-start gap-4">
+                <div className="bg-purple-600 text-white text-sm font-medium px-4 py-2 rounded-full flex-shrink-0 min-w-[120px] text-center">
                   {step.day}
                 </div>
-                <div>
+                <div className="flex-1">
                   <h3 className="font-semibold text-[#2D2D2D] mb-1">{step.title}</h3>
-                  <p className="text-sm text-[#666666]">{step.description}</p>
+                  <p className="text-sm text-[#666666] leading-relaxed">{step.description}</p>
                 </div>
               </div>
             ))}
