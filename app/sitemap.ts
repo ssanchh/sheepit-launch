@@ -13,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/winners',
     '/past-launches',
     '/blog',
+    '/mvp-service',
     '/privacy',
     '/terms-and-conditions',
     '/refund',

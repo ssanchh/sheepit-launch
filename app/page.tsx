@@ -7,6 +7,7 @@ import ProductCard from '@/components/ProductCard'
 import SearchBar from '@/components/SearchBar'
 import NewsletterSignup from '@/components/NewsletterSignup'
 import FirstLaunchCountdown from '@/components/FirstLaunchCountdown'
+import MVPBuildingService from '@/components/MVPBuildingService'
 import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { ProductWithVotes } from '@/types/database'
@@ -397,6 +398,9 @@ export default function HomePage() {
 
         {/* First Launch Announcement */}
         <FirstLaunchCountdown />
+
+        {/* MVP Building Service */}
+        <MVPBuildingService />
 
         {/* Stats Bar - Show when we have products (including examples) */}
         {products.length > 0 && (
