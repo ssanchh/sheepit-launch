@@ -14,44 +14,45 @@ const newsletters = [
     slug: 'why-the-f-i-built-sheep-it',
     issue: 1,
     title: 'Why the f*** I built Sheep It',
-    excerpt: "I'm an accountant who has nothing to do with tech. But I'm building a platform for indie makers. Here's the confession of how it all started.",
+    excerpt: "I'm an accountant who hates accounting, so naturally I'm building a launch platform for indie makers. Here's why.",
     date: '2025-07-17',
     category: 'Founder Story',
     beehiivUrl: 'https://santiagos-newsletter-a2dca9.beehiiv.com/p/why-the-f-i-built-sheep-it',
     content: `
-      <p>I'm Santiago, and I have a confession: I studied accounting, got the degree, worked in the field... and I fucking hate it. Like, genuinely despise everything about it. My colleagues still make that confused face when I tell them this.</p>
+      <p>You know that feeling when you're supposed to be doing spreadsheets but you're actually browsing Product Hunt wondering why the same VC-backed products always win?</p>
       
       <p>Yeah, that's been my life for years.</p>
       
-      <h2>The Breaking Point</h2>
+      <p>I'm Santiago, and I have a confession: I studied accounting, got the degree, worked in the field... and I fucking hate it. Like, genuinely despise everything about it. My colleagues still make that confused face when I tell them this.</p>
       
-      <p>I've been building side projects for years, trying to escape the corporate accounting world. Some failed, some worked okay, but none gave me the freedom I desperately wanted.</p>
+      <p>But here's the thing - I've always been obsessed with startups. I have a Notion with 300+ business ideas analyzed in depth (yes, I counted). I read founder stories like other people watch Netflix. I almost opened an addiction clinic once, had everything ready, then moved to the US instead. That's a story for another day.</p>
       
-      <p>Then I discovered the indie maker community. Holy shit. People were building cool stuff, launching products, and actually making money from their ideas. No VCs, no bullshit, just builders building.</p>
+      <p>The problem was, I thought you needed to be a "real" developer to build anything. Then AI came along and changed everything. Now I'm what we call a "vive coder" - someone who builds real products with AI tools. My first app, Captus, taught me an important lesson: don't build something you won't use yourself.</p>
       
-      <h2>Why Sheep It?</h2>
+      <h2>So why Sheep It?</h2>
       
-      <p>I noticed something: indie makers struggle to get initial traction. Product Hunt is dominated by big companies with marketing budgets. Twitter is noisy. Reddit hates self-promotion.</p>
+      <p>Every Monday when I check Product Hunt, I see the same pattern: Cursor, Claude, [Insert Big Name] at the top with 1000+ upvotes. Then I scroll down and find 100 incredible indie products with 12 upvotes that nobody will ever discover.</p>
       
-      <p>What if there was a place specifically for indie makers to launch? A weekly event where the community actually wants to discover new products?</p>
+      <p>It's like watching David vs Goliath, except Goliath has a marketing team and David is coding in his bedroom after his day job.</p>
       
-      <p>That's Sheep It. Every Monday, makers launch together. The community votes. Winners get featured in this newsletter.</p>
+      <p>That's why I'm building Sheep It from my apartment in Uruguay. It's a weekly launch platform made specifically for indies, solos, and small teams. No algorithms favoring the big players. No "hunting" armies. Just small batches where everyone gets equal visibility.</p>
       
-      <p>Simple. Fair. Community-driven.</p>
+      <p>Christopher from Tiny Launch inspired me to actually do this. Seeing him build something similar with AI tools made me realize - holy shit, I can do this too. We're not competing; we're both trying to give indies more places to be seen.</p>
       
-      <h2>The First Launch</h2>
+      <p>Here's what I believe: consistency compounds like crazy. I learned this at the gym - went from extremely skinny to actually having muscles after 3 years. You don't see changes from day 1 to day 2, but each day adds up. Same with building products. Same with creating communities.</p>
       
-      <p>August 4th is our first official launch day. I'm scared shitless but also excited. We already have makers signing up, preparing their products.</p>
+      <p>Sheep It launches August 4th. First batch, fresh start, equal playing field.</p>
       
-      <p>This newsletter will showcase the weekly winners, share their stories, and help you discover tools you actually need.</p>
+      <p>I'm coding this on late afternoons and weekends while helping my father's business. Is it perfect? No. Will some people ignore it? Probably. But everything big started small. And I'd rather build something that helps 10 indie makers get discovered than keep making spreadsheets I'll never look at again.</p>
       
-      <p>No corporate bullshit. No paid placements. Just the best indie products, voted by the community.</p>
+      <p>If you're building something and tired of shouting into the void, come launch with us. It's free, it's fair, and it's made by someone who gets the struggle.</p>
       
-      <p>Welcome to Sheep It. Let's build something together.</p>
+      <p>Because the best products shouldn't win just because they have the biggest teams.</p>
       
-      <p>- Santiago<br/>
-      Founder, Sheep It<br/>
-      (Still an accountant, but not for long)</p>
+      <p>Santiago,<br/>
+      Founder of Sheep It</p>
+      
+      <p><strong>P.S.</strong> - Yes, the name is ridiculous. That's the point. Serious is boring.</p>
     `
   }
 ]
