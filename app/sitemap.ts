@@ -2,29 +2,38 @@ import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://sheepit.io'
+  const now = new Date()
   
-  // Static pages
-  const staticPages = [
-    '',
-    '/about',
-    '/how-it-works',
-    '/pricing',
-    '/submit',
-    '/winners',
-    '/past-launches',
-    '/blog',
-    '/mvp-service',
-    '/privacy',
-    '/terms-and-conditions',
-    '/refund',
-  ].map(route => ({
+  // High priority pages
+  const highPriorityPages = [
+    { route: '', changeFrequency: 'daily' as const, priority: 1.0 },
+    { route: '/submit', changeFrequency: 'weekly' as const, priority: 0.9 },
+    { route: '/how-it-works', changeFrequency: 'monthly' as const, priority: 0.8 },
+    { route: '/pricing', changeFrequency: 'weekly' as const, priority: 0.8 },
+  ]
+  
+  // Medium priority pages
+  const mediumPriorityPages = [
+    { route: '/mvp-service', changeFrequency: 'weekly' as const, priority: 0.7 },
+    { route: '/blog', changeFrequency: 'weekly' as const, priority: 0.7 },
+    { route: '/winners', changeFrequency: 'weekly' as const, priority: 0.6 },
+    { route: '/past-launches', changeFrequency: 'weekly' as const, priority: 0.6 },
+  ]
+  
+  // Low priority pages
+  const lowPriorityPages = [
+    { route: '/about', changeFrequency: 'monthly' as const, priority: 0.5 },
+    { route: '/privacy', changeFrequency: 'yearly' as const, priority: 0.3 },
+    { route: '/terms-and-conditions', changeFrequency: 'yearly' as const, priority: 0.3 },
+    { route: '/refund', changeFrequency: 'yearly' as const, priority: 0.3 },
+  ]
+  
+  const allPages = [...highPriorityPages, ...mediumPriorityPages, ...lowPriorityPages]
+  
+  return allPages.map(({ route, changeFrequency, priority }) => ({
     url: `${baseUrl}${route}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: route === '' ? 1 : 0.8,
+    lastModified: now,
+    changeFrequency,
+    priority,
   }))
-
-  // You can add dynamic pages here later (like individual product pages)
-  
-  return staticPages
 }

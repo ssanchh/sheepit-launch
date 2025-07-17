@@ -4,63 +4,84 @@ import './globals.css'
 import { Toaster } from 'sonner'
 import { LoginModalProvider } from '@/contexts/LoginModalContext'
 import { UserProfileProvider } from '@/contexts/UserProfileContext'
+import StructuredData from '@/components/StructuredData'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Sheep It - Weekly Launchpad for Indie Startups',
-  description: 'A weekly product launch and discovery platform for small indie startups, solo founders, and builders.',
-  keywords: ['startup', 'product launch', 'indie hackers', 'product hunt', 'weekly launch'],
-  authors: [{ name: 'Sheep It Team' }],
+  title: 'Sheep It - Weekly Product Launch Platform for Indie Makers',
+  description: 'Launch your product every Monday. Get community votes, real feedback, and win a spot in our weekly newsletter reaching thousands of potential customers.',
+  keywords: ['startup launch', 'product launch platform', 'indie makers', 'indie hackers', 'weekly product launch', 'startup feedback', 'product discovery', 'monday launch', 'sheep it'],
+  authors: [{ name: 'Sheep It' }],
   creator: 'Sheep It',
   publisher: 'Sheep It',
+  applicationName: 'Sheep It',
+  generator: 'Next.js',
+  referrer: 'origin-when-cross-origin',
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
-      { url: '/favicon.png', type: 'image/png' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-192x192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/favicon-512x512.png', sizes: '512x512', type: 'image/png' },
     ],
     shortcut: '/favicon.ico',
-    apple: '/assets/images/logo.png',
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
   },
+  manifest: '/manifest.json',
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
+  metadataBase: new URL('https://sheepit.io'),
+  alternates: {
+    canonical: 'https://sheepit.io',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-    title: 'Sheep It - Weekly Launchpad for Indie Startups',
-    description: 'A weekly product launch and discovery platform for small indie startups, solo founders, and builders.',
+    url: 'https://sheepit.io',
+    title: 'Sheep It - Weekly Product Launch Platform for Indie Makers',
+    description: 'Launch your product every Monday. Get community votes, real feedback, and win a spot in our weekly newsletter reaching thousands of potential customers.',
     siteName: 'Sheep It',
     images: [
       {
-        url: '/assets/images/logo.png',
-        width: 512,
-        height: 512,
-        alt: 'Sheep It Logo',
+        url: 'https://sheepit.io/api/og',
+        width: 1200,
+        height: 630,
+        alt: 'Sheep It - Weekly Product Launch Platform',
+        type: 'image/png',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Sheep It - Weekly Launchpad for Indie Startups',
-    description: 'A weekly product launch and discovery platform for small indie startups, solo founders, and builders.',
+    site: '@sheep_it',
     creator: '@sheep_it',
-    images: ['/assets/images/logo.png'],
+    title: 'Sheep It - Weekly Product Launch Platform for Indie Makers',
+    description: 'Launch your product every Monday. Get community votes, real feedback, and win a spot in our weekly newsletter.',
+    images: ['https://sheepit.io/api/og'],
   },
   robots: {
     index: true,
     follow: true,
+    nocache: false,
     googleBot: {
       index: true,
       follow: true,
+      noimageindex: false,
       'max-video-preview': -1,
       'max-image-preview': 'large',
       'max-snippet': -1,
     },
+  },
+  verification: {
+    google: 'google-site-verification-code',
+    yandex: 'yandex-verification-code',
   },
 }
 
@@ -71,6 +92,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <StructuredData />
+      </head>
       <body className={inter.className}>
         <UserProfileProvider>
           <LoginModalProvider>
