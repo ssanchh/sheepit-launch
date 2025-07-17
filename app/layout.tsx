@@ -80,7 +80,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: 'google-site-verification-code',
+    google: '06aba02cf399017f',
     yandex: 'yandex-verification-code',
   },
 }
