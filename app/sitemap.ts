@@ -30,10 +30,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
   
   const allPages = [...highPriorityPages, ...mediumPriorityPages, ...lowPriorityPages]
   
-  return allPages.map(({ route, changeFrequency, priority }) => ({
+  const staticPages = allPages.map(({ route, changeFrequency, priority }) => ({
     url: `${baseUrl}${route}`,
     lastModified: now,
     changeFrequency,
     priority,
   }))
+  
+  // Add newsletter pages
+  const newsletterPages = [
+    {
+      url: `${baseUrl}/newsletter/why-the-f-i-built-sheep-it`,
+      lastModified: new Date('2025-07-17'),
+      changeFrequency: 'yearly' as const,
+      priority: 0.6,
+    }
+  ]
+  
+  return [...staticPages, ...newsletterPages]
 }

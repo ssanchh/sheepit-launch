@@ -5,8 +5,54 @@ import Footer from '@/components/Footer'
 import Link from 'next/link'
 import { Calendar, Mail, ArrowRight } from 'lucide-react'
 
-// This will be replaced with dynamic newsletter content later
-const newsletters: any[] = []
+// Newsletter content - will be replaced with dynamic content from Beehiiv API later
+const newsletters = [
+  {
+    id: '1',
+    slug: 'why-the-f-i-built-sheep-it',
+    issue: 1,
+    title: 'Why the f*** I built Sheep It',
+    excerpt: "I'm an accountant who has nothing to do with tech. But I'm building a platform for indie makers. Here's the confession of how it all started.",
+    date: '2025-07-17',
+    category: 'Founder Story',
+    beehiivUrl: 'https://santiagos-newsletter-a2dca9.beehiiv.com/p/why-the-f-i-built-sheep-it',
+    content: `
+      <p>I'm Santiago, and I have a confession: I studied accounting, got the degree, worked in the field... and I fucking hate it. Like, genuinely despise everything about it. My colleagues still make that confused face when I tell them this.</p>
+      
+      <p>Yeah, that's been my life for years.</p>
+      
+      <h2>The Breaking Point</h2>
+      
+      <p>I've been building side projects for years, trying to escape the corporate accounting world. Some failed, some worked okay, but none gave me the freedom I desperately wanted.</p>
+      
+      <p>Then I discovered the indie maker community. Holy shit. People were building cool stuff, launching products, and actually making money from their ideas. No VCs, no bullshit, just builders building.</p>
+      
+      <h2>Why Sheep It?</h2>
+      
+      <p>I noticed something: indie makers struggle to get initial traction. Product Hunt is dominated by big companies with marketing budgets. Twitter is noisy. Reddit hates self-promotion.</p>
+      
+      <p>What if there was a place specifically for indie makers to launch? A weekly event where the community actually wants to discover new products?</p>
+      
+      <p>That's Sheep It. Every Monday, makers launch together. The community votes. Winners get featured in this newsletter.</p>
+      
+      <p>Simple. Fair. Community-driven.</p>
+      
+      <h2>The First Launch</h2>
+      
+      <p>August 4th is our first official launch day. I'm scared shitless but also excited. We already have makers signing up, preparing their products.</p>
+      
+      <p>This newsletter will showcase the weekly winners, share their stories, and help you discover tools you actually need.</p>
+      
+      <p>No corporate bullshit. No paid placements. Just the best indie products, voted by the community.</p>
+      
+      <p>Welcome to Sheep It. Let's build something together.</p>
+      
+      <p>- Santiago<br/>
+      Founder, Sheep It<br/>
+      (Still an accountant, but not for long)</p>
+    `
+  }
+]
 
 export default function BlogPage() {
   return (
